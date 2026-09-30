@@ -1,0 +1,336 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+model Conversation {
+  id         String   @id @default(cuid())
+  customerId String
+  artisanId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer User @relation("CustomerConversations", fields: [customerId], references: [id])
+  artisan  User @relation("ArtisanConversations", fields: [artisanId], references: [id])
+  messages Message[]
+
+  @@unique([customerId, artisanId])
+  @@index([customerId, updatedAt])
+  @@index([artisanId, updatedAt])
+}
+
+model User {
+  id              String           @id @default(cuid())
+  role            Role             @default(CUSTOMER)
+  name            String
+  email           String?          @unique
+  phoneE164       String?          @unique
+  passwordHash    String
+  status          AccountStatus    @default(ACTIVE)
+  phoneVerifiedAt DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  artisan         Artisan?
+  blockedBy       Block[]          @relation("Blocked")
+  blocking        Block[]          @relation("Blocker")
+  sentMessages    Message[]
+  notifications   Notification[]
+  reportsMade     Report[]         @relation("Reporter")
+  reviews         Review[]
+  reviewVotes     ReviewVote[]
+  requests        ServiceRequest[] @relation("CustomerRequests")
+  customerConversations Conversation[] @relation("CustomerConversations")
+artisanConversations  Conversation[] @relation("ArtisanConversations")
+
+  @@index([role, status])
+}
+
+model Artisan {
+  userId          String                    @id
+  businessName    String
+  bio             String?
+  photoKey        String?
+  yearsExperience Int                       @default(0)
+  geog            Unsupported("geography")?
+  serviceRadiusKm Int                       @default(10)
+  state           String?
+  lga             String?
+  priceMinKobo    Int?
+  priceMaxKobo    Int?
+  availability    Availability              @default(BY_SCHEDULE)
+  avgRating       Decimal                   @default(0) @db.Decimal(3, 2)
+  reviewCount     Int                       @default(0)
+  completedJobs   Int                       @default(0)
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services        ArtisanService[]
+  slots           AvailabilitySlot[]
+  reviews         Review[]
+  requests        ServiceRequest[]
+  verifications   VerificationRecord[]
+
+  @@index([state, lga])
+  @@index([geog], type: Gist)
+}
+
+model ServiceCategory {
+  id       String           @id @default(cuid())
+  slug     String           @unique
+  name     String
+  icon     String?
+  isActive Boolean          @default(true)
+  services ArtisanService[]
+  requests ServiceRequest[]
+}
+
+model ArtisanService {
+  id                String          @id @default(cuid())
+  artisanId         String
+  categoryId        String
+  title             String
+  startingPriceKobo Int?
+  artisan           Artisan         @relation(fields: [artisanId], references: [userId], onDelete: Cascade)
+  category          ServiceCategory @relation(fields: [categoryId], references: [id])
+
+  @@unique([artisanId, categoryId, title])
+  @@index([categoryId, artisanId])
+}
+
+model AvailabilitySlot {
+  id        String  @id @default(cuid())
+  artisanId String
+  weekday   Int
+  startMin  Int
+  endMin    Int
+  artisan   Artisan @relation(fields: [artisanId], references: [userId], onDelete: Cascade)
+
+  @@index([artisanId, weekday])
+}
+
+model VerificationRecord {
+  id           String             @id @default(cuid())
+  artisanId    String
+  type         VerificationType
+  status       VerificationStatus @default(NONE)
+  documentKey  String?
+  reviewedBy   String?
+  reviewedAt   DateTime?
+  rejectReason String?
+  expiresAt    DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  artisan      Artisan            @relation(fields: [artisanId], references: [userId], onDelete: Cascade)
+
+  @@unique([artisanId, type])
+  @@index([status, createdAt])
+}
+
+model ServiceRequest {
+  id          String                    @id @default(cuid())
+  customerId  String
+  artisanId   String
+  categoryId  String
+  description String
+  address     String
+  geog        Unsupported("geography")?
+  preferredAt DateTime?
+  status      RequestStatus             @default(REQUESTED)
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
+  messages    Message[]
+  photos      RequestPhoto[]
+  events      RequestStatusEvent[]
+  review      Review?
+  artisan     Artisan                   @relation(fields: [artisanId], references: [userId])
+  category    ServiceCategory           @relation(fields: [categoryId], references: [id])
+  customer    User                      @relation("CustomerRequests", fields: [customerId], references: [id])
+
+  @@index([artisanId, status, createdAt])
+  @@index([customerId, createdAt])
+}
+
+model RequestPhoto {
+  id         String         @id @default(cuid())
+  requestId  String
+  storageKey String
+  request    ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+}
+
+model RequestStatusEvent {
+  id         String         @id @default(cuid())
+  requestId  String
+  fromStatus RequestStatus?
+  toStatus   RequestStatus
+  actorId    String
+  at         DateTime       @default(now())
+  request    ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId, at])
+}
+
+model Review {
+  id                String         @id @default(cuid())
+  requestId         String         @unique
+  customerId        String
+  artisanId         String
+  rating            Int
+  body              String?
+  isVerifiedService Boolean        @default(true)
+  helpfulCount      Int            @default(0)
+  hidden            Boolean        @default(false)
+  createdAt         DateTime       @default(now())
+  artisan           Artisan        @relation(fields: [artisanId], references: [userId])
+  customer          User           @relation(fields: [customerId], references: [id])
+  request           ServiceRequest @relation(fields: [requestId], references: [id])
+  votes             ReviewVote[]
+
+  @@index([artisanId, hidden, createdAt])
+}
+
+model ReviewVote {
+  reviewId String
+  userId   String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([reviewId, userId])
+}
+
+model Message {
+  id             String         @id @default(cuid())
+  requestId      String?
+  conversationId String?
+  senderId       String
+  body           String
+  createdAt      DateTime       @default(now())
+
+  request      ServiceRequest? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  conversation Conversation?   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User            @relation(fields: [senderId], references: [id])
+
+  @@index([requestId, createdAt])
+  @@index([conversationId, createdAt])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+}
+
+model Report {
+  id             String       @id @default(cuid())
+  reporterId     String
+  targetType     ReportTarget
+  targetId       String
+  reason         String
+  status         ReportStatus @default(OPEN)
+  resolvedBy     String?
+  createdAt      DateTime     @default(now())
+  resolutionNote String?
+  resolvedAt     DateTime?
+  reporter       User         @relation("Reporter", fields: [reporterId], references: [id])
+
+  @@index([status, createdAt])
+}
+
+model Block {
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+  blocked   User     @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  blocker   User     @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+
+  @@id([blockerId, blockedId])
+}
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  actorId  String?
+  action   String
+  entity   String
+  entityId String?
+  meta     Json?
+  at       DateTime @default(now())
+
+  @@index([entity, entityId])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
+enum Role {
+  CUSTOMER
+  ARTISAN
+  ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum Availability {
+  AVAILABLE_NOW
+  BY_SCHEDULE
+  UNAVAILABLE
+}
+
+enum VerificationType {
+  IDENTITY
+  PHONE
+  LOCATION
+  BACKGROUND
+  BUSINESS
+}
+
+enum VerificationStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum RequestStatus {
+  REQUESTED
+  ACCEPTED
+  ON_THE_WAY
+  COMPLETED
+  REVIEWED
+  REJECTED
+  CANCELLED
+  EXPIRED
+}
+
+enum ReportTarget {
+  USER
+  REVIEW
+  ARTISAN
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
