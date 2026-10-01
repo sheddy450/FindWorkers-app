@@ -9,7 +9,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: keyof typeof 
 export function Button({ variant = "primary", loading, disabled, className = "", children, ...p }: Props) {
   return (
     <button {...p} disabled={disabled || loading} aria-busy={loading}
-      className={`min-h-11 rounded-ctl px-4 font-semibold transition-colors disabled:opacity-60 ${styles[variant]} ${className}`}>
+      className={`min-h-11 rounded-ctl px-4 text-base font-semibold transition active:scale-[0.98] disabled:opacity-60 disabled:active:scale-100 motion-reduce:transition-none motion-reduce:active:scale-100 ${styles[variant]} ${className}`}>
       {loading ? "Please wait…" : children}
     </button>
   );

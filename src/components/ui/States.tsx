@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon, IconName } from "./Icon";
 import { Button } from "./Button";
 
@@ -16,12 +17,12 @@ export function ArtisanCardSkeleton() {
 type StateProps = { icon?: IconName; title: string; body: string; action?: { label: string; onClick?: () => void; href?: string } };
 function Shell({ icon = "info", title, body, action, tone }: StateProps & { tone: string }) {
   return (
-    <div className="mx-auto max-w-sm py-10 text-center">
+    <div className="mx-auto max-w-sm rounded-card border border-dashed border-line bg-white/60 px-6 py-10 text-center">
       <div className={`mx-auto grid h-14 w-14 place-items-center rounded-full ${tone}`}><Icon name={icon} size={26} /></div>
       <h2 className="mt-4 text-xl font-semibold">{title}</h2>
       <p className="mt-1 text-muted">{body}</p>
       {action && (action.href
-        ? <a href={action.href} className="mt-5 inline-flex min-h-11 items-center rounded-ctl bg-indigo px-4 font-semibold text-white">{action.label}</a>
+        ? <Link href={action.href} className="mt-5 inline-flex min-h-11 items-center rounded-ctl bg-indigo px-4 font-semibold text-white hover:bg-indigo-700">{action.label}</Link>
         : <Button className="mt-5" onClick={action.onClick}>{action.label}</Button>)}
     </div>
   );

@@ -10,11 +10,11 @@ const nairaRange = (min?: number | null, max?: number | null) =>
 
 export function ArtisanCard(p: Props) {
   return (
-    <Link href={`/artisan-profile/${p.id}`}>
-      <Card className="flex gap-3">
+    <Link href={`/artisan-profile/${p.id}`} className="group block rounded-card">
+      <Card className="flex gap-3 transition group-hover:border-indigo/30 group-hover:shadow-md group-active:scale-[0.99] motion-reduce:transition-none motion-reduce:group-active:scale-100">
         <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-indigo-soft text-lg font-bold text-indigo">{p.businessName[0]?.toUpperCase()}</div>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-semibold">{p.businessName}</p>
+          <p className="truncate text-base font-semibold text-ink">{p.businessName}</p>
           {p.categories && p.categories.length > 0 && (
             <p className="truncate text-sm font-medium text-indigo">{p.categories.join(" · ")}</p>
           )}
