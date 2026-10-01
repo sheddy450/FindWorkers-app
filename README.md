@@ -1,3 +1,4 @@
+Sheddy find worker app
 # FindWorkers (Phase 1)
 1. `cp .env.example .env` and fill `DATABASE_URL` (Postgres **with PostGIS**) and `NEXTAUTH_SECRET`.
 2. `npm install`
