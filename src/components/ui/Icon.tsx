@@ -1,5 +1,6 @@
 const P: Record<string, string> = {
   home: "M3 11 12 3l9 8v10h-6v-6H9v6H3z",
+  back: "M15 18l-6-6 6-6",
   search: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5",
   requests: "M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3",
   chat: "M4 5h16v11H9l-5 4z",
