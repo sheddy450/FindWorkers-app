@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useGoBack } from "@/components/BackButton";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 import { reportSchema } from "@/lib/validation/report";
 
 export function ReportForm({ targetType, targetId, subjectLabel }: { targetType: "USER" | "REVIEW" | "ARTISAN"; targetId: string; subjectLabel: string }) {
-  const router = useRouter();
+  const { goBack } = useGoBack();
   const [error, setError] = useState(""); const [busy, setBusy] = useState(false); const [done, setDone] = useState(false);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -26,7 +26,7 @@ export function ReportForm({ targetType, targetId, subjectLabel }: { targetType:
   if (done) return (
     <div className="space-y-3">
       <Alert variant="success" title="Report received">A member of our team will review it. This does not notify {subjectLabel} that you reported them.</Alert>
-      <Button variant="outline" onClick={() => router.back()}>Go back</Button>
+      <Button variant="outline" onClick={goBack}>Go back</Button>
     </div>
   );
   return (

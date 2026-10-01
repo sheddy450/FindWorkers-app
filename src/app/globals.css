@@ -4,3 +4,8 @@ body { @apply bg-paper text-ink font-sans antialiased; }
 h1,h2,h3 { @apply font-display tracking-tight; }
 :focus-visible { outline: 3px solid #F5A623; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+h1, h2 { text-wrap: balance; }
+/* Respect "reduce motion": no smooth scroll and near-instant transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

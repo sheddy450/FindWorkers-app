@@ -135,12 +135,6 @@ export default async function RequestDetail({
       {r.status === "REVIEWED" && (
         <p className="mt-4 text-sm text-muted">Thanks for your review!</p>
       )}
-      <Link
-        href="/requests"
-        className="mt-6 inline-block text-sm font-semibold text-indigo underline"
-      >
-        Back to requests
-      </Link>
     </main>
   );
 }
