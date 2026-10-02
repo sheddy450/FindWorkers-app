@@ -8,6 +8,9 @@ import { LocationSelector } from "@/components/LocationSelector";
 import { EmptyState } from "@/components/ui/States";
 import { pickRandom } from "@/lib/pro/rules";
 
+// Per-user (role redirects) and changes every visit (random featured pick): never pre-build at build time.
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // "/" is the customer search homepage. An artisan or admin account has nothing to do here,
   // so send them straight to the screen that's actually theirs instead of a dead end.
