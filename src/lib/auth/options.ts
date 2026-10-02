@@ -15,6 +15,11 @@ export const authOptions: NextAuthOptions = {
       const id = p.data.identifier.trim();
       const user = await db.user.findFirst({
         where: id.includes("@") ? { email: id.toLowerCase() } : { phoneE164: toE164NG(id) ?? "none" },
+      }).catch((err: unknown) => {
+        // Log the real cause (e.g. a bad DATABASE_URL) so it shows in the Vercel logs, and send the
+        // client a generic code so it can say "try again" instead of "wrong password".
+        console.error("[auth] database error during login", err);
+        throw new Error("ServerError");
       });
       if (!user || user.status !== "ACTIVE") return null;
       if (!(await verify(user.passwordHash, p.data.password))) return null;
