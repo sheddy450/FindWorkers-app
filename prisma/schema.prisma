@@ -47,6 +47,7 @@ model User {
   requests        ServiceRequest[] @relation("CustomerRequests")
   customerConversations Conversation[] @relation("CustomerConversations")
 artisanConversations  Conversation[] @relation("ArtisanConversations")
+  payments        Payment[]
 
   @@index([role, status])
 }
@@ -67,9 +68,12 @@ model Artisan {
   avgRating       Decimal                   @default(0) @db.Decimal(3, 2)
   reviewCount     Int                       @default(0)
   completedJobs   Int                       @default(0)
+  /// Pro plan is active while this is in the future. Extended 30 days per successful payment.
+  proUntil        DateTime?
   createdAt       DateTime                  @default(now())
   updatedAt       DateTime                  @updatedAt
   user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dailyStats      ArtisanDailyStat[]
   services        ArtisanService[]
   slots           AvailabilitySlot[]
   reviews         Review[]
@@ -78,6 +82,7 @@ model Artisan {
 
   @@index([state, lga])
   @@index([geog], type: Gist)
+  @@index([proUntil])
 }
 
 model ServiceCategory {
@@ -269,6 +274,41 @@ model AuditLog {
   @@index([entity, entityId])
 }
 
+/// One Paystack payment. Confirmed by the callback page or the webhook, whichever arrives first.
+model Payment {
+  id         String        @id @default(cuid())
+  reference  String        @unique
+  userId     String
+  kind       String
+  amountKobo Int
+  status     PaymentStatus @default(PENDING)
+  paidAt     DateTime?
+  createdAt  DateTime      @default(now())
+  user       User          @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([status, paidAt])
+}
+
+/// Per-day counters shown to Pro artisans on their dashboard.
+model ArtisanDailyStat {
+  artisanId       String
+  day             DateTime @db.Date
+  profileViews    Int      @default(0)
+  contactReveals  Int      @default(0)
+  messagesStarted Int      @default(0)
+  artisan         Artisan  @relation(fields: [artisanId], references: [userId], onDelete: Cascade)
+
+  @@id([artisanId, day])
+}
+
+/// Admin-editable settings (e.g. the Pro price), stored as strings.
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model spatial_ref_sys {
   srid      Int     @id
@@ -327,6 +367,12 @@ enum ReportTarget {
   USER
   REVIEW
   ARTISAN
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }
 
 enum ReportStatus {
