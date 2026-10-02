@@ -9,12 +9,13 @@ export function paystackSecret(): string | null {
 }
 export const paystackConfigured = () => !!paystackSecret();
 
-async function call<T>(path: string, init?: RequestInit): Promise<T> {
+async function call<T>(path: string, init?: { method?: "GET" | "POST"; body?: string }): Promise<T> {
   const secret = paystackSecret();
   if (!secret) throw new NotConfiguredError("Payments aren't set up yet.");
   const res = await fetch(`${API}${path}`, {
-    ...init,
-    headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json", ...init?.headers },
+    method: init?.method ?? "GET",
+    body: init?.body,
+    headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" },
     cache: "no-store",
   });
   const body = await res.json().catch(() => null) as { status?: boolean; message?: string; data?: T } | null;
