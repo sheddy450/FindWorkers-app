@@ -34,6 +34,8 @@ function describe(
       label: `${payload.type} verification ${payload.decision === "APPROVED" ? "approved" : "not approved"}`,
       href: "/artisan/verification",
     };
+  if (type === "pro.activated")
+    return { label: "Your Pro plan is active", href: "/artisan/pro" };
   return { label: "Notification", href: "/" };
 }
 
