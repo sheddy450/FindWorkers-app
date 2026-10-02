@@ -1,14 +1,38 @@
-import { getServerSession } from "next-auth";
+import { cookies } from "next/headers";
+import { decode } from "next-auth/jwt";
 import { redirect } from "next/navigation";
 import type { Role } from "@prisma/client";
-import { authOptions } from "./options";
 import { db } from "@/lib/db";
 import { HttpError } from "@/lib/http";
+import { readSessionCookie } from "./session-cookie";
+
+/**
+ * The signed-in user's id, read straight from NextAuth's session cookie.
+ *
+ * This deliberately doesn't use next-auth v4's getServerSession(): that reads Next's cookies() and
+ * headers() through code written before Next.js 15/16 made them async, and if it misreads them,
+ * every server page thinks you're logged out and requirePageRole() sends you back to /login right
+ * after a successful sign-in. `await cookies()` + next-auth's public decode() works on any version.
+ */
+async function sessionUserId(): Promise<string | null> {
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (!secret) {
+    console.error("[auth] NEXTAUTH_SECRET is not set; nobody can stay logged in.");
+    return null;
+  }
+  const raw = readSessionCookie((await cookies()).getAll());
+  if (!raw) return null;
+  try {
+    const token = await decode({ token: raw, secret });
+    return typeof token?.uid === "string" ? token.uid : null;
+  } catch {
+    return null; // expired, tampered with, or signed with an old secret: treat as logged out
+  }
+}
 
 /** Reads role/status from the DB each time, so a suspended user loses access immediately. */
 export async function currentUser() {
-  const s = await getServerSession(authOptions);
-  const id = (s?.user as { id?: string } | undefined)?.id;
+  const id = await sessionUserId();
   if (!id) return null;
   const u = await db.user.findUnique({ where: { id }, select: { id: true, role: true, status: true, name: true, phoneE164: true } });
   return u && u.status === "ACTIVE" ? u : null;
