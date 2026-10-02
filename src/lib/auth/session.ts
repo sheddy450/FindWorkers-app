@@ -15,12 +15,16 @@ import { readSessionCookie } from "./session-cookie";
  * after a successful sign-in. `await cookies()` + next-auth's public decode() works on any version.
  */
 async function sessionUserId(): Promise<string | null> {
+  // Read cookies first, unconditionally: that's what tells Next.js these pages are per-user and
+  // must be rendered on each request. Bailing out earlier (e.g. no secret in the build environment)
+  // let Next pre-build pages like "/" as static HTML at build time, which skips role redirects and
+  // queries the database during the build.
+  const raw = readSessionCookie((await cookies()).getAll());
   const secret = process.env.NEXTAUTH_SECRET;
   if (!secret) {
     console.error("[auth] NEXTAUTH_SECRET is not set; nobody can stay logged in.");
     return null;
   }
-  const raw = readSessionCookie((await cookies()).getAll());
   if (!raw) return null;
   try {
     const token = await decode({ token: raw, secret });

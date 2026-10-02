@@ -22,6 +22,7 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
   const { loc, status, request } = useLocation();
   const [view, setView] = useState<"list" | "map">("list");
   const [results, setResults] = useState<Result[] | null>(null);
+  const [featured, setFeatured] = useState<Result[]>([]);
   const [error, setError] = useState("");
 
   const [radiusKm, setRadiusKm] = useState(20);
@@ -39,9 +40,9 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
     if (minRating) q.set("minRating", minRating);
     if (availableNow) q.set("availableNow", "1");
     if (verifiedOnly) q.set("verifiedOnly", "1");
-    setResults(null); setError("");
+    setResults(null); setFeatured([]); setError("");
     fetch(`/api/search?${q}`).then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((d) => setResults(d.results)).catch(() => setError("Couldn't load artisans."));
+      .then((d) => { setResults(d.results); setFeatured(d.featured ?? []); }).catch(() => setError("Couldn't load artisans."));
   }, [category, loc, manualState, manualLga, radiusKm, minRating, availableNow, verifiedOnly]);
 
   function setCategory(slug: string) {
@@ -93,6 +94,19 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
         {error && <ErrorState title="Couldn't load artisans" body="Check your connection and try again." action={{ label: "Try again", onClick: () => location.reload() }} />}
         {!error && results === null && Array.from({ length: 4 }).map((_, i) => <ArtisanCardSkeleton key={i} />)}
         {!error && results?.length === 0 && <EmptyState icon="search" title="No artisans found" body="Try a different category, widen your search radius, or loosen a filter." />}
+        {!error && results && results.length > 0 && view === "list" && featured.length > 0 && (
+          <section aria-labelledby="featured-title" className="space-y-3 pb-2">
+            <p id="featured-title" className="flex items-center justify-between text-sm">
+              <span className="font-semibold text-ink">Featured</span>
+              <span className="text-muted">Paid placement</span>
+            </p>
+            {featured.map((r) => (
+              <ArtisanCard key={`f-${r.userId}`} featured id={r.userId} businessName={r.businessName} categories={r.categories} distanceKm={r.distanceKm} avgRating={r.avgRating}
+                reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length} />
+            ))}
+            <p className="pt-1 text-sm font-semibold text-ink">All results</p>
+          </section>
+        )}
         {!error && results && results.length > 0 && view === "list" && results.map((r) => (
           <ArtisanCard key={r.userId} id={r.userId} businessName={r.businessName} categories={r.categories} distanceKm={r.distanceKm} avgRating={r.avgRating}
             reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length} />

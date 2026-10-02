@@ -9,6 +9,7 @@ const items = [
   { href: "/admin/reviews", label: "Reviews" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/categories", label: "Categories" },
+  { href: "/admin/pro", label: "Pro plan" },
 ];
 export function AdminNav() {
   const path = usePathname();
