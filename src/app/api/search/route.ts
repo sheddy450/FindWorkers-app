@@ -3,6 +3,9 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { handle } from "@/lib/http";
 import { WEIGHTS, availabilityScore, bayesianRating, verificationScore } from "@/lib/search/rank";
+import { isPro, pickRandom } from "@/lib/pro/rules";
+
+const FEATURED_SLOTS = 2;
 
 const q = z.object({
   category: z.string().optional(), lat: z.coerce.number().min(3.5).max(14.5).optional(),
@@ -25,7 +28,7 @@ export const GET = handle(async (req) => {
   const rows: any[] = hasGeo
     ? await db.$queryRaw`
         SELECT a."userId", a."businessName", a."photoKey", a."avgRating", a."reviewCount", a."availability",
-               a."state", a."lga", a."priceMinKobo", a."priceMaxKobo",
+               a."state", a."lga", a."priceMinKobo", a."priceMaxKobo", a."proUntil",
                ST_Distance(a.geog, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography) / 1000 AS "distanceKm"
         FROM "Artisan" a
         WHERE a.geog IS NOT NULL
@@ -35,11 +38,11 @@ export const GET = handle(async (req) => {
     : await db.artisan.findMany({
         where: { ...(state ? { state } : {}), ...(lga ? { lga: { contains: lga, mode: "insensitive" } } : {}),
           ...(category ? { services: { some: { category: { slug: category } } } } : {}) },
-        select: { userId: true, businessName: true, photoKey: true, avgRating: true, reviewCount: true, availability: true, state: true, lga: true, priceMinKobo: true, priceMaxKobo: true },
+        select: { userId: true, businessName: true, photoKey: true, avgRating: true, reviewCount: true, availability: true, state: true, lga: true, priceMinKobo: true, priceMaxKobo: true, proUntil: true },
         take: 60,
       }).then((r) => r.map((a) => ({ ...a, distanceKm: null })));
 
-  if (!rows.length) return NextResponse.json({ results: [] });
+  if (!rows.length) return NextResponse.json({ results: [], featured: [] });
   const ids = rows.map((r) => r.userId);
   const [verRows, svcRows] = await Promise.all([
     db.verificationRecord.findMany({ where: { artisanId: { in: ids }, status: "APPROVED" }, select: { artisanId: true, type: true } }),
@@ -71,5 +74,10 @@ export const GET = handle(async (req) => {
     .filter((r) => (!availableNow || r.availability === "AVAILABLE_NOW"))
     .filter((r) => (!verifiedOnly || r.verifiedTypes.length > 0));
 
-  return NextResponse.json({ results: filtered });
+  // Featured is a separate, labelled slot (see rank.ts): Pro artisans who match the same filters,
+  // picked at random so each gets a fair share. The organic results and their order are unchanged.
+  const now = new Date();
+  const featured = pickRandom(filtered.filter((r) => isPro(r.proUntil ? new Date(r.proUntil) : null, now)), FEATURED_SLOTS);
+  const publicFields = ({ proUntil: _proUntil, ...r }: (typeof filtered)[number]) => r;
+  return NextResponse.json({ results: filtered.map(publicFields), featured: featured.map(publicFields) });
 });

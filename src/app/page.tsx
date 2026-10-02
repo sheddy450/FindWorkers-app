@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ArtisanCard } from "@/components/ArtisanCard";
 import { LocationSelector } from "@/components/LocationSelector";
 import { EmptyState } from "@/components/ui/States";
+import { pickRandom } from "@/lib/pro/rules";
 
 export default async function Home() {
   // "/" is the customer search homepage. An artisan or admin account has nothing to do here,
@@ -14,13 +15,17 @@ export default async function Home() {
   if (me?.role === "ARTISAN") redirect("/artisan/dashboard");
   if (me?.role === "ADMIN") redirect("/admin");
 
-  const [categories, topRated, recent] = await Promise.all([
+  const [categories, topRated, recent, proPool] = await Promise.all([
     db.serviceCategory.findMany({ where: { isActive: true }, orderBy: { name: "asc" }, take: 8 }),
     db.artisan.findMany({ where: { reviewCount: { gt: 0 } }, orderBy: { avgRating: "desc" }, take: 4,
       include: { verifications: { where: { status: "APPROVED" } }, services: { include: { category: true } } } }),
     db.artisan.findMany({ where: { services: { some: {} } }, orderBy: { createdAt: "desc" }, take: 4,
       include: { verifications: { where: { status: "APPROVED" } }, services: { include: { category: true } } } }),
+    db.artisan.findMany({ where: { proUntil: { gt: new Date() }, services: { some: {} }, user: { status: "ACTIVE" } }, take: 30,
+      include: { verifications: { where: { status: "APPROVED" } }, services: { include: { category: true } } } }),
   ]);
+  // Labelled paid slot: a random pick of Pro artisans, kept apart from the rating-based lists below.
+  const featured = pickRandom(proPool, 2);
   const topRatedIds = new Set(topRated.map((a) => a.userId));
   const recommended = recent.filter((a) => !topRatedIds.has(a.userId)).slice(0, 4);
   // A service can repeat a category (different titles under the same trade) — collapse to unique names for display.
@@ -57,6 +62,18 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {featured.length > 0 && (
+        <section className="mt-8">
+          <div className="flex items-center justify-between"><h2 className="text-xl font-bold text-ink">Featured artisans</h2><span className="text-sm text-muted">Paid placement</span></div>
+          <div className="mt-3 space-y-3">
+            {featured.map((a) => (
+              <ArtisanCard key={a.userId} featured id={a.userId} businessName={a.businessName} categories={professionsOf(a)} avgRating={Number(a.avgRating)} reviewCount={a.reviewCount}
+                priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mt-8">
         <div className="flex items-center justify-between"><h2 className="text-xl font-bold text-ink">Top-rated artisans</h2><Link href="/search" className="inline-flex min-h-11 items-center text-sm font-semibold text-indigo underline-offset-4 hover:underline">See all</Link></div>

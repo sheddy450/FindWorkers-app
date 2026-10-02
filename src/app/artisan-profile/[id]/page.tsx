@@ -7,6 +7,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { VerificationBadges } from "@/components/VerificationBadges";
 import { ContactButtons } from "./ContactButtons";
 import { ReviewsSection } from "./ReviewsSection";
+import { bumpStat } from "@/server/services/pro.service";
 
 const nairaRange = (min?: number | null, max?: number | null) =>
   min == null ? "Price on request" : `From ₦${(min / 100).toLocaleString("en-NG")}${max && max !== min ? ` – ₦${(max / 100).toLocaleString("en-NG")}` : ""}`;
@@ -21,6 +22,8 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
     } }),
   ]);
   if (!artisan) notFound();
+  // Count real customer interest only: not the artisan looking at their own page, not admins.
+  if (user?.id !== artisan.userId && user?.role !== "ADMIN") await bumpStat(artisan.userId, "profileViews");
 
   const myVotedIds = user
     ? (await db.reviewVote.findMany({ where: { userId: user.id, reviewId: { in: artisan.reviews.map((r) => r.id) } }, select: { reviewId: true } })).map((v) => v.reviewId)
