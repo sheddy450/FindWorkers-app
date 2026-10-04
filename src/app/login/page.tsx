@@ -19,9 +19,10 @@ export default function Login() {
       const res = await signIn("credentials", { identifier: f.get("identifier"), password: f.get("password"), redirect: false });
       if (!res || res.error) {
         setBusy(false);
-        return setError(!res || res.error !== "CredentialsSignin"
-          ? "We couldn't sign you in right now. Please try again in a moment."
-          : "Phone/email or password is incorrect.");
+        return setError(
+          res?.error === "CredentialsSignin" ? "Phone/email or password is incorrect."
+          : res?.error === "RateLimited" ? "Too many login attempts. For your security, wait 15 minutes and try again."
+          : "We couldn't sign you in right now. Please try again in a moment.");
       }
       // Route by role rather than always to "/" — that page is the customer search homepage and
       // has nothing useful for an artisan or admin account to land on. Read `next` from the URL
