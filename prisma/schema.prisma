@@ -302,6 +302,16 @@ model ArtisanDailyStat {
   @@id([artisanId, day])
 }
 
+/// Attempt counters for rate limiting (login, sign-up, contact reveals...). One row per key per time window.
+model RateLimitBucket {
+  key         String
+  windowStart BigInt
+  count       Int    @default(0)
+
+  @@id([key, windowStart])
+  @@index([windowStart])
+}
+
 /// Admin-editable settings (e.g. the Pro price), stored as strings.
 model AppSetting {
   key       String   @id

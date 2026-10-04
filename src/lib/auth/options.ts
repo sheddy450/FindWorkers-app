@@ -3,16 +3,29 @@ import Credentials from "next-auth/providers/credentials";
 import { verify } from "@node-rs/argon2";
 import { db } from "@/lib/db";
 import { loginSchema, toE164NG } from "@/lib/validation/auth";
+import { LIMITS, accountKey, clientIp } from "@/lib/security/rate-limit-rules";
+import { hitLimit } from "@/server/services/rate-limit.service";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 14 },
   pages: { signIn: "/login" },
   providers: [Credentials({
     credentials: { identifier: {}, password: {} },
-    async authorize(raw) {
+    async authorize(raw, req) {
       const p = loginSchema.safeParse(raw);
       if (!p.success) return null;
       const id = p.data.identifier.trim();
+
+      // Slow down password guessing: per account (tight) and per IP (loose, since many mobile
+      // users share an IP). Checked before the password, so blocked attempts cost nothing.
+      const headers = (req?.headers ?? {}) as Record<string, string | string[] | undefined>;
+      const ip = clientIp((n) => { const v = headers[n]; return Array.isArray(v) ? v[0] : v; });
+      const [perAccount, perIp] = await Promise.all([
+        hitLimit(LIMITS.loginPerAccount, accountKey(id, toE164NG)),
+        hitLimit(LIMITS.loginPerIp, ip),
+      ]);
+      if (!perAccount.ok || !perIp.ok) throw new Error("RateLimited");
+
       const user = await db.user.findFirst({
         where: id.includes("@") ? { email: id.toLowerCase() } : { phoneE164: toE164NG(id) ?? "none" },
       }).catch((err: unknown) => {
