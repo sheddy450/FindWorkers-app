@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/Badge";
 import { AccountForm } from "./AccountForm";
 import { PasswordForm } from "./PasswordForm";
 import { SignOutButton } from "./SignOutButton";
+import { PhoneVerifyCard } from "./PhoneVerifyCard";
+import { smsConfigured } from "@/lib/providers/sms";
 
 export default async function Profile() {
   const user = await requirePageRole("CUSTOMER", "ARTISAN", "ADMIN");
   const [full, unreadCount] = await Promise.all([
-    db.user.findUnique({ where: { id: user.id }, select: { name: true, email: true, phoneE164: true, role: true, createdAt: true } }),
+    db.user.findUnique({ where: { id: user.id }, select: { name: true, email: true, phoneE164: true, phoneVerifiedAt: true, role: true, createdAt: true } }),
     db.notification.count({ where: { userId: user.id, readAt: null } }),
   ]);
   if (!full) return null;
@@ -39,6 +41,7 @@ export default async function Profile() {
         <Card><Link href="/admin" className="text-sm font-semibold text-brand underline">Go to admin dashboard</Link></Card>
       )}
 
+      <Card><h2 className="mb-3 text-lg font-semibold">Phone verification</h2><PhoneVerifyCard phone={full.phoneE164} verified={!!full.phoneVerifiedAt} available={smsConfigured()} /></Card>
       <Card><h2 className="mb-3 text-lg font-semibold">Account details</h2><AccountForm name={full.name} email={full.email} phone={full.phoneE164} /></Card>
       <Card><h2 className="mb-3 text-lg font-semibold">Password</h2><PasswordForm /></Card>
     </main>

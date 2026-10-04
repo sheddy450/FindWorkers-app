@@ -48,6 +48,7 @@ model User {
   customerConversations Conversation[] @relation("CustomerConversations")
 artisanConversations  Conversation[] @relation("ArtisanConversations")
   payments        Payment[]
+  phoneOtps       PhoneOtp[]
 
   @@index([role, status])
 }
@@ -300,6 +301,21 @@ model ArtisanDailyStat {
   artisan         Artisan  @relation(fields: [artisanId], references: [userId], onDelete: Cascade)
 
   @@id([artisanId, day])
+}
+
+/// One-time SMS codes for phone verification. Only a hash of the code is stored.
+model PhoneOtp {
+  id         String    @id @default(cuid())
+  userId     String
+  phoneE164  String
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 /// Attempt counters for rate limiting (login, sign-up, contact reveals...). One row per key per time window.

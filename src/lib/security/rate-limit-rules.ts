@@ -10,6 +10,10 @@ export const LIMITS = {
   registerPerIp: { name: "register:ip", max: 10, windowSec: 60 * 60 },
   passwordChangePerUser: { name: "pwchange:user", max: 10, windowSec: 60 * 60 },
   contactRevealPerUser: { name: "contact:user", max: 40, windowSec: 60 * 60 },
+  // SMS costs money and can be abused to spam someone's phone: few sends, a few more checks.
+  phoneCodeSendPerUser: { name: "otp-send:user", max: 3, windowSec: 15 * 60 },
+  phoneCodeSendPerPhone: { name: "otp-send:phone", max: 5, windowSec: 60 * 60 },
+  phoneCodeCheckPerUser: { name: "otp-check:user", max: 10, windowSec: 15 * 60 },
 } satisfies Record<string, Limit>;
 
 /** Start of the fixed window containing `nowSec` (Unix seconds). */
