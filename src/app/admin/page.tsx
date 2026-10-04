@@ -28,12 +28,12 @@ export default async function AdminHome() {
 
   return (
     <main className="mx-auto max-w-2xl p-6">
-      <h1 className="text-3xl font-bold text-indigo">Admin</h1>
+      <h1 className="text-3xl font-bold text-brand">Admin</h1>
       <div className="mt-4"><AdminNav /></div>
       <div className="grid grid-cols-2 gap-3">
         {tiles.map((t) => (
           <Link key={t.label} href={t.href}>
-            <Card className={t.urgent ? "border-marigold" : ""}>
+            <Card className={t.urgent ? "border-highlight" : ""}>
               <p className="text-3xl font-bold">{t.value}</p>
               <p className="text-sm text-muted">{t.label}</p>
             </Card>

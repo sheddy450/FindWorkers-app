@@ -13,7 +13,7 @@ export function NotificationRow({ id, label, href, createdAt, read }: { id: stri
   }
   return (
     <Link href={href} onClick={markRead}>
-      <Card className={`flex items-center justify-between gap-2 ${!isRead ? "border-indigo" : ""}`}>
+      <Card className={`flex items-center justify-between gap-2 ${!isRead ? "border-brand" : ""}`}>
         <div><p className={!isRead ? "font-semibold" : ""}>{label}</p>
           <p className="text-xs text-muted">{new Date(createdAt).toLocaleString("en-NG")}</p></div>
         {!isRead && <Badge tone="brand">New</Badge>}

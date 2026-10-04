@@ -28,12 +28,12 @@ export default async function AdminRequests({ searchParams }: { searchParams: { 
 
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">Service requests</h1>
+      <h1 className="text-3xl font-bold text-brand">Service requests</h1>
       <AdminNav />
       <div className="flex gap-2 text-sm">
         {FILTERS.map((f) => (
           <a key={f.key} href={f.key ? `/admin/requests?filter=${f.key}` : "/admin/requests"}
-            className={`rounded-full border px-3 py-1 ${active.key === f.key ? "border-indigo bg-indigo-soft text-indigo" : "border-line"}`}>{f.label}</a>
+            className={`rounded-full border px-3 py-1 ${active.key === f.key ? "border-brand bg-brand-soft text-brand" : "border-line"}`}>{f.label}</a>
         ))}
       </div>
       {rows.length === 0 && <EmptyState icon="requests" title="No requests" body="Nothing matches this filter yet." />}

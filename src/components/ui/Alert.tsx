@@ -1,7 +1,7 @@
 import { Icon, IconName } from "./Icon";
 const v = {
-  info: ["bg-indigo-soft text-indigo", "info"], success: ["bg-verified-soft text-verified", "check"],
-  warning: ["bg-marigold-soft text-ink", "alert"], error: ["bg-danger-soft text-danger", "alert"],
+  info: ["bg-brand-soft text-brand", "info"], success: ["bg-verified-soft text-verified", "check"],
+  warning: ["bg-highlight-soft text-ink", "alert"], error: ["bg-danger-soft text-danger", "alert"],
 } as const;
 export function Alert({ variant = "info", title, children }: { variant?: keyof typeof v; title?: string; children?: React.ReactNode }) {
   const [cls, icon] = v[variant];

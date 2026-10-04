@@ -46,7 +46,7 @@ export function ContactButtons({ artisanId, businessName, loggedIn }: { artisanI
           <a href={links.tel} className="col-span-1 flex min-h-11 items-center justify-center gap-1 rounded-ctl border border-line bg-white text-sm font-semibold"><Icon name="phone" size={16} />Call</a>
           <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" className="col-span-1 flex min-h-11 items-center justify-center gap-1 rounded-ctl bg-verified text-sm font-semibold text-white"><Icon name="chat" size={16} />WhatsApp</a>
         </>}
-        <Link href={`/requests/new/${artisanId}`} className="col-span-1 flex min-h-11 items-center justify-center rounded-ctl bg-marigold text-sm font-semibold">Request</Link>
+        <Link href={`/requests/new/${artisanId}`} className="col-span-1 flex min-h-11 items-center justify-center rounded-ctl bg-highlight text-sm font-semibold">Request</Link>
       </div>
       {error && <Alert variant={loggedIn ? "error" : "info"} title={error} />}
     </div>

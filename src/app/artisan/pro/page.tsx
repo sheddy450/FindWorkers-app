@@ -31,7 +31,7 @@ export default async function ProPage() {
   return (
     <main className="mx-auto max-w-md space-y-5 p-6">
       <div>
-        <div className="flex items-center gap-2"><h1 className="text-3xl font-bold text-indigo">FindWorkers Pro</h1>{active && <Badge tone="warning">Active</Badge>}</div>
+        <div className="flex items-center gap-2"><h1 className="text-3xl font-bold text-brand">FindWorkers Pro</h1>{active && <Badge tone="warning">Active</Badge>}</div>
         <p className="mt-1 text-muted">Get found by more customers in your area.</p>
       </div>
 
@@ -44,7 +44,7 @@ export default async function ProPage() {
         <ul className="space-y-3">
           {BENEFITS.map((b) => (
             <li key={b.title} className="flex gap-3">
-              <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-marigold-soft text-ink"><Icon name={b.icon} size={18} /></span>
+              <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-highlight-soft text-ink"><Icon name={b.icon} size={18} /></span>
               <span><span className="block font-semibold">{b.title}</span><span className="text-sm text-muted">{b.body}</span></span>
             </li>
           ))}

@@ -14,7 +14,7 @@ export default function Design() {
     <section className="mt-8"><h2 className="mb-3 text-lg font-semibold">{t}</h2><div className="space-y-3">{children}</div></section>;
   return (
     <main className="mx-auto max-w-md p-6 pb-20">
-      <h1 className="text-3xl font-bold text-indigo">Design system</h1>
+      <h1 className="text-3xl font-bold text-brand">Design system</h1>
       <S t="Buttons"><div className="flex flex-wrap gap-2"><Button>Request service</Button><Button variant="accent">Call</Button><Button variant="outline">Save</Button><Button variant="danger">Suspend</Button><Button loading>Save</Button></div></S>
       <S t="Badges"><div className="flex flex-wrap gap-2"><Badge tone="verified">✓ Identity Verified</Badge><Badge tone="brand">Plumber</Badge><Badge tone="warning">Pending review</Badge><Badge tone="danger">Rejected</Badge><Badge>Not yet verified</Badge></div></S>
       <S t="Rating"><StarRating value={4.6} count={38} /><StarRating value={0} count={0} /></S>

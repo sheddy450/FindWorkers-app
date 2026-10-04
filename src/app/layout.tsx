@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { BackBar, BackNavProvider } from "@/components/BackButton";
 import { currentUser } from "@/lib/auth/session";
 export const metadata = { title: "FindWorkers", description: "Find vetted local artisans near you" };
-export const viewport = { themeColor: "#1B2559" };
+export const viewport = { themeColor: "#007A49" };
 export default async function Root({ children }: { children: React.ReactNode }) {
   const me = await currentUser();
   return (

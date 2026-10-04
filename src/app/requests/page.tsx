@@ -17,7 +17,7 @@ export default async function Requests() {
   });
   return (
     <main className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-bold text-indigo">Requests</h1>
+      <h1 className="text-2xl font-bold text-brand">Requests</h1>
       {rows.length === 0 && <div className="mt-6"><EmptyState icon="requests" title="No requests yet" body={user.role === "CUSTOMER" ? "When you request a service, you can track it here." : "New requests from customers will show up here."} action={user.role === "CUSTOMER" ? { label: "Find an artisan", href: "/search" } : undefined} /></div>}
       <div className="mt-4 space-y-3">
         {rows.map((r) => (

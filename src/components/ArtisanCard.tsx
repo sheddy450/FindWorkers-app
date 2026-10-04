@@ -13,12 +13,12 @@ const nairaRange = (min?: number | null, max?: number | null) =>
 export function ArtisanCard(p: Props) {
   return (
     <Link href={`/artisan-profile/${p.id}`} className="group block rounded-card">
-      <Card className={`flex gap-3 transition ${p.featured ? "border-marigold/60 bg-marigold-soft/40" : ""} group-hover:border-indigo/30 group-hover:shadow-md group-active:scale-[0.99] motion-reduce:transition-none motion-reduce:group-active:scale-100`}>
-        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-indigo-soft text-lg font-bold text-indigo">{p.businessName[0]?.toUpperCase()}</div>
+      <Card className={`flex gap-3 transition ${p.featured ? "border-highlight/60 bg-highlight-soft/40" : ""} group-hover:border-brand/30 group-hover:shadow-md group-active:scale-[0.99] motion-reduce:transition-none motion-reduce:group-active:scale-100`}>
+        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-brand-soft text-lg font-bold text-brand">{p.businessName[0]?.toUpperCase()}</div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-base font-semibold text-ink">{p.businessName}</p>
           {p.categories && p.categories.length > 0 && (
-            <p className="truncate text-sm font-medium text-indigo">{p.categories.join(" · ")}</p>
+            <p className="truncate text-sm font-medium text-brand">{p.categories.join(" · ")}</p>
           )}
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
             <StarRating value={p.avgRating} count={p.reviewCount} />

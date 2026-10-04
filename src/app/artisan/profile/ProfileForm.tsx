@@ -57,7 +57,7 @@ export function ProfileForm({ categories, initial, isNew }: { categories: { id: 
         <legend className="text-sm font-medium">What services do you offer?</legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {categories.map((c) => { const on = cats.includes(c.id); return (
-            <label key={c.id} className={`min-h-11 cursor-pointer rounded-full border px-4 py-2 text-sm font-medium has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-marigold ${on ? "border-indigo bg-indigo text-white" : "border-line bg-white"}`}>
+            <label key={c.id} className={`min-h-11 cursor-pointer rounded-full border px-4 py-2 text-sm font-medium has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-brand-700 ${on ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>
               <input type="checkbox" className="sr-only" checked={on} onChange={() => setCats(on ? cats.filter((x) => x !== c.id) : [...cats, c.id])} />{c.name}</label>); })}
         </div>
         {errors.categoryIds && <p role="alert" className="mt-1 text-sm text-danger">{errors.categoryIds}</p>}

@@ -54,7 +54,7 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
 
   return (
     <main className="mx-auto max-w-2xl p-6">
-      <h1 className="text-2xl font-bold text-indigo">Find an artisan</h1>
+      <h1 className="text-2xl font-bold text-brand">Find an artisan</h1>
 
       {!hasLocation && (
         <div className="mt-3"><Alert variant="info" title="Turn on location to see how far each artisan is">
@@ -68,9 +68,9 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
       {!loc && manualState && <p className="mt-2 text-sm text-muted">Showing artisans in {manualLga ? `${manualLga}, ` : ""}{manualState}. <Link href="/location" className="underline">Change</Link></p>}
 
       <div className="mt-4 -mx-6 overflow-x-auto px-6"><div className="flex gap-2 pb-1">
-        <button onClick={() => setCategory("")} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium ${!category ? "border-indigo bg-indigo text-white" : "border-line bg-white"}`}>All</button>
+        <button onClick={() => setCategory("")} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium ${!category ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>All</button>
         {categories.map((c) => (
-          <button key={c.slug} onClick={() => setCategory(c.slug)} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium ${category === c.slug ? "border-indigo bg-indigo text-white" : "border-line bg-white"}`}>{c.name}</button>
+          <button key={c.slug} onClick={() => setCategory(c.slug)} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium ${category === c.slug ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>{c.name}</button>
         ))}
       </div></div>
 
@@ -83,13 +83,13 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
         <select value={minRating} onChange={(e) => setMinRating(e.target.value)} className="min-h-10 rounded-full border border-line bg-white px-3 text-sm">
           {RATING_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
-        <button onClick={() => setAvailableNow(!availableNow)} className={`min-h-10 rounded-full border px-3 text-sm font-medium ${availableNow ? "border-indigo bg-indigo-soft text-indigo" : "border-line bg-white"}`}>Available now</button>
-        <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`min-h-10 rounded-full border px-3 text-sm font-medium ${verifiedOnly ? "border-indigo bg-indigo-soft text-indigo" : "border-line bg-white"}`}>Verified only</button>
+        <button onClick={() => setAvailableNow(!availableNow)} className={`min-h-10 rounded-full border px-3 text-sm font-medium ${availableNow ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Available now</button>
+        <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`min-h-10 rounded-full border px-3 text-sm font-medium ${verifiedOnly ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Verified only</button>
       </div>
 
       <div className="mt-4 flex gap-2">
-        <button onClick={() => setView("list")} className={`min-h-11 flex-1 rounded-ctl border text-sm font-semibold ${view === "list" ? "border-indigo bg-indigo-soft text-indigo" : "border-line bg-white"}`}>List</button>
-        <button onClick={() => setView("map")} className={`min-h-11 flex-1 rounded-ctl border text-sm font-semibold ${view === "map" ? "border-indigo bg-indigo-soft text-indigo" : "border-line bg-white"}`}>Map</button>
+        <button onClick={() => setView("list")} className={`min-h-11 flex-1 rounded-ctl border text-sm font-semibold ${view === "list" ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>List</button>
+        <button onClick={() => setView("map")} className={`min-h-11 flex-1 rounded-ctl border text-sm font-semibold ${view === "map" ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Map</button>
       </div>
 
       <div className="mt-4 space-y-3">

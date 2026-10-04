@@ -22,7 +22,7 @@ export default async function Report({ searchParams }: { searchParams: { type?: 
 
   return (
     <main className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-bold text-indigo">Report {type === "REVIEW" ? "a review" : subjectLabel}</h1>
+      <h1 className="text-2xl font-bold text-brand">Report {type === "REVIEW" ? "a review" : subjectLabel}</h1>
       <p className="mt-1 text-muted">Tell us what's wrong. Reports are reviewed by our team, not shown publicly.</p>
       <div className="mt-6"><ReportForm targetType={type} targetId={id} subjectLabel={subjectLabel} /></div>
     </main>

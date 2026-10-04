@@ -32,7 +32,7 @@ export function ReviewForm({ requestId }: { requestId: string }) {
         {[1, 2, 3, 4, 5].map((n) => (
           <button key={n} type="button" role="radio" aria-checked={rating === n} aria-label={`${n} star${n > 1 ? "s" : ""}`}
             onClick={() => setRating(n)} onMouseEnter={() => setHover(n)} onMouseLeave={() => setHover(0)}
-            className={`grid h-10 w-10 place-items-center rounded-ctl ${(hover || rating) >= n ? "text-marigold" : "text-line"}`}>
+            className={`grid h-10 w-10 place-items-center rounded-ctl ${(hover || rating) >= n ? "text-star" : "text-line"}`}>
             <Icon name="star" size={26} filled /></button>
         ))}
       </div>

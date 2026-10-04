@@ -21,14 +21,14 @@ export default async function AdminUsers({ searchParams }: { searchParams: { q?:
 
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">Users</h1>
+      <h1 className="text-3xl font-bold text-brand">Users</h1>
       <AdminNav />
       <form className="flex gap-2">
         <input name="q" defaultValue={q} placeholder="Search name, email or phone" className="min-h-11 flex-1 rounded-ctl border border-line bg-white px-3" />
         <select name="role" defaultValue={role ?? ""} className="min-h-11 rounded-ctl border border-line bg-white px-2">
           <option value="">All roles</option><option value="CUSTOMER">Customers</option><option value="ARTISAN">Artisans</option><option value="ADMIN">Admins</option>
         </select>
-        <button className="min-h-11 rounded-ctl bg-indigo px-4 text-sm font-semibold text-white">Search</button>
+        <button className="min-h-11 rounded-ctl bg-brand px-4 text-sm font-semibold text-white">Search</button>
       </form>
       {users.length === 0 && <EmptyState icon="user" title="No users found" body="Try a different search." />}
       <div className="space-y-2">

@@ -13,7 +13,7 @@ export default async function NewRequest({ params }: { params: Promise<{ artisan
   if (!artisan) notFound();
   return (
     <main className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-bold text-indigo">Request {artisan.businessName}</h1>
+      <h1 className="text-2xl font-bold text-brand">Request {artisan.businessName}</h1>
       <p className="mt-1 text-muted">They'll be notified and can accept or decline.</p>
       <RequestForm artisanId={artisanId} categories={categories.map((c) => ({ id: c.id, name: c.name }))} />
     </main>

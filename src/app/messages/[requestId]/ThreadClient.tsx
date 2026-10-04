@@ -60,7 +60,7 @@ export function ThreadClient({ requestId, kind = "request", selfId, otherId, oth
           const mine = m.senderId === selfId;
           return (
             <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[75%] rounded-card px-3 py-2 text-sm ${mine ? "bg-indigo text-white" : "bg-white border border-line"}`}>
+              <div className={`max-w-[75%] rounded-card px-3 py-2 text-sm ${mine ? "bg-brand text-white" : "bg-white border border-line"}`}>
                 <p>{m.body}</p>
                 <p className={`mt-1 text-[11px] ${mine ? "text-white/70" : "text-muted"}`}>{new Date(m.createdAt).toLocaleTimeString("en-NG", { hour: "numeric", minute: "2-digit" })}</p>
               </div>
