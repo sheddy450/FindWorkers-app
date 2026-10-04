@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { handle } from "@/lib/http";
 import { WEIGHTS, availabilityScore, bayesianRating, verificationScore } from "@/lib/search/rank";
 import { isPro, pickRandom } from "@/lib/pro/rules";
+import { approxCoord } from "@/lib/geo/approx";
 
 const FEATURED_SLOTS = 2;
 
@@ -44,10 +45,16 @@ export const GET = handle(async (req) => {
 
   if (!rows.length) return NextResponse.json({ results: [], featured: [] });
   const ids = rows.map((r) => r.userId);
-  const [verRows, svcRows] = await Promise.all([
+  const [verRows, svcRows, coordRows] = await Promise.all([
     db.verificationRecord.findMany({ where: { artisanId: { in: ids }, status: "APPROVED" }, select: { artisanId: true, type: true } }),
     db.artisanService.findMany({ where: { artisanId: { in: ids } }, select: { artisanId: true, category: { select: { name: true } } } }),
+    // Map positions for the matched artisans (works for both the geo and the state/LGA search).
+    db.$queryRaw<{ userId: string; lat: number; lng: number }[]>`
+      SELECT "userId", ST_Y(geog::geometry) AS lat, ST_X(geog::geometry) AS lng
+      FROM "Artisan" WHERE geog IS NOT NULL AND "userId" = ANY(${ids}::text[])`,
   ]);
+  // Rounded to ~1 km before leaving the server: the map shows an artisan's area, never their address.
+  const coordsByArtisan = new Map(coordRows.map((c) => [c.userId, { lat: approxCoord(Number(c.lat)), lng: approxCoord(Number(c.lng)) }]));
   const byArtisan = new Map<string, string[]>();
   for (const v of verRows) byArtisan.set(v.artisanId, [...(byArtisan.get(v.artisanId) ?? []), v.type]);
   const professionsByArtisan = new Map<string, string[]>();
@@ -65,7 +72,9 @@ export const GET = handle(async (req) => {
       + WEIGHTS.reviewVolume * Math.min(1, Math.log(1 + count) / Math.log(51))
       + WEIGHTS.availability * availabilityScore(r.availability)
       + WEIGHTS.relevance * (category ? 1 : 0.5);
-    return { ...r, avgRating: rating, verifiedTypes: byArtisan.get(r.userId) ?? [], categories: professionsByArtisan.get(r.userId) ?? [], score };
+    const pos = coordsByArtisan.get(r.userId);
+    return { ...r, avgRating: rating, verifiedTypes: byArtisan.get(r.userId) ?? [], categories: professionsByArtisan.get(r.userId) ?? [], score,
+      lat: pos?.lat ?? null, lng: pos?.lng ?? null };
   }).sort((a, b) => b.score - a.score);
 
   // Explicit filters narrow the list; ranking (above) is a separate concern and never hides a result on its own.
