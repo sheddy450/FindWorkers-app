@@ -70,7 +70,7 @@ export default async function RequestDetail({
     <main className="mx-auto max-w-md p-6">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-2xl font-bold text-indigo">{r.category.name}</h1>
+          <h1 className="text-2xl font-bold text-brand">{r.category.name}</h1>
           <p className="text-muted">
             {side === "ADMIN"
               ? `${r.customer.name} → ${r.artisan.businessName}`
@@ -83,7 +83,7 @@ export default async function RequestDetail({
         {side !== "ADMIN" && (
           <Link
             href={`/messages/${r.id}`}
-            className="text-sm font-semibold text-indigo underline"
+            className="text-sm font-semibold text-brand underline"
           >
             Message
           </Link>

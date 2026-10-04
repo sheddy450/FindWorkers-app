@@ -22,10 +22,10 @@ function Shell({ icon = "info", title, body, action, tone }: StateProps & { tone
       <h2 className="mt-4 text-xl font-semibold">{title}</h2>
       <p className="mt-1 text-muted">{body}</p>
       {action && (action.href
-        ? <Link href={action.href} className="mt-5 inline-flex min-h-11 items-center rounded-ctl bg-indigo px-4 font-semibold text-white hover:bg-indigo-700">{action.label}</Link>
+        ? <Link href={action.href} className="mt-5 inline-flex min-h-11 items-center rounded-ctl bg-brand px-4 font-semibold text-white hover:bg-brand-700">{action.label}</Link>
         : <Button className="mt-5" onClick={action.onClick}>{action.label}</Button>)}
     </div>
   );
 }
-export const EmptyState = (p: StateProps) => <Shell {...p} tone="bg-indigo-soft text-indigo" />;
+export const EmptyState = (p: StateProps) => <Shell {...p} tone="bg-brand-soft text-brand" />;
 export const ErrorState = (p: StateProps) => <Shell icon="alert" {...p} tone="bg-danger-soft text-danger" />;

@@ -19,8 +19,8 @@ export function LocationScreen() {
 
   return (
     <main className="mx-auto flex min-h-[80vh] max-w-sm flex-col items-center justify-center p-6 text-center">
-      <div className="grid h-16 w-16 place-items-center rounded-full bg-indigo-soft text-indigo"><Icon name="pin" size={32} /></div>
-      <h1 className="mt-4 text-2xl font-bold text-indigo">Find artisans near you</h1>
+      <div className="grid h-16 w-16 place-items-center rounded-full bg-brand-soft text-brand"><Icon name="pin" size={32} /></div>
+      <h1 className="mt-4 text-2xl font-bold text-brand">Find artisans near you</h1>
       <p className="mt-2 text-muted">We'll only use your location to show distance and nearby artisans. You can change this anytime.</p>
 
       {!manual ? (

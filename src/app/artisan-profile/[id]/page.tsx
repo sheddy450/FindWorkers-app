@@ -31,7 +31,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
 
   return (
     <main className="mx-auto max-w-md p-6 pb-28">
-      <div className="grid h-20 w-20 place-items-center rounded-full bg-indigo-soft text-2xl font-bold text-indigo">{artisan.businessName[0]?.toUpperCase()}</div>
+      <div className="grid h-20 w-20 place-items-center rounded-full bg-brand-soft text-2xl font-bold text-brand">{artisan.businessName[0]?.toUpperCase()}</div>
       <h1 className="mt-3 text-2xl font-bold">{artisan.businessName}</h1>
       <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
         <StarRating value={Number(artisan.avgRating)} count={artisan.reviewCount} />

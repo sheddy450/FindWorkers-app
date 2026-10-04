@@ -84,7 +84,7 @@ export default async function Notifications() {
   return (
     <main className="mx-auto max-w-md p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-indigo">Notifications</h1>
+        <h1 className="text-2xl font-bold text-brand">Notifications</h1>
         {unreadCount > 0 && <MarkAllRead />}
       </div>
       {notifications.length === 0 && (

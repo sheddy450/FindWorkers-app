@@ -47,7 +47,7 @@ export function BackButton({ fallback, className = "" }: { fallback?: string; cl
   }
   return (
     <Link href={href} onClick={onClick} aria-label="Go back"
-      className={`-ml-2 inline-flex min-h-11 min-w-11 items-center gap-1 rounded-ctl px-2 font-semibold text-indigo transition-colors hover:bg-indigo-soft active:bg-indigo-soft motion-reduce:transition-none ${className}`}>
+      className={`-ml-2 inline-flex min-h-11 min-w-11 items-center gap-1 rounded-ctl px-2 font-semibold text-brand transition-colors hover:bg-brand-soft active:bg-brand-soft motion-reduce:transition-none ${className}`}>
       <Icon name="back" size={22} /><span>Back</span>
     </Link>
   );
@@ -63,8 +63,8 @@ export function BackBar() {
       <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
         <BackButton />
         <Link href={roleHome(role)} aria-label="FindWorkers home" className="flex min-h-11 items-center gap-2 rounded-ctl px-1">
-          <span aria-hidden className="grid h-7 w-7 place-items-center rounded-lg bg-indigo font-display text-sm font-bold text-marigold">F</span>
-          <span className="font-display text-base font-bold text-indigo">FindWorkers</span>
+          <span aria-hidden className="grid h-7 w-7 place-items-center rounded-lg bg-brand font-display text-sm font-bold text-white">F</span>
+          <span className="font-display text-base font-bold text-brand">FindWorkers</span>
         </Link>
       </div>
     </header>

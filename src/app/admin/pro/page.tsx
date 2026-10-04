@@ -24,7 +24,7 @@ export default async function AdminPro() {
 
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">Pro plan</h1>
+      <h1 className="text-3xl font-bold text-brand">Pro plan</h1>
       <AdminNav />
       {!paystackConfigured() && <Alert variant="warning" title="Paystack isn't connected">Set PAYSTACK_SECRET_KEY in Vercel to let artisans pay.</Alert>}
       <div className="grid grid-cols-2 gap-3">

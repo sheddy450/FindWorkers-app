@@ -58,7 +58,7 @@ export function ReviewsSection({ reviews, loggedIn, myVotedIds }: { reviews: Rev
             {r.body && <p className="mt-1 text-sm">{r.body}</p>}
             <div className="mt-2 flex items-center justify-between">
               <button onClick={() => toggleHelpful(r.id)} disabled={busyId === r.id}
-                className={`text-xs font-medium underline ${voted.has(r.id) ? "text-indigo" : "text-muted"}`}>
+                className={`text-xs font-medium underline ${voted.has(r.id) ? "text-brand" : "text-muted"}`}>
                 Helpful{(counts[r.id] ?? 0) > 0 ? ` (${counts[r.id]})` : ""}
               </button>
               <div className="flex items-center gap-3">

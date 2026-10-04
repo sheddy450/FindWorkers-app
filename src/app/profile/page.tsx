@@ -18,7 +18,7 @@ export default async function Profile() {
   return (
     <main className="mx-auto max-w-md space-y-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-indigo">Profile</h1>
+        <h1 className="text-3xl font-bold text-brand">Profile</h1>
         <SignOutButton />
       </div>
 
@@ -31,12 +31,12 @@ export default async function Profile() {
       </Card>
 
       {full.role === "ARTISAN" && (
-        <Card className="flex flex-wrap gap-3 text-sm font-semibold text-indigo underline">
+        <Card className="flex flex-wrap gap-3 text-sm font-semibold text-brand underline">
           <Link href="/artisan/dashboard">Dashboard</Link><Link href="/artisan/profile">Edit business profile</Link><Link href="/artisan/verification">Verification</Link>
         </Card>
       )}
       {full.role === "ADMIN" && (
-        <Card><Link href="/admin" className="text-sm font-semibold text-indigo underline">Go to admin dashboard</Link></Card>
+        <Card><Link href="/admin" className="text-sm font-semibold text-brand underline">Go to admin dashboard</Link></Card>
       )}
 
       <Card><h2 className="mb-3 text-lg font-semibold">Account details</h2><AccountForm name={full.name} email={full.email} phone={full.phoneE164} /></Card>

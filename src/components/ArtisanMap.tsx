@@ -51,11 +51,11 @@ function popupContent(a: MapArtisan): HTMLElement {
   root.appendChild(name);
   if (a.featured) {
     const f = document.createElement("p");
-    f.textContent = "★ Featured · paid placement"; f.style.margin = "2px 0 0"; f.style.fontSize = "12px"; f.style.color = "#5B6472";
+    f.textContent = "★ Featured · paid placement"; f.style.margin = "2px 0 0"; f.style.fontSize = "12px"; f.style.color = "#56665D";
     root.appendChild(f);
   }
   const meta = document.createElement("p");
-  meta.style.margin = "4px 0 0"; meta.style.fontSize = "13px"; meta.style.color = "#5B6472";
+  meta.style.margin = "4px 0 0"; meta.style.fontSize = "13px"; meta.style.color = "#56665D";
   const parts = [
     a.categories.slice(0, 2).join(" · "),
     a.reviewCount ? `★ ${a.avgRating.toFixed(1)} (${a.reviewCount})` : "No reviews yet",
@@ -66,13 +66,13 @@ function popupContent(a: MapArtisan): HTMLElement {
   const link = document.createElement("a");
   link.href = `/artisan-profile/${encodeURIComponent(a.userId)}`;
   link.textContent = "View profile →";
-  link.style.display = "inline-block"; link.style.marginTop = "6px"; link.style.fontWeight = "600"; link.style.color = "#1B2559";
+  link.style.display = "inline-block"; link.style.marginTop = "6px"; link.style.fontWeight = "600"; link.style.color = "#007A49";
   root.appendChild(link);
   return root;
 }
 
 function pinIcon(Lf: L, featured: boolean) {
-  const bg = featured ? "#F5A623" : "#1B2559", fg = featured ? "#171A21" : "#FFFFFF";
+  const bg = featured ? "#34C759" : "#007A49", fg = featured ? "#13201A" : "#FFFFFF";
   return Lf.divIcon({
     className: "",
     iconSize: [28, 36], iconAnchor: [14, 34], popupAnchor: [0, -30],
@@ -113,8 +113,8 @@ export function ArtisanMap({ artisans, userLoc, radiusKm, locStatus, onUseMyLoca
     const points: [number, number][] = [];
 
     if (userLoc) {
-      if (radiusKm) Lf.circle([userLoc.lat, userLoc.lng], { radius: radiusKm * 1000, color: "#1B2559", weight: 1, fillOpacity: 0.05 }).addTo(group);
-      Lf.circleMarker([userLoc.lat, userLoc.lng], { radius: 8, color: "#fff", weight: 3, fillColor: "#2563EB", fillOpacity: 1 })
+      if (radiusKm) Lf.circle([userLoc.lat, userLoc.lng], { radius: radiusKm * 1000, color: "#007A49", weight: 1, fillOpacity: 0.06 }).addTo(group);
+      Lf.circleMarker([userLoc.lat, userLoc.lng], { radius: 8, color: "#fff", weight: 3, fillColor: "#0A84FF", fillOpacity: 1 })
         .bindTooltip("You are here").addTo(group);
       points.push([userLoc.lat, userLoc.lng]);
     }
@@ -143,10 +143,10 @@ export function ArtisanMap({ artisans, userLoc, radiusKm, locStatus, onUseMyLoca
   return (
     <div className="space-y-2">
       <div className="relative isolate overflow-hidden rounded-card border border-line">
-        <div ref={el} role="region" aria-label="Map of artisans in Nigeria" className="h-[26rem] w-full bg-indigo-soft" />
+        <div ref={el} role="region" aria-label="Map of artisans in Nigeria" className="h-[26rem] w-full bg-brand-soft" />
         {!Lf && <div className="absolute inset-0 grid place-items-center text-sm text-muted">Loading map…</div>}
         <button type="button" onClick={() => { setLocating(true); onUseMyLocation(); }}
-          className="absolute bottom-4 left-3 z-[1000] inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-indigo shadow-md hover:bg-indigo-soft">
+          className="absolute bottom-4 left-3 z-[1000] inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-brand shadow-md hover:bg-brand-soft">
           <Icon name="pin" size={16} />{locating ? "Finding you…" : userLoc ? "Update my location" : "Use my location"}
         </button>
       </div>

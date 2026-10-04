@@ -16,7 +16,7 @@ export default async function Verification() {
   const recs = await db.verificationRecord.findMany({ where: { artisanId: user.id } });
   return (
     <main className="mx-auto max-w-md space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">Get verified</h1>
+      <h1 className="text-3xl font-bold text-brand">Get verified</h1>
       <p className="text-muted">Our team checks each document by hand, usually within a few working days. Only approved checks show as badges on your profile.</p>
       {SUBMITTABLE.map((t) => {
         const r = recs.find((x) => x.type === t); const status = r?.status ?? "NONE";

@@ -56,17 +56,17 @@ export default function Register() {
 
   return (
     <main className="mx-auto max-w-md p-6">
-      <h1 className="text-3xl font-bold text-indigo">Create your account</h1>
-      <p className="mt-1 text-muted">Already registered? <Link href="/login" className="font-semibold text-indigo underline">Log in</Link></p>
+      <h1 className="text-3xl font-bold text-brand">Create your account</h1>
+      <p className="mt-1 text-muted">Already registered? <Link href="/login" className="font-semibold text-brand underline">Log in</Link></p>
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-5">
         <fieldset>
           <legend className="text-sm font-medium">What brings you here?</legend>
           <div className="mt-2 grid gap-3">
             {ROLES.map((r) => (
-              <label key={r.value} className={`flex cursor-pointer items-start gap-3 rounded-card border-2 bg-white p-4 has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-marigold ${role === r.value ? "border-indigo" : "border-line"}`}>
+              <label key={r.value} className={`flex cursor-pointer items-start gap-3 rounded-card border-2 bg-white p-4 has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-brand-700 ${role === r.value ? "border-brand" : "border-line"}`}>
                 <input type="radio" name="role" value={r.value} checked={role === r.value} onChange={() => setRole(r.value)} className="sr-only" />
-                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${role === r.value ? "bg-indigo text-white" : "bg-indigo-soft text-indigo"}`}><Icon name={r.icon} /></span>
+                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${role === r.value ? "bg-brand text-white" : "bg-brand-soft text-brand"}`}><Icon name={r.icon} /></span>
                 <span><span className="block font-semibold">{r.title}</span><span className="text-sm text-muted">{r.body}</span></span>
               </label>
             ))}
@@ -81,7 +81,7 @@ export default function Register() {
 
         <div>
           <label className="flex items-start gap-3 text-sm">
-            <input type="checkbox" name="terms" aria-invalid={!!errors.terms} className="mt-1 h-5 w-5 accent-indigo" />
+            <input type="checkbox" name="terms" aria-invalid={!!errors.terms} className="mt-1 h-5 w-5 accent-brand" />
             <span>I agree to the Terms of Use and Privacy Policy. My details are used only to run my account and connect me with artisans or customers.</span>
           </label>
           {errors.terms && <p role="alert" className="mt-1 text-sm text-danger">{errors.terms}</p>}

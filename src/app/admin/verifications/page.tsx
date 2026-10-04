@@ -19,7 +19,7 @@ export default async function AdminVerifications() {
   const pending = [...queue].sort((x, y) => Number(isPro(y.artisan.proUntil, now)) - Number(isPro(x.artisan.proUntil, now)));
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">Verification queue</h1>
+      <h1 className="text-3xl font-bold text-brand">Verification queue</h1>
       <AdminNav />
       <p className="text-muted">Pro artisans first, then oldest first. Open the document, check it matches the profile, then decide.</p>
       {pending.length === 0 && <EmptyState icon="shield" title="Nothing to review" body="New submissions will show up here." />}
@@ -31,7 +31,7 @@ export default async function AdminVerifications() {
             <Badge tone="warning">{INFO[r.type]?.label}</Badge>
           </div>
           <p className="mt-2 text-sm text-muted">Submitted {r.updatedAt.toLocaleString("en-NG")}</p>
-          <a href={`/api/admin/verifications/${r.id}/document`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-semibold text-indigo underline">Open document (opens in a new tab)</a>
+          <a href={`/api/admin/verifications/${r.id}/document`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-semibold text-brand underline">Open document (opens in a new tab)</a>
           <DecisionForm id={r.id} />
         </Card>
       ))}

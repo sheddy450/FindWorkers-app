@@ -3,7 +3,7 @@ import { forwardRef, InputHTMLAttributes, TextareaHTMLAttributes, useId, useStat
 import { Icon } from "./Icon";
 
 type Base = { label: string; hint?: string; error?: string };
-const field = "w-full rounded-ctl border bg-white p-3 text-base placeholder:text-muted/70";
+const field = "w-full rounded-ctl border bg-white p-3 text-base transition-colors placeholder:text-muted/70 focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15";
 const border = (e?: string) => (e ? "border-danger" : "border-line");
 
 function Wrap({ id, label, hint, error, children }: Base & { id: string; children: React.ReactNode }) {

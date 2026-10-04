@@ -67,14 +67,14 @@ export default async function InquiryThread({
     <main className="mx-auto max-w-md p-6">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-xl font-bold text-indigo">{otherName}</h1>
+          <h1 className="text-xl font-bold text-brand">{otherName}</h1>
           <p className="text-sm text-muted">Direct message</p>
         </div>
         <div className="flex flex-col items-end gap-1 text-sm">
           {side === "CUSTOMER" && (
             <Link
               href={`/artisan-profile/${c.artisanId}`}
-              className="font-semibold text-indigo underline"
+              className="font-semibold text-brand underline"
             >
               View profile
             </Link>

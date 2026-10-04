@@ -47,7 +47,7 @@ export default function Login() {
   }
   return (
     <main className="mx-auto max-w-sm p-6">
-      <h1 className="text-3xl font-bold text-indigo">Welcome back</h1>
+      <h1 className="text-3xl font-bold text-brand">Welcome back</h1>
       <p className="mt-1 text-muted">Log in to book artisans and follow your requests.</p>
       <form onSubmit={onSubmit} className="mt-6 space-y-4 rounded-card border border-line bg-white p-5 shadow-[0_1px_2px_rgba(23,26,33,0.05)]">
         <Input label="Phone or email" name="identifier" required autoComplete="username" placeholder="0803 123 4567 or you@example.com" />
@@ -55,7 +55,7 @@ export default function Login() {
         {error && <Alert variant="error" title={error} />}
         <Button loading={busy} className="w-full">Log in</Button>
       </form>
-      <p className="mt-6 text-center text-sm text-muted">New here? <Link href="/register" className="inline-flex min-h-11 items-center font-semibold text-indigo underline">Create an account</Link></p>
+      <p className="mt-6 text-center text-sm text-muted">New here? <Link href="/register" className="inline-flex min-h-11 items-center font-semibold text-brand underline">Create an account</Link></p>
     </main>
   );
 }

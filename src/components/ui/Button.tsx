@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from "react";
 const styles = {
-  primary: "bg-indigo text-white hover:bg-indigo-700",
-  accent: "bg-marigold text-ink hover:brightness-95",
+  primary: "bg-brand text-white shadow-sm hover:bg-brand-700",
+  accent: "bg-highlight text-ink shadow-sm hover:brightness-95",
   outline: "border border-line bg-white text-ink hover:bg-paper",
   danger: "bg-danger text-white hover:brightness-95",
 };

@@ -13,11 +13,11 @@ export default async function AdminReviews({ searchParams }: { searchParams: { f
   });
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">Reviews</h1>
+      <h1 className="text-3xl font-bold text-brand">Reviews</h1>
       <AdminNav />
       <div className="flex gap-2 text-sm">
-        <a href="/admin/reviews" className={`rounded-full border px-3 py-1 ${!searchParams.filter ? "border-indigo bg-indigo-soft text-indigo" : "border-line"}`}>All</a>
-        <a href="/admin/reviews?filter=hidden" className={`rounded-full border px-3 py-1 ${searchParams.filter === "hidden" ? "border-indigo bg-indigo-soft text-indigo" : "border-line"}`}>Hidden</a>
+        <a href="/admin/reviews" className={`rounded-full border px-3 py-1 ${!searchParams.filter ? "border-brand bg-brand-soft text-brand" : "border-line"}`}>All</a>
+        <a href="/admin/reviews?filter=hidden" className={`rounded-full border px-3 py-1 ${searchParams.filter === "hidden" ? "border-brand bg-brand-soft text-brand" : "border-line"}`}>Hidden</a>
       </div>
       {reviews.length === 0 && <EmptyState icon="star" title="No reviews here" body="Reviews appear once customers rate a completed job." />}
       <div className="space-y-3">

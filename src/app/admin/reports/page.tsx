@@ -25,12 +25,12 @@ export default async function AdminReports({ searchParams }: { searchParams: { f
 
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">Reports</h1>
+      <h1 className="text-3xl font-bold text-brand">Reports</h1>
       <AdminNav />
       <div className="flex gap-2 text-sm">
-        <a href="/admin/reports" className={`rounded-full border px-3 py-1 ${status === "OPEN" ? "border-indigo bg-indigo-soft text-indigo" : "border-line"}`}>Open</a>
-        <a href="/admin/reports?filter=resolved" className={`rounded-full border px-3 py-1 ${status === "RESOLVED" ? "border-indigo bg-indigo-soft text-indigo" : "border-line"}`}>Resolved</a>
-        <a href="/admin/reports?filter=dismissed" className={`rounded-full border px-3 py-1 ${status === "DISMISSED" ? "border-indigo bg-indigo-soft text-indigo" : "border-line"}`}>Dismissed</a>
+        <a href="/admin/reports" className={`rounded-full border px-3 py-1 ${status === "OPEN" ? "border-brand bg-brand-soft text-brand" : "border-line"}`}>Open</a>
+        <a href="/admin/reports?filter=resolved" className={`rounded-full border px-3 py-1 ${status === "RESOLVED" ? "border-brand bg-brand-soft text-brand" : "border-line"}`}>Resolved</a>
+        <a href="/admin/reports?filter=dismissed" className={`rounded-full border px-3 py-1 ${status === "DISMISSED" ? "border-brand bg-brand-soft text-brand" : "border-line"}`}>Dismissed</a>
       </div>
       {withSubjects.length === 0 && <EmptyState icon="alert" title="Nothing here" body="Reports from users will show up in this list." />}
       <div className="space-y-3">
@@ -38,7 +38,7 @@ export default async function AdminReports({ searchParams }: { searchParams: { f
           <Card key={r.id}>
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="font-semibold">{r.targetType}: {r.subject.href ? <Link href={r.subject.href} className="text-indigo underline">{r.subject.label}</Link> : r.subject.label}</p>
+                <p className="font-semibold">{r.targetType}: {r.subject.href ? <Link href={r.subject.href} className="text-brand underline">{r.subject.label}</Link> : r.subject.label}</p>
                 <p className="text-sm text-muted">Reported by {r.reporter.name} · {r.createdAt.toLocaleString("en-NG")}</p>
               </div>
               <Badge tone={r.status === "OPEN" ? "warning" : r.status === "RESOLVED" ? "verified" : "neutral"}>{r.status}</Badge>

@@ -20,7 +20,7 @@ export default async function ProCallback({ searchParams }: { searchParams: Prom
 
   return (
     <main className="mx-auto max-w-md space-y-4 p-6">
-      <h1 className="text-3xl font-bold text-indigo">
+      <h1 className="text-3xl font-bold text-brand">
         {result.state === "paid" ? "You're Pro!" : result.state === "pending" ? "Payment processing" : "Payment not completed"}
       </h1>
       {result.state === "paid" && (
@@ -40,7 +40,7 @@ export default async function ProCallback({ searchParams }: { searchParams: Prom
         </Alert>
       )}
       <div className="flex flex-wrap gap-3">
-        <Link href="/artisan/dashboard" className="inline-flex min-h-11 items-center rounded-ctl bg-indigo px-4 font-semibold text-white">Go to dashboard</Link>
+        <Link href="/artisan/dashboard" className="inline-flex min-h-11 items-center rounded-ctl bg-brand px-4 font-semibold text-white">Go to dashboard</Link>
         <Link href="/artisan/pro" className="inline-flex min-h-11 items-center rounded-ctl border border-line bg-white px-4 font-semibold">Pro plan</Link>
       </div>
     </main>

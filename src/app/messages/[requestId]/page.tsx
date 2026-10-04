@@ -20,9 +20,9 @@ export default async function Thread({ params }: { params: Promise<{ requestId: 
   return (
     <main className="mx-auto max-w-md p-6">
       <div className="flex items-center justify-between gap-2">
-        <div><h1 className="text-xl font-bold text-indigo">{otherName}</h1><p className="text-sm text-muted">{r.category.name}</p></div>
+        <div><h1 className="text-xl font-bold text-brand">{otherName}</h1><p className="text-sm text-muted">{r.category.name}</p></div>
         <div className="flex flex-col items-end gap-1 text-sm">
-          <Link href={`/requests/${r.id}`} className="font-semibold text-indigo underline">View request</Link>
+          <Link href={`/requests/${r.id}`} className="font-semibold text-brand underline">View request</Link>
           <Link href={`/report?type=USER&id=${otherId}`} className="text-muted underline">Report</Link>
         </div>
       </div>

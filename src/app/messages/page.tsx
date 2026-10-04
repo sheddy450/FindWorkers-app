@@ -122,7 +122,7 @@ export default async function Messages() {
 
   return (
     <main className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-bold text-indigo">Messages</h1>
+      <h1 className="text-2xl font-bold text-brand">Messages</h1>
 
       {threads.length === 0 && (
         <div className="mt-6">
