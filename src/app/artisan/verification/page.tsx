@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Alert";
 import { INFO, SUBMITTABLE, canSubmit } from "@/lib/verification/rules";
 import { UploadForm } from "./UploadForm";
+import Link from "next/link";
+import { smsConfigured } from "@/lib/providers/sms";
 
 const TONE = { NONE: "neutral", PENDING: "warning", APPROVED: "verified", REJECTED: "danger", EXPIRED: "danger" } as const;
 const TEXT = { NONE: "Not submitted", PENDING: "Under review", APPROVED: "Approved", REJECTED: "Not approved", EXPIRED: "Expired" } as const;
@@ -28,8 +30,19 @@ export default async function Verification() {
             {canSubmit(status) && <UploadForm type={t} label={INFO[t].label} />}
           </Card>);
       })}
-      <Card><h2 className="text-lg font-semibold">Phone and background checks</h2>
-        <p className="mt-1 text-sm text-muted">Phone verification and background checks aren't available yet. We'll tell you when they are.</p></Card>
+      {(() => {
+        const status = recs.find((x) => x.type === "PHONE")?.status ?? "NONE";
+        return (
+          <Card>
+            <div className="flex items-center justify-between gap-2"><h2 className="text-lg font-semibold">Phone</h2><Badge tone={TONE[status]}>{TEXT[status]}</Badge></div>
+            <p className="mt-1 text-sm text-muted">{status === "APPROVED" ? "Your phone number is verified." : smsConfigured()
+              ? "Confirm your number with a 6-digit code by SMS. It takes under a minute, no documents needed."
+              : "Phone verification by SMS is coming soon."}</p>
+            {status !== "APPROVED" && smsConfigured() && <Link href="/profile" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-brand px-4 font-semibold text-white">Verify by SMS</Link>}
+          </Card>);
+      })()}
+      <Card><h2 className="text-lg font-semibold">Background checks</h2>
+        <p className="mt-1 text-sm text-muted">Background checks aren't available yet. We'll tell you when they are.</p></Card>
     </main>
   );
 }
