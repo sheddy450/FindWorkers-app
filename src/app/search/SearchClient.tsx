@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { Icon } from "@/components/ui/Icon";
 import { useLocation } from "@/lib/geo/location";
+import { ArtisanMap } from "@/components/ArtisanMap";
 
 type Result = { userId: string; businessName: string; categories: string[]; distanceKm: number | null; avgRating: number; reviewCount: number;
-  priceMinKobo: number | null; priceMaxKobo: number | null; availability: string; verifiedTypes: string[] };
+  priceMinKobo: number | null; priceMaxKobo: number | null; availability: string; verifiedTypes: string[];
+  lat: number | null; lng: number | null };
 
 const RADIUS_OPTIONS = [5, 10, 20, 50];
 const RATING_OPTIONS = [{ label: "Any rating", value: "" }, { label: "3+ stars", value: "3" }, { label: "4+ stars", value: "4" }, { label: "4.5+ stars", value: "4.5" }];
@@ -93,7 +95,7 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
       <div className="mt-4 space-y-3">
         {error && <ErrorState title="Couldn't load artisans" body="Check your connection and try again." action={{ label: "Try again", onClick: () => location.reload() }} />}
         {!error && results === null && Array.from({ length: 4 }).map((_, i) => <ArtisanCardSkeleton key={i} />)}
-        {!error && results?.length === 0 && <EmptyState icon="search" title="No artisans found" body="Try a different category, widen your search radius, or loosen a filter." />}
+        {!error && results?.length === 0 && view === "list" && <EmptyState icon="search" title="No artisans found" body="Try a different category, widen your search radius, or loosen a filter." />}
         {!error && results && results.length > 0 && view === "list" && featured.length > 0 && (
           <section aria-labelledby="featured-title" className="space-y-3 pb-2">
             <p id="featured-title" className="flex items-center justify-between text-sm">
@@ -111,11 +113,11 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
           <ArtisanCard key={r.userId} id={r.userId} businessName={r.businessName} categories={r.categories} distanceKm={r.distanceKm} avgRating={r.avgRating}
             reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length} />
         ))}
-        {!error && results && results.length > 0 && view === "map" && (
-          <div className="grid h-80 place-items-center rounded-card border border-dashed border-line bg-white text-center text-sm text-muted">
-            Map view needs a map provider (Mapbox/Google Maps) key.<br />Configure <code>MAP_PROVIDER</code> — see README.<br />
-            Meanwhile, switch to List to see the same {results.length} results.
-          </div>
+        {!error && results?.length === 0 && view === "map" && <p className="text-sm text-muted">No artisans match here yet. Try a wider radius, another category, or fewer filters.</p>}
+        {!error && results && view === "map" && (
+          <ArtisanMap
+            artisans={results.map((r) => ({ ...r, featured: featured.some((f) => f.userId === r.userId) }))}
+            userLoc={loc} radiusKm={loc ? radiusKm : undefined} locStatus={status} onUseMyLocation={request} />
         )}
       </div>
     </main>
