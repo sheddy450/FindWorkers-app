@@ -7,9 +7,12 @@ import { ArtisanCard } from "@/components/ArtisanCard";
 import { LocationSelector } from "@/components/LocationSelector";
 import { EmptyState } from "@/components/ui/States";
 import { pickRandom } from "@/lib/pro/rules";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, absoluteUrl, og } from "@/lib/seo/site";
 
 // Per-user (role redirects) and changes every visit (random featured pick): never pre-build at build time.
 export const dynamic = "force-dynamic";
+export const metadata = { alternates: { canonical: "/" }, openGraph: og({ title: SITE_TITLE, description: SITE_DESCRIPTION, url: "/" }) };
 
 export default async function Home() {
   // "/" is the customer search homepage. An artisan or admin account has nothing to do here,
@@ -36,6 +39,10 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-2xl p-4 sm:p-6">
+      <JsonLd data={[
+        { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: absoluteUrl("/apple-icon.png"), areaServed: { "@type": "Country", name: "Nigeria" } },
+        { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
+      ]} />
       <section aria-labelledby="hero-title" className="relative overflow-hidden rounded-[22px] bg-gradient-to-br from-brand to-brand-700 p-6 text-white shadow-soft">
         <span aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-white/10" />
         <span aria-hidden className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-highlight/20" />
@@ -62,7 +69,7 @@ export default async function Home() {
         <div className="flex items-center justify-between"><h2 className="text-xl font-bold text-ink">Popular services</h2><Link href="/categories" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">See all</Link></div>
         <div className="mt-3 flex flex-wrap gap-2">
           {categories.map((c) => (
-            <Link key={c.id} href={`/search?category=${c.slug}`} className="inline-flex min-h-11 items-center rounded-full border border-line bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-brand/40 hover:text-brand motion-reduce:transition-none">{c.name}</Link>
+            <Link key={c.id} href={`/services/${c.slug}`} className="inline-flex min-h-11 items-center rounded-full border border-line bg-white px-4 py-2 text-sm font-medium transition-colors hover:border-brand/40 hover:text-brand motion-reduce:transition-none">{c.name}</Link>
           ))}
         </div>
       </section>
