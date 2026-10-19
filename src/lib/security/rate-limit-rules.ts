@@ -7,6 +7,7 @@ export type Limit = { name: string; max: number; windowSec: number };
 export const LIMITS = {
   loginPerAccount: { name: "login:acct", max: 8, windowSec: 15 * 60 },
   loginPerIp: { name: "login:ip", max: 60, windowSec: 15 * 60 },
+  photoUploadPerUser: { name: "photo-upload:user", max: 40, windowSec: 60 * 60 },
   registerPerIp: { name: "register:ip", max: 10, windowSec: 60 * 60 },
   // Password reset emails: per network and per address, so nobody can flood someone's inbox.
   resetRequestPerIp: { name: "reset-req:ip", max: 10, windowSec: 60 * 60 },
