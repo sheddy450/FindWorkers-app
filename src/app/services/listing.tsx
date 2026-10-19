@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
 import { Photo } from "@/components/photos/Photo";
+import { stockPhotoFor } from "@/lib/photos/stock";
 import { cardPhotosFor, recentWork } from "@/server/services/photo-display.service";
 import { EmptyState } from "@/components/ui/States";
 import { Icon } from "@/components/ui/Icon";
@@ -61,7 +62,7 @@ export async function listingMetadata(slug: string, stateParam?: string): Promis
     description,
     alternates: { canonical: path },
     openGraph: og({ title: `${heading} | ${SITE_NAME}`, description, url: path,
-      image: l.work[0] ? { url: l.work[0].url, width: l.work[0].width, height: l.work[0].height, alt: l.work[0].alt } : null }),
+      image: (() => { const h = l.work[0] ?? stockPhotoFor(l.category.slug); return { url: h.url, width: h.width, height: h.height, alt: h.alt }; })() }),
     // A state page with no artisans yet is thin content: keep it out of Google until it has some.
     robots: l.artisans.length === 0 ? { index: false, follow: true } : undefined,
   };
@@ -100,8 +101,22 @@ export function ListingPage({ l }: { l: Listing }) {
         {state && <><span aria-hidden> / </span><span>{stateLabel(state)}</span></>}
       </nav>
 
-      <Photo photo={work[0] ?? null} trade={category.name} priority placeholderSize="lg"
-        sizes="(max-width: 700px) 100vw, 670px" className="aspect-[21/9] w-full rounded-card" />
+      {(() => {
+        // Hero: the latest real work photo in this trade, or a credited example photo until there is one.
+        const stock = work[0] ? null : stockPhotoFor(category.slug);
+        return (
+          <figure className="relative">
+            <Photo photo={work[0] ?? stock} trade={category.name} priority placeholderSize="lg"
+              sizes="(max-width: 700px) 100vw, 670px" className="aspect-[21/9] w-full rounded-card" />
+            {stock && (
+              <figcaption className="absolute bottom-2 right-2 rounded-full bg-ink/65 px-2 py-0.5 text-[11px] text-white">
+                Example photo by <a href={stock.stock.page} target="_blank" rel="noopener noreferrer" className="underline">{stock.stock.by}</a> on{" "}
+                <a href="https://unsplash.com/?utm_source=findworkers&utm_medium=referral" target="_blank" rel="noopener noreferrer" className="underline">Unsplash</a>
+              </figcaption>
+            )}
+          </figure>
+        );
+      })()}
 
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-brand">{heading}</h1>
