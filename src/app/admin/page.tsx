@@ -8,19 +8,21 @@ async function count<T>(p: Promise<T>) { return p; }
 
 export default async function AdminHome() {
   await requirePageRole("ADMIN");
-  const [users, artisans, pendingVerifications, openReports, activeRequests, hiddenReviews] = await Promise.all([
+  const [users, artisans, pendingVerifications, openReports, activeRequests, hiddenReviews, pendingPhotos] = await Promise.all([
     count(db.user.count({ where: { status: "ACTIVE" } })),
     count(db.artisan.count()),
     count(db.verificationRecord.count({ where: { status: "PENDING" } })),
     count(db.report.count({ where: { status: "OPEN" } })),
     count(db.serviceRequest.count({ where: { status: { in: ["REQUESTED", "ACCEPTED", "ON_THE_WAY"] } } })),
     count(db.review.count({ where: { hidden: true } })),
+    count(db.artisanPhoto.count({ where: { moderationStatus: "PENDING" } })),
   ]);
 
   const tiles: { label: string; value: number; href: string; urgent?: boolean }[] = [
     { label: "Active users", value: users, href: "/admin/users" },
     { label: "Artisans", value: artisans, href: "/admin/users?role=ARTISAN" },
     { label: "Pending verifications", value: pendingVerifications, href: "/admin/verifications", urgent: pendingVerifications > 0 },
+    { label: "Photos to review", value: pendingPhotos, href: "/admin/photos", urgent: pendingPhotos > 0 },
     { label: "Open reports", value: openReports, href: "/admin/reports", urgent: openReports > 0 },
     { label: "Active requests", value: activeRequests, href: "/admin/requests" },
     { label: "Hidden reviews", value: hiddenReviews, href: "/admin/reviews" },

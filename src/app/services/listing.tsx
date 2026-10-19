@@ -3,7 +3,9 @@ import { cache } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
-import { ArtisanCard } from "@/components/ArtisanCard";
+import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
+import { Photo } from "@/components/photos/Photo";
+import { cardPhotosFor, recentWork } from "@/server/services/photo-display.service";
 import { EmptyState } from "@/components/ui/States";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -34,11 +36,12 @@ export const loadListing = cache(async (slug: string, stateParam?: string) => {
     db.artisan.groupBy({ by: ["state"], where: { ...base, state: { not: null } }, _count: { _all: true } }),
     db.serviceCategory.findMany({ where: { isActive: true, id: { not: category.id } }, orderBy: { name: "asc" }, select: { slug: true, name: true } }),
   ]);
+  const [photos, work] = await Promise.all([cardPhotosFor(artisans.map((a) => a.userId)), recentWork(category.id, state)]);
   const states = byState
     .filter((s): s is typeof s & { state: string } => !!s.state)
     .map((s) => ({ state: s.state, count: s._count._all }))
     .sort((a, b) => b.count - a.count || a.state.localeCompare(b.state));
-  return { category, state, artisans, states, others };
+  return { category, state, artisans, states, others, photos, work };
 });
 
 type Listing = NonNullable<Awaited<ReturnType<typeof loadListing>>>;
@@ -57,7 +60,8 @@ export async function listingMetadata(slug: string, stateParam?: string): Promis
     title: `${heading}: verified & rated`,
     description,
     alternates: { canonical: path },
-    openGraph: og({ title: `${heading} | ${SITE_NAME}`, description, url: path }),
+    openGraph: og({ title: `${heading} | ${SITE_NAME}`, description, url: path,
+      image: l.work[0] ? { url: l.work[0].url, width: l.work[0].width, height: l.work[0].height, alt: l.work[0].alt } : null }),
     // A state page with no artisans yet is thin content: keep it out of Google until it has some.
     robots: l.artisans.length === 0 ? { index: false, follow: true } : undefined,
   };
@@ -66,7 +70,7 @@ export async function listingMetadata(slug: string, stateParam?: string): Promis
 const professionsOf = (a: { services: { category: { name: string } }[] }) => [...new Set(a.services.map((s) => s.category.name))];
 
 export function ListingPage({ l }: { l: Listing }) {
-  const { category, state, artisans, states, others } = l;
+  const { category, state, artisans, states, others, photos, work } = l;
   const heading = serviceHeading(category.name, state);
   const where = state ? stateLabel(state) : "Nigeria";
   const path = listingPath(category.slug, state);
@@ -96,6 +100,9 @@ export function ListingPage({ l }: { l: Listing }) {
         {state && <><span aria-hidden> / </span><span>{stateLabel(state)}</span></>}
       </nav>
 
+      <Photo photo={work[0] ?? null} trade={category.name} priority placeholderSize="lg"
+        sizes="(max-width: 700px) 100vw, 670px" className="aspect-[21/9] w-full rounded-card" />
+
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-brand">{heading}</h1>
         <p className="text-muted">
@@ -113,9 +120,27 @@ export function ListingPage({ l }: { l: Listing }) {
           ? <EmptyState icon="search" title={`No ${category.name.toLowerCase()} in ${where} yet`} body="Try searching near your location, or look at nearby states below." action={{ label: "Search near me", href: `/search?category=${category.slug}` }} />
           : artisans.map((a) => (
             <ArtisanCard key={a.userId} id={a.userId} businessName={a.businessName} categories={professionsOf(a)} avgRating={Number(a.avgRating)} reviewCount={a.reviewCount}
-              priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length} />
+              priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length}
+              photos={photos[a.userId]} place={placeOf(a)} />
           ))}
       </section>
+
+      {work.length > 0 && (
+        <section aria-labelledby="recent-work" className="space-y-3">
+          <h2 id="recent-work" className="text-xl font-bold text-ink">Recent work in {category.name.toLowerCase()}{state ? `, ${stateLabel(state)}` : ""}</h2>
+          <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6">
+            {work.map((w) => (
+              <li key={w.id} className="w-56 shrink-0 snap-start">
+                <Link href={`/artisan-profile/${w.artisanId}`} className="group block">
+                  <Photo photo={w} trade={category.name} sizes="224px" className="aspect-[4/3] w-full rounded-card" />
+                  <p className="mt-1.5 line-clamp-2 text-sm text-ink">{w.alt}</p>
+                  <p className="text-xs font-medium text-brand group-hover:underline">{w.businessName}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {states.length > 0 && (
         <section className="space-y-3">

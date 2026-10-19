@@ -15,6 +15,7 @@ export const POST = handle(async (req) => {
     image: new Uint8Array(await image.arrayBuffer()), thumb: new Uint8Array(await thumb.arrayBuffer()),
     blurDataUrl: form?.get("blur"), caption: String(form?.get("caption") ?? ""), category,
     categoryId: (form?.get("categoryId") as string) || null, pairWithId: (form?.get("pairWith") as string) || null,
+    phash: form?.get("hash"),
   });
   return NextResponse.json(photo, { status: 201 });
 });
