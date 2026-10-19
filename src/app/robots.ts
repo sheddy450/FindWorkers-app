@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // APIs and signed-in areas: nothing useful for search, and they redirect to login anyway.
-      disallow: ["/api/", "/admin", "/artisan/", "/requests", "/messages", "/profile", "/notifications", "/report", "/design"],
+      disallow: ["/api/", "/admin", "/artisan/", "/requests", "/messages", "/profile", "/notifications", "/report", "/design", "/reset-password", "/forgot-password"],
     }],
     sitemap: absoluteUrl("/sitemap.xml"),
     host: absoluteUrl("/"),
