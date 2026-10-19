@@ -8,12 +8,12 @@ export const LIMITS = {
   loginPerAccount: { name: "login:acct", max: 8, windowSec: 15 * 60 },
   loginPerIp: { name: "login:ip", max: 60, windowSec: 15 * 60 },
   registerPerIp: { name: "register:ip", max: 10, windowSec: 60 * 60 },
-  passwordChangePerUser: { name: "pwchange:user", max: 10, windowSec: 60 * 60 },
-  contactRevealPerUser: { name: "contact:user", max: 40, windowSec: 60 * 60 },
   // Password reset emails: per network and per address, so nobody can flood someone's inbox.
   resetRequestPerIp: { name: "reset-req:ip", max: 10, windowSec: 60 * 60 },
   resetRequestPerEmail: { name: "reset-req:email", max: 3, windowSec: 60 * 60 },
   resetSubmitPerIp: { name: "reset-submit:ip", max: 20, windowSec: 60 * 60 },
+  passwordChangePerUser: { name: "pwchange:user", max: 10, windowSec: 60 * 60 },
+  contactRevealPerUser: { name: "contact:user", max: 40, windowSec: 60 * 60 },
 } satisfies Record<string, Limit>;
 
 /** Start of the fixed window containing `nowSec` (Unix seconds). */
