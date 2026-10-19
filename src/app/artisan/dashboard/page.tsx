@@ -29,6 +29,7 @@ export default async function Dashboard() {
     }) : null,
     pro ? null : getProPriceKobo(),
   ]);
+  const workPhotos = await db.artisanPhoto.count({ where: { artisanId: user.id, category: { not: "PROFILE" }, moderationStatus: { not: "REJECTED" } } });
 
   const requests = await db.serviceRequest.findMany({
     where: { artisanId: user.id, status: { in: ["REQUESTED", "ACCEPTED", "ON_THE_WAY"] } },
@@ -66,9 +67,16 @@ export default async function Dashboard() {
           <Link href="/artisan/pro" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-highlight px-4 font-semibold">{a.proUntil ? "Renew Pro" : "See Pro"}</Link>
         </Card>
       )}
+      {workPhotos < 3 && (
+        <Card>
+          <p className="font-semibold">{workPhotos === 0 ? "Show customers your work" : `Add ${3 - workPhotos} more work photo${3 - workPhotos === 1 ? "" : "s"}`}</p>
+          <p className="text-sm text-muted">Clear photos of finished jobs help customers choose you. Add at least 3.</p>
+          <Link href="/artisan/photos" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-brand px-4 font-semibold text-white">Add photos</Link>
+        </Card>
+      )}
       {submitted === 0 && <Card><p className="font-semibold">Get your first badge</p><p className="text-sm text-muted">Verified artisans get more trust from customers.</p>
         <Link href="/artisan/verification" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-highlight px-4 font-semibold">Start verification</Link></Card>}
-      <div className="flex gap-3 text-sm font-semibold text-brand underline"><Link href="/artisan/profile">Edit profile</Link><Link href="/artisan/verification">Verification</Link><Link href="/artisan/pro">Pro plan</Link></div>
+      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-brand underline"><Link href="/artisan/profile">Edit profile</Link><Link href="/artisan/photos">Photos</Link><Link href="/artisan/verification">Verification</Link><Link href="/artisan/pro">Pro plan</Link></div>
 
       <section>
         <div className="mb-2 flex items-center justify-between">
