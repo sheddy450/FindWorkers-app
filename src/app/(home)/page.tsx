@@ -76,12 +76,27 @@ export default async function Home() {
         <span aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_100%_0%,rgba(52,199,89,0.35),transparent_55%)]" />
         <span aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:28px_28px]" />
 
-        <div className="relative grid items-center gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+        {/* Top row: brand on the left; for visitors who aren't signed in, a quiet "Log in" and a glassy "Sign up" pill */}
+        <div className="relative flex items-center justify-between gap-3">
+          <p className="flex items-center gap-2 font-display text-base font-bold">
+            <span aria-hidden className="grid h-7 w-7 place-items-center rounded-lg bg-white text-sm text-brand">F</span><span className="max-[340px]:sr-only">FindWorkers</span>
+          </p>
+          {!me && (
+            <nav aria-label="Account" className="flex shrink-0 items-center gap-0.5 whitespace-nowrap">
+              <Link href="/login" className="inline-flex min-h-11 items-center rounded-full px-2.5 text-sm font-semibold text-white/85 transition-colors hover:text-white motion-reduce:transition-none">Log in</Link>
+              <Link href="/register" className="group inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/10 py-1.5 pl-4 pr-1.5 text-sm max-[380px]:pr-4 font-semibold text-white ring-1 ring-inset ring-white/35 transition-colors hover:bg-white hover:text-brand-700 motion-reduce:transition-none">
+                Sign up
+                <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-highlight text-ink transition-transform group-hover:translate-x-0.5 max-[380px]:hidden motion-reduce:transition-none">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </span>
+              </Link>
+            </nav>
+          )}
+        </div>
+
+        <div className="relative mt-5 grid items-center gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
           <div>
-            <p className="flex items-center gap-2 font-display text-base font-bold">
-              <span aria-hidden className="grid h-7 w-7 place-items-center rounded-lg bg-white text-sm text-brand">F</span>FindWorkers
-            </p>
-            <h1 id="hero-title" className="mt-5 text-[2.35rem] font-extrabold leading-[1.04] tracking-[-0.02em] sm:text-5xl">
+            <h1 id="hero-title" className="text-[2.35rem] font-extrabold leading-[1.04] tracking-[-0.02em] sm:text-5xl">
               Good hands for every job, close to home.
             </h1>
             <p className="mt-3 max-w-md text-[17px] leading-relaxed text-white/85">
