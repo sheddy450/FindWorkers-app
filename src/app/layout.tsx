@@ -4,7 +4,9 @@ import { BottomNav } from "@/components/BottomNav";
 import { Footer } from "@/components/Footer";
 import { BackBar, BackNavProvider } from "@/components/BackButton";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { currentUser } from "@/lib/auth/session";
+import { NavProgress } from "@/components/NavProgress";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/seo/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -23,6 +25,7 @@ export default async function Root({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-NG"><body>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-ctl focus:bg-white focus:p-3">Skip to content</a>
+      <Suspense fallback={null}><NavProgress /></Suspense>
       <ToastProvider><BackNavProvider role={me?.role}>
         <BackBar />
         <div id="main" className="pb-20">{children}<Footer /></div>

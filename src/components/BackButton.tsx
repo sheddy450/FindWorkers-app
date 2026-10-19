@@ -59,7 +59,7 @@ export function BackBar() {
   const role = useContext(RoleCtx);
   if (isHomeFor(path, role)) return null;
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-white/95 pt-[env(safe-area-inset-top)] backdrop-blur supports-[backdrop-filter]:bg-white/85">
+    <header className="sticky top-0 z-30 border-b border-line bg-white/[0.97] pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
         <BackButton />
         <Link href={roleHome(role)} aria-label="FindWorkers home" className="flex min-h-11 items-center gap-2 rounded-ctl px-1">
