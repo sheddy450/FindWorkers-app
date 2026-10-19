@@ -38,7 +38,7 @@ export function fallbackFor(pathname: string, role?: Role | null): string {
   else if (first === "jobs" && second) target = "/jobs";
   else if (first === "jobs") target = "/requests";
   else if (first === "forgot-password" || first === "reset-password") target = "/login";
-  else if (["categories", "browse", "guides", "search", "location", "login", "register"].includes(first ?? "")) target = "/";
+  else if (["categories", "browse", "guides", "help", "search", "location", "login", "register"].includes(first ?? "")) target = "/";
   else target = home;
 
   // "/" is the customer homepage; artisans/admins get redirected away from it, so send them home instead.

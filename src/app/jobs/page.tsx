@@ -8,6 +8,7 @@ import { RequestsTabs } from "@/components/RequestsTabs";
 import { stateLabel } from "@/lib/seo/site";
 import { JOB_LABEL, QUOTE_LABEL, TIMING_LABEL, budgetText, naira, type JobView } from "@/lib/jobs/rules";
 import { jobBoard, myJobs } from "@/server/services/jobs.service";
+import { HelpTip } from "@/components/help/HelpTip";
 
 export const metadata = { title: "Jobs" };
 
@@ -71,7 +72,7 @@ async function ArtisanBoard({ userId }: { userId: string }) {
         <div className="mt-5"><EmptyState icon="search" title={`No open jobs in ${stateLabel(board.state)} yet`} body="We'll notify you when a customer posts a job for your services. Clear work photos help you win the jobs that come in." action={{ label: "Add work photos", href: "/artisan/photos" }} /></div>
       ) : (
         <>
-          <p className="mt-4 text-sm text-muted">Open jobs for your services in {stateLabel(board.state)}. Jobs in your area come first.</p>
+          <p className="mt-4 flex items-center gap-2 text-sm text-muted">Open jobs for your services in {stateLabel(board.state)}. Jobs in your area come first. <HelpTip topic="jobBoard" /></p>
           <ul className="mt-3 space-y-3">
             {board.jobs.map((j) => {
               const budget = budgetText(j.budgetMinKobo, j.budgetMaxKobo);

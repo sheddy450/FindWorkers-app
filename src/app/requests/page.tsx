@@ -26,7 +26,7 @@ export default async function Requests() {
           <span aria-hidden className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-xl font-bold text-brand">+</span>
         </Link>
       )}
-      {rows.length === 0 && <div className="mt-6"><EmptyState icon="requests" title="No requests yet" body={user.role === "CUSTOMER" ? "When you request a service, you can track it here." : "New requests from customers will show up here."} action={user.role === "CUSTOMER" ? { label: "Find an artisan", href: "/search" } : { label: "See the job board", href: "/jobs" }} /></div>}
+      {rows.length === 0 && <div className="mt-6"><EmptyState icon="requests" title="No requests yet" body={user.role === "CUSTOMER" ? "Request an artisan from their profile, or post a job and hire from the quotes you get. You'll track every job here." : "When customers request you or hire you from a quote, the job shows up here. Check the job board for open jobs near you."} action={user.role === "CUSTOMER" ? { label: "Find an artisan", href: "/search" } : { label: "See the job board", href: "/jobs" }} /></div>}
       <div className="mt-4 space-y-3">
         {rows.map((r) => (
           <Link key={r.id} href={`/requests/${r.id}`}>

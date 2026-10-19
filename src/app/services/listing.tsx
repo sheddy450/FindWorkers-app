@@ -143,7 +143,14 @@ export function ListingPage({ l }: { l: Listing }) {
 
       <section aria-label={`${heading} list`} className="space-y-3">
         {artisans.length === 0
-          ? <EmptyState icon="search" title={`No ${category.name.toLowerCase()} in ${where} yet`} body="Try searching near your location, or look at nearby states below." action={{ label: "Search near me", href: `/search?category=${category.slug}` }} />
+          ? (
+            <div className="space-y-3">
+              <EmptyState icon="search" title={`No ${category.name.toLowerCase()} in ${where} yet`}
+                body={`Post your job and we'll alert ${category.name.toLowerCase()} artisans${state ? ` in ${stateLabel(state)}` : ""} as soon as they join. Or try a nearby state below.`}
+                action={{ label: "Post a job — free", href: `/jobs/new?service=${category.slug}${state ? `&state=${encodeURIComponent(state)}` : ""}` }} />
+              <p className="text-center text-sm"><Link href={`/search?category=${category.slug}`} className="font-semibold text-brand underline">Search near my location</Link></p>
+            </div>
+          )
           : artisans.map((a) => (
             <ArtisanCard key={a.userId} id={a.userId} businessName={a.businessName} categories={professionsOf(a)} avgRating={Number(a.avgRating)} reviewCount={a.reviewCount}
               priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length}

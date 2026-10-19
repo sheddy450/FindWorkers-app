@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
+import { HelpTip } from "@/components/help/HelpTip";
 import type { CardPhotos } from "@/lib/photos/display";
 import { ArtisanCardSkeleton, EmptyState, ErrorState } from "@/components/ui/States";
 import { Button } from "@/components/ui/Button";
@@ -102,7 +103,7 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
           <section aria-labelledby="featured-title" className="space-y-3 pb-2">
             <p id="featured-title" className="flex items-center justify-between text-sm">
               <span className="font-semibold text-ink">Featured</span>
-              <span className="text-muted">Paid placement</span>
+              <span className="flex items-center gap-1.5 text-muted">Paid placement <HelpTip topic="featured" /></span>
             </p>
             {featured.map((r) => (
               <ArtisanCard key={`f-${r.userId}`} featured id={r.userId} businessName={r.businessName} categories={r.categories} distanceKm={r.distanceKm} avgRating={r.avgRating}

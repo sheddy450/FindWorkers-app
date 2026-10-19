@@ -9,6 +9,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { stateLabel } from "@/lib/seo/site";
 import { JOB_LABEL, QUOTE_LABEL, TIMING_LABEL, budgetText, naira, type JobView } from "@/lib/jobs/rules";
 import { jobForViewer } from "@/server/services/jobs.service";
+import { HelpTip } from "@/components/help/HelpTip";
 import { CloseJobButton, HireButton, QuoteForm, WithdrawQuoteButton } from "./JobActions";
 
 export const metadata = { title: "Job" };
@@ -66,7 +67,7 @@ function OwnerQuotes({ data }: { data: Extract<Data, { role: "owner" }> }) {
   return (
     <section aria-labelledby="quotes-title" className="space-y-3">
       <div className="flex items-baseline justify-between">
-        <h2 id="quotes-title" className="text-lg font-semibold">Quotes{quotes.length > 0 && <span className="font-normal text-muted"> ({quotes.length})</span>}</h2>
+        <h2 id="quotes-title" className="flex items-center gap-2 text-lg font-semibold">Quotes{quotes.length > 0 && <span className="font-normal text-muted">({quotes.length})</span>} <HelpTip topic="quotes" /></h2>
         {quotes.length > 1 && view === "OPEN" && <span className="text-xs text-muted">Cheapest first</span>}
       </div>
       {view === "HIRED" && job.hiredRequestId && (

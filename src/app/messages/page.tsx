@@ -129,7 +129,8 @@ export default async function Messages() {
           <EmptyState
             icon="chat"
             title="No conversations yet"
-            body="Message an artisan directly from their profile, or messages about a job appear here once a request is sent."
+            body="Find an artisan and tap Message on their profile, or post a job and chat with the artisan you hire. Your conversations will appear here."
+            action={{ label: "Find an artisan", href: "/search" }}
           />
         </div>
       )}

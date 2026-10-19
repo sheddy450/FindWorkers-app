@@ -10,10 +10,12 @@ import { ReviewsSection } from "./ReviewsSection";
 import { bumpStat } from "@/server/services/pro.service";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { HelpTip } from "@/components/help/HelpTip";
 import { Photo } from "@/components/photos/Photo";
 import { Gallery } from "@/components/photos/Gallery";
 import { cardPhotosFor, profilePhotos } from "@/server/services/photo-display.service";
-import { SITE_NAME, absoluteUrl, clip, og, stateLabel } from "@/lib/seo/site";
+import { SITE_NAME, absoluteUrl, clip, og, stateLabel, stateSlug } from "@/lib/seo/site";
 
 /** Search titles like "Ola Power Works: Electrician in Ikeja, Lagos". */
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -78,6 +80,15 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
   return (
     <main className="mx-auto max-w-md p-6 pb-28">
       <JsonLd data={businessLd} />
+      <div className="mb-4">
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "Services", href: "/categories" },
+          ...(artisan.services[0] ? [{ label: artisan.services[0].category.name, href: `/services/${artisan.services[0].category.slug}` }] : []),
+          ...(artisan.services[0] && artisan.state ? [{ label: stateLabel(artisan.state), href: `/services/${artisan.services[0].category.slug}/${stateSlug(artisan.state)}` }] : []),
+          { label: artisan.businessName },
+        ]} />
+      </div>
       {photos.avatar
         ? <Photo photo={photos.avatar} sizes="80px" priority className="h-20 w-20 rounded-full ring-4 ring-brand-soft" />
         : <div className="grid h-20 w-20 place-items-center rounded-full bg-brand-soft text-2xl font-bold text-brand">{artisan.businessName[0]?.toUpperCase()}</div>}
@@ -87,10 +98,10 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
         <span>· {artisan.completedJobs} jobs completed</span>
         <span>· {artisan.lga}, {artisan.state}</span>
       </div>
-      <div className="mt-3"><VerificationBadges records={artisan.verifications} /></div>
+      <div className="mt-3 flex items-start gap-2"><VerificationBadges records={artisan.verifications} /><HelpTip topic="verified" /></div>
       <div className="mt-3 flex flex-wrap gap-2">{artisan.services.map((s) => <Badge key={s.id} tone="brand">{s.category.name}</Badge>)}</div>
       {artisan.bio && <p className="mt-4 text-sm">{artisan.bio}</p>}
-      <p className="mt-3 font-semibold">{nairaRange(artisan.priceMinKobo, artisan.priceMaxKobo)}</p>
+      <p className="mt-3 flex items-center gap-2 font-semibold">{nairaRange(artisan.priceMinKobo, artisan.priceMaxKobo)}{artisan.priceMinKobo != null && <HelpTip topic="priceRange" />}</p>
       <p className="text-sm text-muted">{artisan.yearsExperience} years of experience</p>
 
       <div className="mt-5"><ContactButtons artisanId={artisan.userId} businessName={artisan.businessName} loggedIn={!!user} /></div>
@@ -113,7 +124,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
       )}
 
       <section className="mt-8">
-        <h2 className="mb-3 text-lg font-semibold">Reviews</h2>
+        <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">Reviews <HelpTip topic="reviews" /></h2>
         <ReviewsSection
           reviews={artisan.reviews.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }))}
           loggedIn={!!user}
