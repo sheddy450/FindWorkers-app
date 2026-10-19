@@ -1,0 +1,362 @@
+/**
+ * The starter guides. They're loaded into the database once by the migration
+ * 20261019220100_seed_guides (generated from this file with scripts/guides-to-sql.ts), after which
+ * admins edit them in /admin/guides. Editing this file later does NOT change the live guides.
+ *
+ * All prices are ESTIMATES: workmanship unless a line says otherwise, Lagos and Abuja, October 2026.
+ */
+import type { PriceRow } from "./rules";
+
+export type StarterGuide = {
+  slug: string; title: string; summary: string; category: string | null; audience: "CUSTOMER" | "ARTISAN";
+  body: string; prices: PriceRow[]; pricesNote: string | null; questions: string[]; redFlags: string[]; checklist: string[];
+};
+
+const NOTE = "Estimates for Lagos and Abuja, October 2026. Prices are often lower in smaller cities and change with materials and fuel costs. Always get 2–3 quotes.";
+
+export const STARTER_GUIDES: StarterGuide[] = [
+  {
+    slug: "how-to-hire-a-plumber",
+    title: "How to hire a good plumber (and what it should cost)",
+    summary: "Leaking pipe, blocked toilet or a new bathroom? What to ask, fair prices in naira and the warning signs to watch for before you let anyone in.",
+    category: "plumber", audience: "CUSTOMER", pricesNote: NOTE,
+    body: `A small leak can soak a ceiling or empty your tank overnight, so it's worth getting a plumber you can call again. The good news: most plumbing jobs are quick, and a fair price is easy to check if you know what to ask.
+
+## Before you call anyone
+- Turn off the water at the main valve or the tap from the overhead tank if water is running.
+- Take two or three clear photos of the problem and of any part you think is faulty.
+- Note how long it has been happening and whether it's getting worse.
+
+Photos help a plumber price the job before they come, so you get quotes you can compare.
+
+## Labour and parts are separate
+Most plumbers charge for **workmanship** and then ask you to pay for **parts** (pipes, fittings, cistern sets, taps). Ask them to list the parts and their prices before they buy anything, and keep the old parts until the job is finished. Cheap fittings are the main reason the same leak comes back.
+
+## Big jobs: new bathrooms and full plumbing
+For a new building or a full bathroom, ask for a written quote that lists every point (sinks, showers, WCs, heater) and the pipe type. Agree to pay in stages: a part at the start for materials, more when pipes are laid and tested, and the rest after a pressure test with no leaks.
+
+## After the job
+Run every tap, flush every toilet and check under sinks after an hour. A good plumber will come back to fix a leak from their own work at no extra workmanship cost. Agree this before you pay the last part.`,
+    prices: [
+      { item: "Fix a leaking tap or pipe joint", low: 5000, high: 15000 },
+      { item: "Unblock a sink or toilet", low: 8000, high: 25000, note: "more if a long line or soakaway is blocked" },
+      { item: "Replace toilet cistern fittings", low: 10000, high: 25000, note: "parts extra" },
+      { item: "Install a toilet (WC)", low: 20000, high: 50000, note: "parts extra" },
+      { item: "Install a water heater", low: 20000, high: 45000 },
+      { item: "Install or repair a pumping machine", low: 15000, high: 45000 },
+      { item: "Full plumbing, 3-bedroom flat", low: 350000, high: 900000, note: "workmanship only" },
+    ],
+    questions: [
+      "Can you look at these photos and give me a price before you come?",
+      "Is that price for workmanship only? What parts will I need to buy, and roughly how much?",
+      "How long will it take, and will you need to turn off the water?",
+      "If it leaks again from your work, will you come back to fix it?",
+      "Can I see photos of similar jobs you've done?",
+    ],
+    redFlags: [
+      "Won't give any price until they've started the job.",
+      "Asks for the full payment before doing anything.",
+      "Insists on buying all the parts themselves without showing you prices or receipts.",
+      "Wants to break tiles or walls without explaining why first.",
+    ],
+    checklist: [
+      "Water turned off at the main valve if it's leaking",
+      "Photos of the problem sent with the job",
+      "Workmanship price and parts list agreed in the chat",
+      "Old parts kept until the job is done",
+      "Every tap and toilet tested before the final payment",
+    ],
+  },
+  {
+    slug: "ac-servicing-costs-nigeria",
+    title: "AC servicing in Nigeria: what it costs and how often to do it",
+    summary: "How often to service your air conditioner, what a fair price is for washing, gas and repairs, and how to tell if a technician is cutting corners.",
+    category: "ac-fridge", audience: "CUSTOMER", pricesNote: NOTE,
+    body: `Dust, harmattan and power surges are hard on air conditioners. A unit that's cleaned regularly cools faster, uses less power and lasts years longer.
+
+## How often to service
+- **Every 3 months** if it runs most of the day, or in a dusty area.
+- **Every 6 months** for normal home use.
+- **Straight away** if it's dripping water inside, smelling, making new noises, or not cooling.
+
+## Washing is not the same as gas
+Most "my AC isn't cooling" problems are **dirty filters and coils**, not gas. A proper service washes the indoor unit (filters, coil, drain) and the outdoor unit. Gas only needs topping up if there's a leak somewhere. If a technician says you need gas every time, ask them to find and fix the leak.
+
+## Gas types
+Newer units use R410a or R32; older ones use R22. Ask which gas your unit uses and make sure the technician uses the same one. Mixing gases damages the compressor.
+
+## Protect it from surges
+A stabiliser or surge protector costs far less than a compressor. If your area has unstable light, ask the technician to check what you're using.`,
+    prices: [
+      { item: "Routine service, split unit (1–1.5hp)", low: 10000, high: 25000, note: "per unit" },
+      { item: "Deep wash, indoor and outdoor units", low: 15000, high: 35000, note: "per unit" },
+      { item: "Gas top-up", low: 20000, high: 45000 },
+      { item: "Find and fix a gas leak, then refill", low: 40000, high: 100000 },
+      { item: "Install a new split unit", low: 25000, high: 60000, note: "standard kit; long pipes extra" },
+      { item: "Move a unit to another room", low: 30000, high: 70000 },
+      { item: "Replace a compressor", low: 150000, high: 400000, note: "including the part" },
+    ],
+    questions: [
+      "What exactly does your service include: filters, coil, drain and the outdoor unit?",
+      "Which gas does my unit use, and will you use the same one?",
+      "If it needs gas, where is the leak and will you fix it?",
+      "Will you check the stabiliser or surge protection?",
+      "Do you give any guarantee on repairs?",
+    ],
+    redFlags: [
+      "Says it needs gas every single service without finding a leak.",
+      "Won't let you watch or see the dirty filters before and after.",
+      "Wants to replace the compressor before testing the capacitor and relay (common, cheap faults).",
+      "No idea which gas the unit uses.",
+    ],
+    checklist: [
+      "Model and horsepower of each unit noted",
+      "Service list agreed (indoor, outdoor, drain)",
+      "Gas type confirmed",
+      "Cooling tested for 15 minutes before paying",
+      "Next service date set",
+    ],
+  },
+  {
+    slug: "finding-a-safe-electrician",
+    title: "Finding a safe electrician you can trust",
+    summary: "Bad wiring causes fires. Here's how to check an electrician before they touch your house, what jobs should cost, and the shortcuts to refuse.",
+    category: "electrician", audience: "CUSTOMER", pricesNote: NOTE,
+    body: `Electrical work is the one job where a cheap shortcut can burn a house down. Take a few extra minutes to choose well.
+
+## Check before you hire
+- Look for the **verified** badge and read reviews from people who booked them.
+- Ask for photos of distribution boards or wiring they've done. Neat, labelled work is a good sign.
+- For big jobs (new wiring, solar, a new board), choose someone who has done the same kind of job before.
+
+## Safety shortcuts to refuse
+- **Wrong cable size.** Heavy appliances (AC, heaters, cookers) need thicker cable than lights. Ask what size they'll use.
+- **No earthing.** Your house should have an earth rod and earth cables to sockets.
+- **Joining cables without a junction box,** or with tape alone.
+- **No breaker for each circuit.** Each room or heavy appliance should have its own breaker.
+
+## Materials
+Fake cables and breakers are common. Buy from a known shop, keep the receipt, and check the cable is marked with its size. If the electrician buys them, ask for the receipt.
+
+## Changeovers and generators
+A changeover switch keeps generator power and NEPA/DisCo power apart. Never let anyone connect a generator straight into a socket: it can kill someone working on the lines.`,
+    prices: [
+      { item: "Fix a faulty socket or switch", low: 5000, high: 12000, note: "per point" },
+      { item: "Install a ceiling fan or light fitting", low: 7000, high: 20000 },
+      { item: "Find a fault (tripping, no light in a room)", low: 10000, high: 40000 },
+      { item: "Install a changeover switch", low: 15000, high: 40000 },
+      { item: "Install a distribution board and breakers", low: 30000, high: 80000, note: "materials extra" },
+      { item: "New wiring, per point", low: 6000, high: 15000 },
+      { item: "Rewire a 3-bedroom flat", low: 350000, high: 900000, note: "workmanship only" },
+    ],
+    questions: [
+      "What size of cable will you use for the AC and the kitchen?",
+      "Will every circuit have its own breaker, and is the house earthed?",
+      "Can you show me photos of boards you've installed?",
+      "Who buys the materials, and can I see the receipts?",
+      "Will you test everything with me before you leave?",
+    ],
+    redFlags: [
+      "Says earthing \"isn't necessary\".",
+      "Plans to join cables with tape and no junction box.",
+      "Wants to connect a generator directly to a socket.",
+      "Suggests a bigger breaker because the current one keeps tripping (it trips for a reason).",
+    ],
+    checklist: [
+      "Verified badge and reviews checked",
+      "Cable sizes and breakers agreed",
+      "Materials bought from a known shop, receipts kept",
+      "Each circuit labelled on the distribution board",
+      "Every switch, socket and breaker tested together",
+    ],
+  },
+  {
+    slug: "how-to-choose-a-tailor",
+    title: "How to choose a tailor who delivers on time",
+    summary: "From senator to agbada and aso-ebi: how to brief a tailor, what styles cost, and how to avoid the \"come back tomorrow\" wahala before your event.",
+    category: "tailor", audience: "CUSTOMER", pricesNote: NOTE,
+    body: `A good tailor gets your measurements right the first time and delivers when they say. Most disappointments come from unclear briefs and late starts, both easy to avoid.
+
+## Give a clear brief
+- Bring a **picture of the style** and point out what you want copied (neckline, sleeves, length).
+- Agree the fabric amount before you buy, so you don't run short.
+- Mention anything special: stones, embroidery, lining, pockets.
+
+## Agree the date, then add a buffer
+Ask for the **delivery date** in the chat, and set it at least a week before your event. Arrange a **fitting** halfway through. That's when small changes are cheap and quick.
+
+## Prices
+Price depends on the style, embellishment and how busy the season is. December and wedding seasons are busier, and **rush jobs often cost 20–50% more**. Paying part when you drop the fabric and the rest at collection is normal.
+
+## At collection
+Try it on before you pay the balance. Check the seams, zips and buttons and whether it sits well when you sit down.`,
+    prices: [
+      { item: "Simple shirt or blouse", low: 10000, high: 25000 },
+      { item: "Senator or kaftan, 2 pieces", low: 20000, high: 50000 },
+      { item: "Agbada, 3 pieces", low: 45000, high: 150000 },
+      { item: "Ankara gown", low: 15000, high: 45000 },
+      { item: "Aso-ebi style with stones or embellishment", low: 40000, high: 150000 },
+      { item: "Simple alteration (hem, taking in)", low: 2000, high: 8000 },
+    ],
+    questions: [
+      "Can you sew this exact style? Have you done something like it before?",
+      "How many yards of fabric do I need?",
+      "When can I come for a fitting, and what's the final delivery date?",
+      "What's included: lining, stones, embroidery?",
+      "Will you fix it for free if it doesn't fit?",
+    ],
+    redFlags: [
+      "Won't give a date, or only says \"soon\".",
+      "Asks for full payment upfront for a big order.",
+      "No fitting before the final delivery.",
+      "Can't show you any finished work.",
+    ],
+    checklist: [
+      "Style picture shared and details agreed",
+      "Fabric amount confirmed before buying",
+      "Fitting date and delivery date in the chat",
+      "Deposit and balance agreed",
+      "Clothes tried on before the final payment",
+    ],
+  },
+  {
+    slug: "generator-repair-guide",
+    title: "Generator repair: common faults and fair prices",
+    summary: "Won't start, no current, smoking or overheating? The usual causes, what repairs should cost, and how to keep your generator running longer.",
+    category: "generator-repair", audience: "CUSTOMER", pricesNote: NOTE,
+    body: `For many homes and shops the generator is the light. Regular servicing is much cheaper than a big repair, and knowing the common faults helps you spot an honest technician.
+
+## Common faults
+- **Won't start:** dirty carburettor, bad plug, old fuel or a weak battery (key-start). Usually a cheap fix.
+- **Starts but no current:** often the AVR or the alternator winding.
+- **Smoking:** black smoke is usually the air filter or carburettor; blue/white smoke can mean worn rings (bigger job).
+- **Overheating or shutting off:** low oil, blocked cooling, or overloading.
+
+## Servicing
+Change the oil on schedule (check your manual: often every 50–100 running hours for small petrol generators), clean the air filter, and replace the plug when it's worn. Don't leave petrol sitting for weeks.
+
+## Ask before big repairs
+Before rewinding or an overhaul, ask what tests they did and why. Get the price for the parts and workmanship separately. Ask for the old parts back.
+
+## Safety
+Keep the generator outside and far from windows and doors. Generator fumes kill people every year in their sleep. Never run it indoors or in a closed garage.`,
+    prices: [
+      { item: "Routine service, small petrol generator", low: 8000, high: 20000, note: "oil, plug, air filter" },
+      { item: "Clean the carburettor", low: 5000, high: 15000 },
+      { item: "Replace the carburettor", low: 12000, high: 30000, note: "including the part" },
+      { item: "Replace the ignition coil", low: 10000, high: 30000 },
+      { item: "Replace the AVR", low: 10000, high: 35000 },
+      { item: "Rewind the alternator, small generator", low: 25000, high: 70000 },
+      { item: "Service a diesel generator (10–20kVA)", low: 40000, high: 120000 },
+      { item: "Major overhaul, small generator", low: 40000, high: 100000 },
+    ],
+    questions: [
+      "What do you think the fault is, and how did you test it?",
+      "What's the price for parts and for workmanship?",
+      "Can I have the old parts back?",
+      "Will you test it under load before I pay?",
+      "Is there a guarantee on the repair?",
+    ],
+    redFlags: [
+      "Says it needs rewinding or an overhaul without testing anything first.",
+      "Wants to take the generator away without a written description of the fault and price.",
+      "Won't return the old parts.",
+      "Runs the generator indoors while testing.",
+    ],
+    checklist: [
+      "Make, size (kVA) and fault described",
+      "Diagnosis explained before the repair",
+      "Parts and workmanship priced separately",
+      "Old parts returned",
+      "Tested with your normal appliances before paying",
+    ],
+  },
+  {
+    slug: "solar-inverter-installation-guide",
+    title: "Solar and inverter installation: sizes, prices and what to check",
+    summary: "Thinking of going solar? How to choose the right inverter and battery size, realistic 2026 prices in naira, and the questions that protect your money.",
+    category: "electrician", audience: "CUSTOMER", pricesNote: "Estimates for complete installed systems in Lagos and Abuja, 2026, from current market prices. Prices move with the dollar: get fresh quotes.",
+    body: `Solar can cut your fuel spending sharply, but it's a big purchase. Most disappointments come from systems that are too small for what people want to power.
+
+## Start with what you want to power
+List the things you want running and for how long: lights, fans, TV, fridge, pumping machine, AC. A **fridge, pump or AC** needs a much bigger system than lights and fans. A good installer starts with this list (a "load audit") before quoting.
+
+## Inverter, battery and panels
+- **Inverter (kVA):** how much you can run at the same time.
+- **Battery (kWh):** how long you can run it without sun or grid. Lithium batteries cost more but last much longer than tubular ones.
+- **Panels:** how fast the batteries charge during the day.
+
+## Compare quotes properly
+Ask each installer for the **brand and model** of the inverter, battery and panels, the number of panels, cable sizes, and the warranty on each. A cheaper quote often means a smaller battery or fewer panels.
+
+## Installation matters
+Panels should be firmly mounted and angled to the sun, cables should run in pipes, and there should be breakers and surge protection between the panels, inverter and house. Ask for a short handover: how to read the inverter and what to do when the battery is low.`,
+    prices: [
+      { item: "1kVA starter system, installed", low: 700000, high: 1200000, note: "lights, fans, TV" },
+      { item: "3.5kVA hybrid with about 5kWh lithium battery", low: 2000000, high: 3500000 },
+      { item: "5kVA hybrid with about 10kWh lithium battery", low: 3500000, high: 6000000 },
+      { item: "10kVA system", low: 7000000, high: 12000000 },
+      { item: "Installation workmanship only (3.5–5kVA)", low: 80000, high: 250000 },
+      { item: "Maintenance visit", low: 25000, high: 60000 },
+    ],
+    questions: [
+      "What will this system power, and for how many hours at night?",
+      "What brand and model are the inverter, battery and panels?",
+      "What's the warranty on each, and who handles it?",
+      "Does the price include mounting, cables, breakers and surge protection?",
+      "Will you show me how to use it and come back if there's a problem?",
+    ],
+    redFlags: [
+      "Gives a price without asking what you want to power.",
+      "Won't name the brands or models.",
+      "Promises the system will run AC all night on a small battery.",
+      "No breakers or surge protection in the quote.",
+    ],
+    checklist: [
+      "Load list written (what, how many, how long)",
+      "Brands, models and warranties on the quote",
+      "Panel mounting and cable routes agreed",
+      "Breakers and surge protection included",
+      "Handover: how to read the inverter and battery",
+    ],
+  },
+  {
+    slug: "how-to-get-more-jobs",
+    title: "How to get more jobs on FindWorkers",
+    summary: "For artisans: the profile, photos and habits that make customers choose you, and how to win jobs from the job board.",
+    category: null, audience: "ARTISAN", pricesNote: null,
+    body: `Customers on FindWorkers compare a few artisans before they choose. These are the things that make them pick you.
+
+## Complete your profile
+- A clear **profile photo** of your face. People trust people they can see.
+- A short **description**: what you do best, how long you've done it, and the areas you cover.
+- Your **price range**. Customers skip profiles with no idea of cost.
+- Your **work location**, so you show up in "near me" searches.
+
+## Show your work
+Add at least **three clear photos** of finished jobs. Take them in daylight, step back so the whole job is in the frame, and write a caption saying what the job was. Before-and-after pairs are especially convincing. Only upload your own work: copied photos are removed.
+
+## Get verified
+The verified badge tells customers we've checked you. Verified artisans get more trust and more calls.
+
+## Reply quickly
+Customers often hire the first good reply. Turn on notifications and answer requests and messages the same day, even if it's just to say when you can come.
+
+## Win jobs on the job board
+Check **Requests → Job board** every day. When you quote, explain what your price covers, how long it will take and when you can start. Clear, honest quotes beat the cheapest number.
+
+## Ask for reviews
+After a job, ask the customer to mark it complete and leave a review in the app. Good reviews move you up in search.`,
+    prices: [],
+    questions: [], redFlags: [],
+    checklist: [
+      "Profile photo added",
+      "Description, price range and services complete",
+      "Work location set",
+      "At least 3 work photos with captions",
+      "Verification submitted",
+      "Notifications on, replying the same day",
+      "Job board checked daily",
+    ],
+  },
+];

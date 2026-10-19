@@ -28,15 +28,17 @@ export function fallbackFor(pathname: string, role?: Role | null): string {
   else if (first === "requests" && second) target = "/requests";
   else if (first === "messages" && second) target = "/messages";
   else if (first === "admin" && second === "users" && third) target = "/admin/users";
+  else if (first === "admin" && second === "guides" && third) target = "/admin/guides";
   else if (first === "admin" && second) target = "/admin";
   else if (first === "artisan" && second) target = "/artisan/dashboard";
   else if (first === "artisan-profile") target = "/search";
   else if (first === "services" && third) target = `/services/${second}`;
   else if (first === "services") target = "/categories";
+  else if (first === "guides" && second) target = "/guides";
   else if (first === "jobs" && second) target = "/jobs";
   else if (first === "jobs") target = "/requests";
   else if (first === "forgot-password" || first === "reset-password") target = "/login";
-  else if (["categories", "browse", "search", "location", "login", "register"].includes(first ?? "")) target = "/";
+  else if (["categories", "browse", "guides", "search", "location", "login", "register"].includes(first ?? "")) target = "/";
   else target = home;
 
   // "/" is the customer homepage; artisans/admins get redirected away from it, so send them home instead.

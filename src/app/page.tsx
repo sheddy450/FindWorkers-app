@@ -12,6 +12,8 @@ import { Photo } from "@/components/photos/Photo";
 import { glyphFor } from "@/components/photos/TradePlaceholder";
 import { CITIES } from "@/lib/places/cities";
 import { FAQS } from "@/lib/content/faq";
+import { GuideCard } from "@/components/guides/GuideCard";
+import { listGuides } from "@/server/services/guides.service";
 import { LocationSelector } from "@/components/LocationSelector";
 import { pickRandom } from "@/lib/pro/rules";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -28,7 +30,7 @@ export default async function Home() {
   if (me?.role === "ARTISAN") redirect("/artisan/dashboard");
   if (me?.role === "ADMIN") redirect("/admin");
 
-  const [tiles, topRated, recent, proPool, byState] = await Promise.all([
+  const [tiles, topRated, recent, proPool, byState, allGuides] = await Promise.all([
     serviceTiles(),
     db.artisan.findMany({ where: { reviewCount: { gt: 0 }, user: { status: "ACTIVE" } }, orderBy: { avgRating: "desc" }, take: 4,
       include: { verifications: { where: { status: "APPROVED" } }, services: { include: { category: true } } } }),
@@ -37,7 +39,9 @@ export default async function Home() {
     db.artisan.findMany({ where: { proUntil: { gt: new Date() }, services: { some: {} }, user: { status: "ACTIVE" } }, take: 30,
       include: { verifications: { where: { status: "APPROVED" } }, services: { include: { category: true } } } }),
     stateCounts(),
+    listGuides({ audience: "CUSTOMER" }),
   ]);
+  const guides = allGuides.slice(0, 3);
   // Labelled paid slot: a random pick of Pro artisans, kept apart from the rating-based lists below.
   const featured = pickRandom(proPool, 2);
   const topRatedIds = new Set(topRated.map((a) => a.userId));
@@ -215,22 +219,29 @@ export default async function Home() {
         </ul>
       </section>
 
-      {/* ── Hiring tips (become hiring guides in the next step) ───────────────── */}
+      {/* ── Hiring guides (falls back to three quick tips until guides exist) ──── */}
       <section aria-labelledby="tips" className="mt-10">
-        <h2 id="tips" className="text-2xl font-bold tracking-tight text-ink">Hire with confidence</h2>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-          {[
-            ["shield", "Check the badges", "Verified means we've checked their ID or phone. Look at their work photos and read reviews from people who booked them."],
-            ["chat", "Agree the price first", "Get the full price in the app chat before work starts, including materials, so there are no surprises."],
-            ["check", "Pay in stages", "Pay part at the start and the rest when you're happy. Ask for receipts when you pay for materials."],
-          ].map(([icon, title, body]) => (
-            <li key={title} className="rounded-[20px] bg-brand-soft/70 p-5">
-              <span aria-hidden className="grid h-10 w-10 place-items-center rounded-full bg-white text-brand shadow-sm"><Icon name={icon as "shield"} size={20} /></span>
-              <h3 className="mt-3 text-lg font-semibold text-ink">{title}</h3>
-              <p className="mt-1 text-[15px] leading-relaxed text-ink/75">{body}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-end justify-between gap-3">
+          <h2 id="tips" className="text-2xl font-bold tracking-tight text-ink">{guides.length ? "Hiring guides" : "Hire with confidence"}</h2>
+          {guides.length > 0 && <Link href="/guides" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">All guides</Link>}
+        </div>
+        {guides.length > 0 ? (
+          <ul className="mt-4 grid gap-4 sm:grid-cols-3">{guides.map((g) => <li key={g.id}><GuideCard g={g} /></li>)}</ul>
+        ) : (
+          <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+            {[
+              ["shield", "Check the badges", "Verified means we've checked their ID or phone. Look at their work photos and read reviews from people who booked them."],
+              ["chat", "Agree the price first", "Get the full price in the app chat before work starts, including materials, so there are no surprises."],
+              ["check", "Pay in stages", "Pay part at the start and the rest when you're happy. Ask for receipts when you pay for materials."],
+            ].map(([icon, title, body]) => (
+              <li key={title} className="rounded-[20px] bg-brand-soft/70 p-5">
+                <span aria-hidden className="grid h-10 w-10 place-items-center rounded-full bg-white text-brand shadow-sm"><Icon name={icon as "shield"} size={20} /></span>
+                <h3 className="mt-3 text-lg font-semibold text-ink">{title}</h3>
+                <p className="mt-1 text-[15px] leading-relaxed text-ink/75">{body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section aria-labelledby="faq-title" className="mt-10">

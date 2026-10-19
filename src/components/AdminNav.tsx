@@ -10,6 +10,7 @@ const items = [
   { href: "/admin/reviews", label: "Reviews" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/categories", label: "Categories" },
+  { href: "/admin/guides", label: "Guides" },
   { href: "/admin/pro", label: "Pro plan" },
 ];
 export function AdminNav() {
