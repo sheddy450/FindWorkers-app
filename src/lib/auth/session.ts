@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { decode } from "next-auth/jwt";
 import { redirect } from "next/navigation";
@@ -36,8 +37,12 @@ async function sessionToken(): Promise<{ id: string; iat?: number } | null> {
   }
 }
 
-/** Reads role/status from the DB each time, so a suspended user loses access immediately. */
-export async function currentUser() {
+/**
+ * Reads role/status from the DB on every request, so a suspended user loses access immediately.
+ * cache(): the layout, the page and any helpers in the same request share one lookup instead of
+ * each querying the database.
+ */
+export const currentUser = cache(async () => {
   const session = await sessionToken();
   if (!session) return null;
   const u = await db.user.findUnique({ where: { id: session.id }, select: { id: true, role: true, status: true, name: true, phoneE164: true, passwordChangedAt: true } });
@@ -46,7 +51,7 @@ export async function currentUser() {
   if (sessionIsStale(session.iat, u.passwordChangedAt)) return null;
   const { passwordChangedAt: _changed, ...user } = u;
   return user;
-}
+});
 export async function requireRole(...roles: Role[]) {
   const u = await currentUser();
   if (!u) throw new HttpError(401, "Log in to continue.");

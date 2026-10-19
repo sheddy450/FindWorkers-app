@@ -6,6 +6,8 @@ import type { Config } from "tailwindcss";
 const system = ["-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"', "Arial", "sans-serif"];
 
 export default {
+  // Hover effects only on devices with a real pointer: on phones a tap no longer leaves cards "stuck" lifted or highlighted.
+  future: { hoverOnlyWhenSupported: true },
   content: ["./src/**/*.{ts,tsx}"],
   theme: { extend: {
     colors: {

@@ -47,7 +47,7 @@ export function ArtisanCard(p: Props) {
                 <span className="inline-flex items-center gap-1 rounded-full bg-highlight px-2.5 py-1 text-xs font-bold text-ink shadow-sm">★ Featured</span>
               )}
               {p.availability === "AVAILABLE_NOW" && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-ink shadow-sm backdrop-blur">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-ink shadow-sm">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-highlight opacity-75 motion-reduce:animate-none" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-highlight" />
@@ -56,7 +56,7 @@ export function ArtisanCard(p: Props) {
                 </span>
               )}
             </div>
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-bold text-ink shadow-sm backdrop-blur"
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-xs font-bold text-ink shadow-sm"
               aria-label={rated ? `Rated ${p.avgRating.toFixed(1)} out of 5 from ${p.reviewCount} reviews` : "New on FindWorkers, no reviews yet"}>
               {rated ? <><span className="text-star"><Icon name="star" size={13} filled /></span>{p.avgRating.toFixed(1)}<span className="font-medium text-muted">({p.reviewCount})</span></> : <span className="text-brand">New</span>}
             </span>
@@ -74,7 +74,7 @@ export function ArtisanCard(p: Props) {
               <p className="truncate text-lg font-bold leading-tight">{p.businessName}</p>
               {p.categories && p.categories.length > 0 && <p className="truncate text-sm font-medium text-white/85">{p.categories.join(" · ")}</p>}
             </div>
-            {!own && <span className="mb-0.5 shrink-0 self-end rounded-full bg-black/45 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur">Example photo</span>}
+            {!own && <span className="mb-0.5 shrink-0 self-end rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white/90">Example photo</span>}
           </div>
         </div>
 

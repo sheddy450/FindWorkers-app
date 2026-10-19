@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
 import { HelpTip } from "@/components/help/HelpTip";
 import type { CardPhotos } from "@/lib/photos/display";
@@ -20,7 +20,7 @@ const RADIUS_OPTIONS = [5, 10, 20, 50];
 const RATING_OPTIONS = [{ label: "Any rating", value: "" }, { label: "3+ stars", value: "3" }, { label: "4+ stars", value: "4" }, { label: "4.5+ stars", value: "4.5" }];
 
 export function SearchClient({ categories }: { categories: { slug: string; name: string }[] }) {
-  const router = useRouter(); const params = useSearchParams();
+  const params = useSearchParams();
   const category = params.get("category") ?? "";
   const manualState = params.get("state") ?? ""; const manualLga = params.get("lga") ?? "";
   const { loc, status, request } = useLocation();
@@ -28,6 +28,7 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
   const [results, setResults] = useState<Result[] | null>(null);
   const [featured, setFeatured] = useState<Result[]>([]);
   const [error, setError] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   const [radiusKm, setRadiusKm] = useState(20);
   const [minRating, setMinRating] = useState("");
@@ -44,14 +45,23 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
     if (minRating) q.set("minRating", minRating);
     if (availableNow) q.set("availableNow", "1");
     if (verifiedOnly) q.set("verifiedOnly", "1");
-    setResults(null); setFeatured([]); setError("");
-    fetch(`/api/search?${q}`).then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((d) => { setResults(d.results); setFeatured(d.featured ?? []); }).catch(() => setError("Couldn't load artisans."));
+    // Keep the current results on screen (dimmed) while new ones load, instead of flashing to
+    // skeletons on every filter tap. A newer search cancels an older one, so a slow reply can never
+    // overwrite fresher results.
+    const ctl = new AbortController();
+    setRefreshing(true); setError("");
+    fetch(`/api/search?${q}`, { signal: ctl.signal }).then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((d) => { setResults(d.results); setFeatured(d.featured ?? []); setRefreshing(false); })
+      .catch((e) => { if (e?.name !== "AbortError") { setError("Couldn't load artisans."); setRefreshing(false); } });
+    return () => ctl.abort();
   }, [category, loc, manualState, manualLga, radiusKm, minRating, availableNow, verifiedOnly]);
 
+  // Changing the service only updates the address bar (no server round trip or page reload);
+  // the results update in place.
   function setCategory(slug: string) {
     const q = new URLSearchParams(params); slug ? q.set("category", slug) : q.delete("category");
-    router.push(`/search?${q}`);
+    const qs = q.toString();
+    window.history.replaceState(null, "", `/search${qs ? `?${qs}` : ""}`);
   }
 
   return (
@@ -70,9 +80,9 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
       {!loc && manualState && <p className="mt-2 text-sm text-muted">Showing artisans in {manualLga ? `${manualLga}, ` : ""}{manualState}. <Link href="/location" className="underline">Change</Link></p>}
 
       <div className="mt-4 -mx-6 overflow-x-auto px-6"><div className="flex gap-2 pb-1">
-        <button onClick={() => setCategory("")} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium ${!category ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>All</button>
+        <button onClick={() => setCategory("")} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-150 motion-reduce:transition-none ${!category ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>All</button>
         {categories.map((c) => (
-          <button key={c.slug} onClick={() => setCategory(c.slug)} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium ${category === c.slug ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>{c.name}</button>
+          <button key={c.slug} onClick={() => setCategory(c.slug)} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-150 motion-reduce:transition-none ${category === c.slug ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>{c.name}</button>
         ))}
       </div></div>
 
@@ -85,8 +95,8 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
         <select value={minRating} onChange={(e) => setMinRating(e.target.value)} className="min-h-10 rounded-full border border-line bg-white px-3 text-sm">
           {RATING_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
-        <button onClick={() => setAvailableNow(!availableNow)} className={`min-h-10 rounded-full border px-3 text-sm font-medium ${availableNow ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Available now</button>
-        <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`min-h-10 rounded-full border px-3 text-sm font-medium ${verifiedOnly ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Verified only</button>
+        <button onClick={() => setAvailableNow(!availableNow)} className={`min-h-10 rounded-full border px-3 text-sm font-medium transition-colors duration-150 motion-reduce:transition-none ${availableNow ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Available now</button>
+        <button onClick={() => setVerifiedOnly(!verifiedOnly)} className={`min-h-10 rounded-full border px-3 text-sm font-medium transition-colors duration-150 motion-reduce:transition-none ${verifiedOnly ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Verified only</button>
       </div>
 
       <div className="mt-4 flex gap-2">
@@ -94,7 +104,7 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
         <button onClick={() => setView("map")} className={`min-h-11 flex-1 rounded-ctl border text-sm font-semibold ${view === "map" ? "border-brand bg-brand-soft text-brand" : "border-line bg-white"}`}>Map</button>
       </div>
 
-      <div className="mt-4 space-y-3">
+      <div aria-busy={refreshing} className={`mt-4 space-y-3 transition-opacity duration-200 motion-reduce:transition-none ${refreshing && results ? "opacity-60" : "opacity-100"}`}>
         {error && <ErrorState title="Couldn't load artisans" body="Check your connection and try again." action={{ label: "Try again", onClick: () => location.reload() }} />}
         {!error && results === null && Array.from({ length: 4 }).map((_, i) => <ArtisanCardSkeleton key={i} />)}
         {!error && results?.length === 0 && view === "list" && <EmptyState icon="search" title="No artisans found" body="Try a different category, widen your search radius, or loosen a filter. Or post your job and we'll alert artisans in your state."
