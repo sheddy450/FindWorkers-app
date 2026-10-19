@@ -77,3 +77,24 @@ describe("copied-photo detection", () => {
     expect(looksSame(null, "a1b2c3d4e5f60718")).toBe(false);
   });
 });
+
+import { isStock, stockPhotoFor } from "../src/lib/photos/stock";
+describe("trade example photos", () => {
+  it("every seeded trade has its own photo", () => {
+    const slugs = ["plumber", "electrician", "generator-repair", "ac-fridge", "carpenter", "painter", "tiler", "mechanic", "cleaner", "tailor", "phone-laptop-repair", "appliance-repair"];
+    const ids = slugs.map((s) => stockPhotoFor(s).id);
+    expect(new Set(ids).size).toBe(slugs.length);
+  });
+  it("matches trade names and new trades by keyword, with a general fallback", () => {
+    expect(stockPhotoFor("AC & fridge technician").id).toBe(stockPhotoFor("ac-fridge").id);
+    expect(stockPhotoFor("Solar installer").id).toBe(stockPhotoFor("electrician").id);
+    expect(stockPhotoFor("Dog walker").id).toBe(stockPhotoFor(null).id);
+  });
+  it("is marked as an example, sized for phones, and credited", () => {
+    const p = stockPhotoFor("tailor");
+    expect(isStock(p)).toBe(true);
+    expect(p.thumbUrl).toMatch(/^https:\/\/images\.unsplash\.com\/photo-.*w=480/);
+    expect(p.stock.page).toMatch(/^https:\/\/unsplash\.com\/photos\//);
+    expect(isStock(pickCardPhotos([]).cover)).toBe(false);
+  });
+});
