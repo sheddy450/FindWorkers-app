@@ -18,7 +18,8 @@ export function JobForm({ categories, states, initial }: { categories: { id: str
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const raw = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
+    const raw: Record<string, string> = {};
+    new FormData(e.currentTarget).forEach((v, k) => { raw[k] = String(v); });
     raw.timing = timing;
     const check = parseJob(raw, states);
     if (!check.ok) { setErrors(check.errors); document.querySelector<HTMLElement>("[aria-invalid=true], [role=alert]")?.scrollIntoView({ block: "center" }); return; }

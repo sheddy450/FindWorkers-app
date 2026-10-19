@@ -64,7 +64,8 @@ export function QuoteForm({ jobId, initial }: { jobId: string; initial: { priceN
   const [errors, setErrors] = useState<Record<string, string | undefined>>({}); const [busy, setBusy] = useState(false);
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const raw = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
+    const raw: Record<string, string> = {};
+    new FormData(e.currentTarget).forEach((v, k) => { raw[k] = String(v); });
     const check = parseQuote(raw);
     if (!check.ok) return setErrors(check.errors);
     setErrors({}); setBusy(true);
