@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { ArtisanCard } from "@/components/ArtisanCard";
+import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
+import type { CardPhotos } from "@/lib/photos/display";
 import { ArtisanCardSkeleton, EmptyState, ErrorState } from "@/components/ui/States";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
@@ -12,7 +13,7 @@ import { ArtisanMap } from "@/components/ArtisanMap";
 
 type Result = { userId: string; businessName: string; categories: string[]; distanceKm: number | null; avgRating: number; reviewCount: number;
   priceMinKobo: number | null; priceMaxKobo: number | null; availability: string; verifiedTypes: string[];
-  lat: number | null; lng: number | null };
+  lat: number | null; lng: number | null; state?: string | null; lga?: string | null; photos?: CardPhotos | null };
 
 const RADIUS_OPTIONS = [5, 10, 20, 50];
 const RATING_OPTIONS = [{ label: "Any rating", value: "" }, { label: "3+ stars", value: "3" }, { label: "4+ stars", value: "4" }, { label: "4.5+ stars", value: "4.5" }];
@@ -104,14 +105,16 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
             </p>
             {featured.map((r) => (
               <ArtisanCard key={`f-${r.userId}`} featured id={r.userId} businessName={r.businessName} categories={r.categories} distanceKm={r.distanceKm} avgRating={r.avgRating}
-                reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length} />
+                reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length}
+                photos={r.photos} place={placeOf(r)} />
             ))}
             <p className="pt-1 text-sm font-semibold text-ink">All results</p>
           </section>
         )}
-        {!error && results && results.length > 0 && view === "list" && results.map((r) => (
+        {!error && results && results.length > 0 && view === "list" && results.map((r, i) => (
           <ArtisanCard key={r.userId} id={r.userId} businessName={r.businessName} categories={r.categories} distanceKm={r.distanceKm} avgRating={r.avgRating}
-            reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length} />
+            reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length}
+            photos={r.photos} place={placeOf(r)} priority={i === 0 && featured.length === 0} />
         ))}
         {!error && results?.length === 0 && view === "map" && <p className="text-sm text-muted">No artisans match here yet. Try a wider radius, another category, or fewer filters.</p>}
         {!error && results && view === "map" && (

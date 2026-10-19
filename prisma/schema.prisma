@@ -343,6 +343,9 @@ model ArtisanPhoto {
   pairKey          String?
   displayOrder     Int              @default(0)
   isCover          Boolean          @default(false)
+  /// 64-bit "difference hash" (16 hex chars) of the photo, so moderators can spot the same picture
+  /// uploaded by two different artisans (a sign one of them copied it).
+  phash            String?
   moderationStatus ModerationStatus @default(PENDING)
   rejectReason     String?
   reviewedBy       String?

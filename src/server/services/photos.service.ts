@@ -5,13 +5,15 @@ import { HttpError } from "@/lib/http";
 import { delBlobs, putPublic } from "@/lib/providers/blob";
 import { NotConfiguredError } from "@/lib/providers/storage";
 import { imageInfo, stripImageMetadata, hasMetadata } from "@/lib/photos/image";
-import { MAX_EDGE, MAX_IMAGE_BYTES, MAX_THUMB_BYTES, MAX_WORK_PHOTOS, THUMB_EDGE, blurDataUrlOk, captionError, sameIds, sizeOk } from "@/lib/photos/rules";
+import { MAX_EDGE, MAX_IMAGE_BYTES, MAX_THUMB_BYTES, MAX_WORK_PHOTOS, THUMB_EDGE, blurDataUrlOk, captionError, isPhash, sameIds, sizeOk } from "@/lib/photos/rules";
 import { LIMITS, minutesFrom } from "@/lib/security/rate-limit-rules";
 import { hitLimit } from "./rate-limit.service";
 
 export type UploadInput = {
   image: Uint8Array; thumb: Uint8Array; blurDataUrl: unknown;
   caption: string; category: PhotoCategory; categoryId?: string | null; pairWithId?: string | null;
+  /** Perceptual hash from the browser. Only a moderation hint, so a missing or odd value is dropped. */
+  phash?: unknown;
 };
 
 const CONTENT_TYPE = { webp: "image/webp", jpeg: "image/jpeg" } as const;
@@ -80,6 +82,7 @@ export async function uploadPhoto(artisanId: string, input: UploadInput) {
       artisanId, url: stored[0].url, thumbUrl: stored[1].url, blurDataUrl: input.blurDataUrl as string,
       width: info.width, height: info.height, caption: input.caption.trim(), category: input.category,
       categoryId: input.categoryId || null, pairKey, displayOrder: (order._max.displayOrder ?? 0) + 1,
+      phash: isPhash(input.phash) ? input.phash : null,
     } });
     return { photo, oldUrls: old.flatMap((o) => [o.url, o.thumbUrl]) };
   });

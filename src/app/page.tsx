@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth/session";
 import { Icon } from "@/components/ui/Icon";
-import { ArtisanCard } from "@/components/ArtisanCard";
+import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
+import { cardPhotosFor } from "@/server/services/photo-display.service";
 import { LocationSelector } from "@/components/LocationSelector";
 import { EmptyState } from "@/components/ui/States";
 import { pickRandom } from "@/lib/pro/rules";
@@ -34,6 +35,7 @@ export default async function Home() {
   const featured = pickRandom(proPool, 2);
   const topRatedIds = new Set(topRated.map((a) => a.userId));
   const recommended = recent.filter((a) => !topRatedIds.has(a.userId)).slice(0, 4);
+  const photos = await cardPhotosFor([...featured, ...topRated, ...recommended].map((a) => a.userId));
   // A service can repeat a category (different titles under the same trade) — collapse to unique names for display.
   const professionsOf = (a: { services: { category: { name: string } }[] }) => [...new Set(a.services.map((s) => s.category.name))];
 
@@ -80,7 +82,8 @@ export default async function Home() {
           <div className="mt-3 space-y-3">
             {featured.map((a) => (
               <ArtisanCard key={a.userId} featured id={a.userId} businessName={a.businessName} categories={professionsOf(a)} avgRating={Number(a.avgRating)} reviewCount={a.reviewCount}
-                priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length} />
+                priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length}
+                photos={photos[a.userId]} place={placeOf(a)} />
             ))}
           </div>
         </section>
@@ -92,7 +95,8 @@ export default async function Home() {
           {topRated.length === 0 && <EmptyState icon="star" title="No rated artisans yet" body="Be among the first to hire a local pro and leave a review." action={{ label: "Browse artisans", href: "/search" }} />}
           {topRated.map((a) => (
             <ArtisanCard key={a.userId} id={a.userId} businessName={a.businessName} categories={professionsOf(a)} avgRating={Number(a.avgRating)} reviewCount={a.reviewCount}
-              priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length} />
+              priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length}
+                photos={photos[a.userId]} place={placeOf(a)} />
           ))}
         </div>
       </section>
@@ -103,7 +107,8 @@ export default async function Home() {
           <div className="space-y-3">
             {recommended.map((a) => (
               <ArtisanCard key={a.userId} id={a.userId} businessName={a.businessName} categories={professionsOf(a)} avgRating={Number(a.avgRating)} reviewCount={a.reviewCount}
-                priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length} />
+                priceMinKobo={a.priceMinKobo} priceMaxKobo={a.priceMaxKobo} availability={a.availability} verifiedCount={a.verifications.length}
+                photos={photos[a.userId]} place={placeOf(a)} />
             ))}
           </div>
         </section>

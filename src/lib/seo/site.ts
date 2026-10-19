@@ -10,8 +10,11 @@ export const SITE_TITLE = `${SITE_NAME}: trusted artisans near you in Nigeria`;
  * Open Graph fields for a page. Next.js replaces (doesn't merge) a parent's openGraph object, so
  * every page builds its own from this, keeping siteName and locale on all of them.
  */
-export function og(fields: { title: string; description: string; url: string; type?: "website" | "profile" }) {
-  return { siteName: SITE_NAME, locale: "en_NG", type: fields.type ?? "website", title: fields.title, description: fields.description, url: fields.url };
+export function og(fields: { title: string; description: string; url: string; type?: "website" | "profile";
+  /** A real photo for link previews (WhatsApp, Facebook). Without one, the site-wide share image is used. */
+  image?: { url: string; width: number; height: number; alt: string } | null }) {
+  return { siteName: SITE_NAME, locale: "en_NG", type: fields.type ?? "website", title: fields.title, description: fields.description, url: fields.url,
+    ...(fields.image ? { images: [fields.image] } : {}) };
 }
 
 export const absoluteUrl = (path = "/") => `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;

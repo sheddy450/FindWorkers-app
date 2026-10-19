@@ -95,7 +95,7 @@ function UploadForm({ prepared, kind, services, photos, onCancel, onDone }: {
     const f = new FormData();
     f.set("image", prepared.image, prepared.image.type === "image/webp" ? "photo.webp" : "photo.jpg");
     f.set("thumb", prepared.thumb, prepared.thumb.type === "image/webp" ? "thumb.webp" : "thumb.jpg");
-    f.set("blur", prepared.blur); f.set("caption", caption.trim()); f.set("category", category);
+    f.set("blur", prepared.blur); if (prepared.hash) f.set("hash", prepared.hash); f.set("caption", caption.trim()); f.set("category", category);
     if (categoryId) f.set("categoryId", categoryId);
     if (pairWith) f.set("pairWith", pairWith);
     setBusy(true);

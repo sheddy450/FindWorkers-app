@@ -4,9 +4,9 @@
  * thumbnail and a tiny blur preview. Re-drawing through a canvas also discards EXIF metadata
  * (including GPS), and honours the photo's rotation so it isn't sideways.
  */
-import { MAX_EDGE, THUMB_EDGE } from "./rules";
+import { MAX_EDGE, THUMB_EDGE, dhashFromGrey } from "./rules";
 
-export type PreparedPhoto = { image: Blob; thumb: Blob; blur: string; width: number; height: number; previewUrl: string };
+export type PreparedPhoto = { image: Blob; thumb: Blob; blur: string; hash: string; width: number; height: number; previewUrl: string };
 
 const MAX_INPUT_BYTES = 30 * 1024 * 1024;
 
@@ -67,6 +67,20 @@ function blurPreview(src: { source: CanvasImageSource; width: number; height: nu
   return draw(src, 6).toDataURL("image/jpeg", 0.3);
 }
 
+/** Perceptual hash (see dhashFromGrey) so moderators can spot the same picture uploaded twice. */
+function photoHash(src: { source: CanvasImageSource; width: number; height: number }): string {
+  const c = document.createElement("canvas");
+  c.width = 9; c.height = 8;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return "";
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(src.source, 0, 0, 9, 8);
+  const px = ctx.getImageData(0, 0, 9, 8).data;
+  const grey = new Array<number>(72);
+  for (let i = 0; i < 72; i++) grey[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+  return dhashFromGrey(grey);
+}
+
 export async function preparePhoto(file: File): Promise<PreparedPhoto> {
   if (!file.type.startsWith("image/") && !/\.(jpe?g|png|webp|heic|heif)$/i.test(file.name)) throw new Error("That file isn't a photo.");
   if (file.size > MAX_INPUT_BYTES) throw new Error("That photo is too large (over 30 MB). Choose a smaller one.");
@@ -76,7 +90,9 @@ export async function preparePhoto(file: File): Promise<PreparedPhoto> {
     const image = await encode(full, 0.82);
     const thumb = await encode(draw(src, THUMB_EDGE), 0.72);
     const blur = blurPreview(src);
-    return { image, thumb, blur, width: full.width, height: full.height, previewUrl: URL.createObjectURL(thumb) };
+    let hash = "";
+    try { hash = photoHash(src); } catch { /* optional: only helps moderation */ }
+    return { image, thumb, blur, hash, width: full.width, height: full.height, previewUrl: URL.createObjectURL(thumb) };
   } finally {
     src.close();
   }

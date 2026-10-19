@@ -66,3 +66,50 @@ export function completeness(p: CompletenessInput): { percent: number; steps: Co
   const percent = steps.reduce((n, s) => n + (s.done ? s.weight : 0), 0);
   return { percent, steps };
 }
+
+/* ── Copied-photo detection ─────────────────────────────────────────────────────────────────────
+ * A "difference hash" (dHash): shrink the photo to 9×8 grey pixels and record, for each row, whether
+ * each pixel is brighter than the one to its right. 64 bits → 16 hex chars. Resizing, recompressing
+ * or small colour changes barely change it, so two uploads of the same picture end up a few bits apart.
+ */
+
+/** dHash from 9×8 = 72 grey values (row by row, 0–255). */
+export function dhashFromGrey(grey: ArrayLike<number>): string {
+  if (grey.length !== 72) throw new Error("dHash needs 9×8 grey values");
+  let hex = "";
+  for (let y = 0; y < 8; y++) {
+    let byte = 0;
+    for (let x = 0; x < 8; x++) byte = (byte << 1) | (grey[y * 9 + x] > grey[y * 9 + x + 1] ? 1 : 0);
+    hex += byte.toString(16).padStart(2, "0");
+  }
+  return hex;
+}
+
+export const isPhash = (v: unknown): v is string => typeof v === "string" && /^[0-9a-f]{16}$/.test(v);
+
+/** Number of differing bits between two hashes (0 = identical, 64 = opposite). */
+export function hamming(a: string, b: string): number {
+  let d = 0;
+  for (let i = 0; i < 16; i += 4) {
+    let x = parseInt(a.slice(i, i + 4), 16) ^ parseInt(b.slice(i, i + 4), 16);
+    while (x) { d += x & 1; x >>= 1; }
+  }
+  return d;
+}
+
+/** Close enough to be the same picture. Flat, featureless images (a white wall) are ignored: every one looks alike. */
+export const SAME_PHOTO_BITS = 6;
+export function looksSame(a: string | null | undefined, b: string | null | undefined): boolean {
+  if (!a || !b || !isPhash(a) || !isPhash(b)) return false;
+  if (a === "0000000000000000" || a === "ffffffffffffffff") return false;
+  return hamming(a, b) <= SAME_PHOTO_BITS;
+}
+
+/** Ready-made rejection reasons for moderators (they can also write their own). Shown to the artisan. */
+export const REJECT_REASONS = [
+  "This looks like a stock or copied photo. Upload photos of jobs you did yourself.",
+  "The photo is too blurry or dark. Retake it in good light.",
+  "This photo doesn't show your work or your trade.",
+  "The photo shows personal details (faces, phone numbers, addresses or plate numbers). Retake it without them.",
+  "The caption doesn't describe the photo. Edit the caption to say what the job was.",
+] as const;
