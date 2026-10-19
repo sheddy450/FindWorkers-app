@@ -8,11 +8,11 @@ export function Skeleton({ className = "" }: { className?: string }) {
 /** Placeholder shaped like an artisan card, so layout doesn't jump when data loads. */
 export function ArtisanCardSkeleton() {
   return (
-    <div role="status" aria-label="Loading artisans" className="overflow-hidden rounded-card border border-line bg-white">
-      <div aria-hidden className="aspect-[16/7] w-full animate-pulse bg-line" />
-      <div className="flex gap-3 p-4 pt-0">
-        <Skeleton className="-mt-7 h-14 w-14 shrink-0 rounded-full ring-4 ring-white" />
-        <div className="flex-1 space-y-2 pt-2"><Skeleton className="h-4 w-2/3" /><Skeleton className="h-3 w-1/2" /><Skeleton className="h-3 w-3/4" /></div>
+    <div role="status" aria-label="Loading artisans" className="overflow-hidden rounded-[20px] bg-white shadow-soft ring-1 ring-line/70">
+      <div aria-hidden className="aspect-[16/9] w-full animate-pulse bg-line sm:aspect-[21/9]" />
+      <div className="flex items-center gap-3 px-4 py-3">
+        <div className="flex-1 space-y-2"><Skeleton className="h-4 w-1/2" /><Skeleton className="h-4 w-1/3" /></div>
+        <Skeleton className="h-10 w-10 rounded-full" />
       </div>
     </div>
   );
