@@ -19,5 +19,5 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 .fw-enter { animation: fw-enter 220ms cubic-bezier(.2,.7,.2,1) both; }
 /* Skeleton shimmer while pages load. */
 @keyframes fw-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-.fw-skel { background: linear-gradient(90deg, #E8EEEA 25%, #F3F7F4 50%, #E8EEEA 75%); background-size: 200% 100%; animation: fw-shimmer 1.4s linear infinite; }
+.fw-skel { background: linear-gradient(90deg, #E1E9E4 25%, #EEF3F0 50%, #E1E9E4 75%); background-size: 200% 100%; animation: fw-shimmer 1.4s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .fw-enter { animation: none; } .fw-skel { animation: none; } }
