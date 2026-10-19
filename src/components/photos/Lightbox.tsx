@@ -1,6 +1,5 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { srcSetOf, type PublicPhoto } from "@/lib/photos/display";
 
 /**
@@ -54,7 +53,8 @@ export function Lightbox({ photos, index, onIndex, onClose }: {
   if (!p) return null;
   const btn = "grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white backdrop-blur hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white";
 
-  return createPortal(
+  // Rendered in place (no portal): `fixed inset-0` already covers the whole screen.
+  return (
     <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={`Photo ${index + 1} of ${n}`}
       className="fixed inset-0 z-[70] flex flex-col bg-black/95 text-white">
       <div className="flex items-center justify-between gap-2 p-3">
@@ -96,7 +96,6 @@ export function Lightbox({ photos, index, onIndex, onClose }: {
       </div>
 
       <p className="mx-auto max-w-2xl px-4 pb-6 pt-3 text-center text-base">{p.alt}</p>
-    </div>,
-    document.body,
+    </div>
   );
 }
