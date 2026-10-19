@@ -33,6 +33,8 @@ export function fallbackFor(pathname: string, role?: Role | null): string {
   else if (first === "artisan-profile") target = "/search";
   else if (first === "services" && third) target = `/services/${second}`;
   else if (first === "services") target = "/categories";
+  else if (first === "jobs" && second) target = "/jobs";
+  else if (first === "jobs") target = "/requests";
   else if (first === "forgot-password" || first === "reset-password") target = "/login";
   else if (["categories", "search", "location", "login", "register"].includes(first ?? "")) target = "/";
   else target = home;

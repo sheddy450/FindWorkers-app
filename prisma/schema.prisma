@@ -48,6 +48,7 @@ model User {
   reviews         Review[]
   reviewVotes     ReviewVote[]
   requests        ServiceRequest[] @relation("CustomerRequests")
+  jobPosts        JobPost[]        @relation("CustomerJobs")
   customerConversations Conversation[] @relation("CustomerConversations")
 artisanConversations  Conversation[] @relation("ArtisanConversations")
   payments        Payment[]
@@ -78,6 +79,7 @@ model Artisan {
   user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
   dailyStats      ArtisanDailyStat[]
   photos          ArtisanPhoto[]
+  quotes          JobQuote[]
   services        ArtisanService[]
   slots           AvailabilitySlot[]
   reviews         Review[]
@@ -98,6 +100,7 @@ model ServiceCategory {
   services ArtisanService[]
   photos   ArtisanPhoto[]
   requests ServiceRequest[]
+  jobPosts JobPost[]
 }
 
 model ArtisanService {
@@ -158,6 +161,8 @@ model ServiceRequest {
   photos      RequestPhoto[]
   events      RequestStatusEvent[]
   review      Review?
+  /// Set when this request came from hiring a quote on a job post.
+  job         JobPost?
   artisan     Artisan                   @relation(fields: [artisanId], references: [userId])
   category    ServiceCategory           @relation(fields: [categoryId], references: [id])
   customer    User                      @relation("CustomerRequests", fields: [customerId], references: [id])
@@ -456,4 +461,73 @@ enum ReportStatus {
   OPEN
   RESOLVED
   DISMISSED
+}
+
+/// A customer describes a job; artisans who offer that service in the same state can quote for it.
+model JobPost {
+  id             String          @id @default(cuid())
+  customerId     String
+  categoryId     String
+  title          String
+  description    String
+  /// Area only (state + LGA/town). The exact address is shared after hiring, in the request chat.
+  state          String
+  lga            String
+  budgetMinKobo  Int?
+  budgetMaxKobo  Int?
+  timing         JobTiming       @default(FLEXIBLE)
+  preferredDate  DateTime?
+  status         JobStatus       @default(OPEN)
+  /// Open jobs stop taking quotes after this (14 days after posting).
+  expiresAt      DateTime
+  /// The request created when the customer hired someone.
+  hiredRequestId String?         @unique
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  customer       User            @relation("CustomerJobs", fields: [customerId], references: [id], onDelete: Cascade)
+  category       ServiceCategory @relation(fields: [categoryId], references: [id])
+  hiredRequest   ServiceRequest? @relation(fields: [hiredRequestId], references: [id], onDelete: SetNull)
+  quotes         JobQuote[]
+
+  @@index([status, categoryId, state, createdAt])
+  @@index([customerId, createdAt])
+}
+
+/// One artisan's price for one job (an artisan can quote a job once, and update or withdraw it).
+model JobQuote {
+  id         String      @id @default(cuid())
+  jobId      String
+  artisanId  String
+  priceKobo  Int
+  message    String
+  /// e.g. "Tomorrow morning"
+  canStart   String?
+  status     QuoteStatus @default(SENT)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  job        JobPost     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  artisan    Artisan     @relation(fields: [artisanId], references: [userId], onDelete: Cascade)
+
+  @@unique([jobId, artisanId])
+  @@index([artisanId, createdAt])
+}
+
+enum JobStatus {
+  OPEN
+  HIRED
+  CLOSED
+}
+
+enum JobTiming {
+  ASAP
+  THIS_WEEK
+  FLEXIBLE
+  ON_DATE
+}
+
+enum QuoteStatus {
+  SENT
+  ACCEPTED
+  DECLINED
+  WITHDRAWN
 }
