@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 import { absoluteUrl, stateSlug } from "@/lib/seo/site";
+import { CITIES } from "@/lib/places/cities";
 
 // Built on request (not at build time), so it always lists current artisans and never needs the
 // database during a build.
@@ -28,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: absoluteUrl("/categories"), lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: absoluteUrl("/register"), changeFrequency: "monthly", priority: 0.4 },
+    ...CITIES.map((c) => ({ url: absoluteUrl(`/browse?city=${c.slug}`), lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...categories.map((c) => ({ url: absoluteUrl(`/services/${c.slug}`), lastModified: now, changeFrequency: "daily" as const, priority: 0.9 })),
     ...combos.map((c) => ({ url: absoluteUrl(`/services/${c.slug}/${stateSlug(c.state)}`), lastModified: now, changeFrequency: "daily" as const, priority: 0.8 })),
     ...artisans.map((a) => ({ url: absoluteUrl(`/artisan-profile/${a.userId}`), lastModified: a.updatedAt, changeFrequency: "weekly" as const, priority: 0.6 })),
