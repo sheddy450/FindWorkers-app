@@ -38,6 +38,8 @@ describe("back nav: fallback parents for deep links", () => {
     ["/notifications", "ADMIN", "/admin"],
     ["/services/plumber/lagos", undefined, "/services/plumber"],
     ["/services/plumber", "CUSTOMER", "/categories"],
+    ["/forgot-password", undefined, "/login"],
+    ["/reset-password", undefined, "/login"],
   ];
   it.each(cases)("%s (%s) → %s", (path, role, want) => expect(fallbackFor(path, role)).toBe(want));
 

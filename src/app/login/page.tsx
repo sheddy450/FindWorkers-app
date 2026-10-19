@@ -53,6 +53,7 @@ export default function Login() {
       <form onSubmit={onSubmit} className="mt-6 space-y-4 rounded-card border border-line bg-white p-5 shadow-[0_1px_2px_rgba(23,26,33,0.05)]">
         <Input label="Phone or email" name="identifier" required autoComplete="username" placeholder="0803 123 4567 or you@example.com" />
         <PasswordInput label="Password" name="password" required autoComplete="current-password" />
+        <div className="-mt-2 text-right"><Link href="/forgot-password" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">Forgot password?</Link></div>
         {error && <Alert variant="error" title={error} />}
         <Button loading={busy} className="w-full">Log in</Button>
       </form>
