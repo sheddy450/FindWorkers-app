@@ -39,6 +39,14 @@ export default async function Profile() {
         <Card><Link href="/admin" className="text-sm font-semibold text-brand underline">Go to admin dashboard</Link></Card>
       )}
 
+      <Card className="flex flex-wrap items-center justify-between gap-3">
+        <div><p className="font-semibold">Need help?</p><p className="text-sm text-muted">Answers about jobs, payment, verification and your account.</p></div>
+        <div className="flex gap-2">
+          <Link href="/help" className="inline-flex min-h-11 items-center rounded-full bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-700">Help centre</Link>
+          {full.role === "CUSTOMER" && <Link href="/?tour=1" className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm font-semibold hover:bg-paper">Take the tour</Link>}
+        </div>
+      </Card>
+
       <Card><h2 className="mb-3 text-lg font-semibold">Account details</h2><AccountForm name={full.name} email={full.email} phone={full.phoneE164} /></Card>
       <Card><h2 className="mb-3 text-lg font-semibold">Password</h2><PasswordForm /></Card>
     </main>

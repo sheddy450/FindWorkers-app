@@ -11,7 +11,7 @@ export function HeroSearch({ services }: { services: { slug: string; name: strin
       className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-brand"><path d="M6 9l6 6 6-6" /></svg>
   );
   return (
-    <form action="/browse" method="get" role="search" aria-label="Find an artisan"
+    <form action="/browse" method="get" role="search" aria-label="Find an artisan" data-tour="search"
       className="rounded-[22px] bg-white p-4 text-ink shadow-[0_24px_60px_-28px_rgba(0,40,24,0.55)] sm:p-5">
       <div className="grid gap-x-3 gap-y-2 sm:grid-cols-[auto_1fr] sm:items-center">
         <label htmlFor="hero-service" className="text-lg font-semibold text-muted">I need a</label>

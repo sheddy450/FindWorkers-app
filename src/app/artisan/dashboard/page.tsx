@@ -89,7 +89,7 @@ export default async function Dashboard() {
       )}
       {submitted === 0 && <Card><p className="font-semibold">Get your first badge</p><p className="text-sm text-muted">Verified artisans get more trust from customers.</p>
         <Link href="/artisan/verification" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-highlight px-4 font-semibold">Start verification</Link></Card>}
-      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-brand underline"><Link href="/artisan/profile">Edit profile</Link><Link href="/artisan/photos">Photos</Link><Link href="/artisan/verification">Verification</Link><Link href="/artisan/pro">Pro plan</Link></div>
+      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-brand underline"><Link href="/artisan/profile">Edit profile</Link><Link href="/artisan/photos">Photos</Link><Link href="/artisan/verification">Verification</Link><Link href="/artisan/pro">Pro plan</Link><Link href="/guides/how-to-get-more-jobs">How to get more jobs</Link><Link href="/help">Help</Link></div>
 
       <section>
         <div className="mb-2 flex items-center justify-between">

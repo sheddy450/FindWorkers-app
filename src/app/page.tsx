@@ -13,6 +13,8 @@ import { glyphFor } from "@/components/photos/TradePlaceholder";
 import { CITIES } from "@/lib/places/cities";
 import { FAQS } from "@/lib/content/faq";
 import { GuideCard } from "@/components/guides/GuideCard";
+import { OnboardingTour } from "@/components/help/OnboardingTour";
+import { HelpTip } from "@/components/help/HelpTip";
 import { listGuides } from "@/server/services/guides.service";
 import { LocationSelector } from "@/components/LocationSelector";
 import { pickRandom } from "@/lib/pro/rules";
@@ -62,6 +64,7 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 pb-6 pt-4 sm:px-6">
+      <OnboardingTour />
       <JsonLd data={[
         { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: absoluteUrl("/apple-icon.png"), areaServed: { "@type": "Country", name: "Nigeria" } },
         { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
@@ -86,7 +89,7 @@ export default async function Home() {
             </p>
             <div className="mt-6"><HeroSearch services={alphabetical.map(({ slug, name }) => ({ slug, name }))} /></div>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <Link href="/jobs/new" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-highlight px-3 text-[14px] font-semibold sm:text-[15px] text-ink shadow-soft transition hover:brightness-105 motion-reduce:transition-none">Post a job — free</Link>
+              <Link href="/jobs/new" data-tour="post-job" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-highlight px-3 text-[14px] font-semibold sm:text-[15px] text-ink shadow-soft transition hover:brightness-105 motion-reduce:transition-none">Post a job — free</Link>
               <Link href="/register?role=ARTISAN" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full border border-white/50 px-3 text-[14px] font-semibold sm:text-[15px] text-white transition hover:bg-white/10 motion-reduce:transition-none">Join as an artisan</Link>
             </div>
           </div>
@@ -120,7 +123,7 @@ export default async function Home() {
           <h2 id="popular" className="text-2xl font-bold tracking-tight text-ink">Popular services</h2>
           <Link href="/categories" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">All services</Link>
         </div>
-        <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <ul data-tour="services" className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {popular.map((t, i) => (
             <li key={t.id} className={i === 0 ? "col-span-2 sm:col-span-1 sm:row-span-2" : ""}>
               <Link href={`/services/${t.slug}`} className="group relative block h-full overflow-hidden rounded-[20px] shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
@@ -139,7 +142,7 @@ export default async function Home() {
 
       {featured.length > 0 && (
         <section aria-labelledby="featured" className="mt-10">
-          <div className="flex items-end justify-between"><h2 id="featured" className="text-2xl font-bold tracking-tight text-ink">Featured artisans</h2><span className="text-sm text-muted">Paid placement</span></div>
+          <div className="flex items-end justify-between"><h2 id="featured" className="text-2xl font-bold tracking-tight text-ink">Featured artisans</h2><span className="flex items-center gap-1.5 text-sm text-muted">Paid placement <HelpTip topic="featured" /></span></div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">{featured.map((a) => card(a, { featured: true }))}</div>
         </section>
       )}
@@ -153,7 +156,7 @@ export default async function Home() {
             ["Get quotes", "Artisans near you send their price. Compare reviews, photos and badges."],
             ["Hire and review", "Chat in the app, agree the details, then rate the work when it's done."],
           ].map(([title, body], i) => (
-            <li key={title} className="relative flex gap-4 sm:block">
+            <li key={title} data-tour={i === 2 ? "review" : undefined} className="relative flex gap-4 sm:block">
               <span aria-hidden className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand font-display text-lg font-bold text-white">{i + 1}</span>
               <div className="sm:mt-3">
                 <h3 className="text-lg font-semibold text-ink">{title}</h3>
@@ -168,7 +171,7 @@ export default async function Home() {
       {topRated.length > 0 && (
         <section aria-labelledby="top" className="mt-10">
           <div className="flex items-end justify-between"><h2 id="top" className="text-2xl font-bold tracking-tight text-ink">Top-rated artisans</h2><Link href="/search" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">See all</Link></div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">{topRated.map((a) => card(a))}</div>
+          <div data-tour="profile" className="mt-4 grid gap-4 sm:grid-cols-2">{topRated.map((a) => card(a))}</div>
         </section>
       )}
 
@@ -246,7 +249,8 @@ export default async function Home() {
 
       <section aria-labelledby="faq-title" className="mt-10">
         <h2 id="faq-title" className="text-2xl font-bold tracking-tight text-ink">Questions people ask</h2>
-        <div className="mt-4"><Faq items={FAQS} /></div>
+        <div className="mt-4"><Faq items={FAQS.filter((f) => f.home)} /></div>
+        <p className="mt-3 text-sm text-muted">More answers in the <Link href="/help" className="font-semibold text-brand underline">help centre</Link>.</p>
       </section>
 
       {/* ── For artisans ─────────────────────────────────────────────────────── */}
