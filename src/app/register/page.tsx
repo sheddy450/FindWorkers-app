@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/Button";
 import { Input, PasswordInput } from "@/components/ui/Input";
@@ -18,6 +18,8 @@ const ROLES = [
 export default function Register() {
   const toast = useToast();
   const [role, setRole] = useState<"CUSTOMER" | "ARTISAN">("CUSTOMER");
+  // "Join as an artisan" links here with ?role=ARTISAN so the right option is already picked.
+  useEffect(() => { if (new URLSearchParams(window.location.search).get("role") === "ARTISAN") setRole("ARTISAN"); }, []);
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
 

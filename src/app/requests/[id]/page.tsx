@@ -15,7 +15,7 @@ export default async function RequestDetail({
   searchParams,
 }: {
   params: { id: string };
-  searchParams: { new?: string };
+  searchParams: { new?: string; hired?: string };
 }) {
   const user = await requirePageRole("CUSTOMER", "ARTISAN", "ADMIN");
   const r = await db.serviceRequest.findUnique({
@@ -91,6 +91,14 @@ export default async function RequestDetail({
       </div>
       {side === "ADMIN" && (
         <p className="mt-1 text-xs text-muted">Viewing as admin — read only</p>
+      )}
+      {searchParams.hired === "1" && side === "CUSTOMER" && (
+        <div className="mt-4">
+          <Alert variant="success" title={`You hired ${r.artisan.businessName}`}>
+            They&apos;ve been notified. Send them the exact address and a good time below, then mark the job
+            complete when it&apos;s done and leave a review.
+          </Alert>
+        </div>
       )}
       {searchParams.new === "1" && side === "CUSTOMER" && (
         <div className="mt-4">

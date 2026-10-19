@@ -96,7 +96,8 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
       <div className="mt-4 space-y-3">
         {error && <ErrorState title="Couldn't load artisans" body="Check your connection and try again." action={{ label: "Try again", onClick: () => location.reload() }} />}
         {!error && results === null && Array.from({ length: 4 }).map((_, i) => <ArtisanCardSkeleton key={i} />)}
-        {!error && results?.length === 0 && view === "list" && <EmptyState icon="search" title="No artisans found" body="Try a different category, widen your search radius, or loosen a filter." />}
+        {!error && results?.length === 0 && view === "list" && <EmptyState icon="search" title="No artisans found" body="Try a different category, widen your search radius, or loosen a filter. Or post your job and we'll alert artisans in your state."
+          action={{ label: "Post a job — free", href: `/jobs/new${category ? `?service=${category}` : ""}` }} />}
         {!error && results && results.length > 0 && view === "list" && featured.length > 0 && (
           <section aria-labelledby="featured-title" className="space-y-3 pb-2">
             <p id="featured-title" className="flex items-center justify-between text-sm">

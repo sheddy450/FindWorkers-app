@@ -34,6 +34,14 @@ function describe(
       label: `${payload.type} verification ${payload.decision === "APPROVED" ? "approved" : "not approved"}`,
       href: "/artisan/verification",
     };
+  if (type === "job.new")
+    return { label: "New job near you: send a quote", href: `/jobs/${payload.jobId}` };
+  if (type === "quote.new")
+    return { label: "You have a new quote for your job", href: `/jobs/${payload.jobId}` };
+  if (type === "quote.accepted")
+    return { label: "You got the job! Agree the address and time", href: payload.requestId ? `/requests/${payload.requestId}` : `/jobs/${payload.jobId}` };
+  if (type === "quote.declined")
+    return { label: payload.closed ? "A job you quoted was closed by the customer" : "The customer chose another artisan for a job you quoted", href: `/jobs/${payload.jobId}` };
   if (type === "photo.decision")
     return {
       label: payload.decision === "APPROVED"

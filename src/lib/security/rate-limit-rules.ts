@@ -8,6 +8,9 @@ export const LIMITS = {
   loginPerAccount: { name: "login:acct", max: 8, windowSec: 15 * 60 },
   loginPerIp: { name: "login:ip", max: 60, windowSec: 15 * 60 },
   photoUploadPerUser: { name: "photo-upload:user", max: 40, windowSec: 60 * 60 },
+  // Job posts notify every matching artisan in the state, so keep them to real jobs.
+  jobPostPerUser: { name: "job-post:user", max: 5, windowSec: 24 * 60 * 60 },
+  quotePerUser: { name: "quote:user", max: 40, windowSec: 60 * 60 },
   registerPerIp: { name: "register:ip", max: 10, windowSec: 60 * 60 },
   // Password reset emails: per network and per address, so nobody can flood someone's inbox.
   resetRequestPerIp: { name: "reset-req:ip", max: 10, windowSec: 60 * 60 },

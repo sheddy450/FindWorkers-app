@@ -56,6 +56,10 @@ export default async function Home() {
         <Link href="/search" className="relative mt-5 flex min-h-14 items-center gap-3 rounded-full bg-white px-5 font-semibold text-brand shadow-soft transition hover:bg-brand-soft active:scale-[0.99] motion-reduce:transition-none">
           <Icon name="search" /> What service do you need?
         </Link>
+        <div className="relative mt-3 grid grid-cols-2 gap-2">
+          <Link href="/jobs/new" className="flex min-h-11 items-center justify-center rounded-full bg-highlight px-4 text-sm font-semibold text-ink shadow-soft hover:brightness-105">Post a job — free</Link>
+          <Link href="/register?role=ARTISAN" className="flex min-h-11 items-center justify-center rounded-full border border-white/60 px-4 text-sm font-semibold text-white hover:bg-white/10">Join as an artisan</Link>
+        </div>
       </section>
       <LocationSelector />
 

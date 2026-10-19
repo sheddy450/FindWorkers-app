@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/States";
 import { VerificationBadges } from "@/components/VerificationBadges";
 import { formatNaira, isPro, PRO_DAYS, proDaysLeft, statDay } from "@/lib/pro/rules";
 import { getProPriceKobo } from "@/server/services/pro.service";
+import { jobBoard } from "@/server/services/jobs.service";
 
 const STATUS_TONE: Record<string, "brand" | "verified" | "danger"> = {
   REQUESTED: "brand", ACCEPTED: "brand", ON_THE_WAY: "brand", COMPLETED: "verified", REVIEWED: "verified",
@@ -29,6 +30,8 @@ export default async function Dashboard() {
     }) : null,
     pro ? null : getProPriceKobo(),
   ]);
+  const board = await jobBoard(user.id);
+  const freshJobs = board.ready ? board.jobs.filter((j) => !j.myQuote) : [];
   const workPhotos = await db.artisanPhoto.count({ where: { artisanId: user.id, category: { not: "PROFILE" }, moderationStatus: { not: "REJECTED" } } });
 
   const requests = await db.serviceRequest.findMany({
@@ -67,6 +70,16 @@ export default async function Dashboard() {
           <Link href="/artisan/pro" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-highlight px-4 font-semibold">{a.proUntil ? "Renew Pro" : "See Pro"}</Link>
         </Card>
       )}
+      <Link href="/jobs" className="block">
+        <Card className={`flex items-center gap-3 transition hover:shadow-md motion-reduce:transition-none ${freshJobs.length ? "border-brand/40 bg-brand-soft/60" : ""}`}>
+          <span aria-hidden className={`grid h-12 w-12 shrink-0 place-items-center rounded-full font-display text-xl font-bold ${freshJobs.length ? "bg-brand text-white" : "bg-paper text-muted"}`}>{freshJobs.length}</span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold">{freshJobs.length === 1 ? "1 job waiting for your quote" : `${freshJobs.length} jobs waiting for your quote`}</span>
+            <span className="block text-sm text-muted">{board.ready ? "Customers near you posted these. Quote quickly: early quotes get noticed." : "Add your services and state to see jobs near you."}</span>
+          </span>
+          <span aria-hidden className="text-brand">→</span>
+        </Card>
+      </Link>
       {workPhotos < 3 && (
         <Card>
           <p className="font-semibold">{workPhotos === 0 ? "Show customers your work" : `Add ${3 - workPhotos} more work photo${3 - workPhotos === 1 ? "" : "s"}`}</p>
