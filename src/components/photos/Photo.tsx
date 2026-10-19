@@ -23,7 +23,7 @@ export function Photo({ photo, trade, sizes, className = "", priority = false, f
       {/* eslint-disable-next-line @next/next/no-img-element -- files are already resized on upload; two sizes via srcSet */}
       <img src={photo.thumbUrl} srcSet={srcSetOf(photo)} sizes={sizes} alt={photo.alt}
         width={photo.width} height={photo.height}
-        loading={priority ? "eager" : "lazy"} decoding="async" fetchPriority={priority ? "high" : undefined}
+        loading={priority ? "eager" : "lazy"} decoding="async"
         onError={() => setFailed(true)}
         // An error that happened before the page's JavaScript started won't fire onError: catch it here.
         ref={(el) => { if (el && el.complete && el.naturalWidth === 0 && el.currentSrc) setFailed(true); }}

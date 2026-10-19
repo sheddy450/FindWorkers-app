@@ -10,7 +10,7 @@ import { REJECT_REASONS } from "@/lib/photos/rules";
 export function PhotoDecision({ id, suggestStolen }: { id: string; suggestStolen?: boolean }) {
   const router = useRouter(); const toast = useToast();
   const [rejecting, setRejecting] = useState(false);
-  const [reason, setReason] = useState(suggestStolen ? REJECT_REASONS[0] : "");
+  const [reason, setReason] = useState<string>(suggestStolen ? REJECT_REASONS[0] : "");
   const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
   async function send(decision: "APPROVED" | "REJECTED") {
     setBusy(true); setError("");

@@ -51,7 +51,9 @@ export async function photoQueue(take = 30) {
   ]);
   // Compare against recent hashed photos from everyone (approved, pending and rejected). In memory is fine
   // at this scale; move to a database index of hash chunks if the photo count reaches the hundreds of thousands.
-  const hashed = items.some((i) => i.phash)
+  type Hashed = { id: string; artisanId: string; phash: string | null; thumbUrl: string; caption: string;
+    moderationStatus: "PENDING" | "APPROVED" | "REJECTED"; createdAt: Date; artisan: { businessName: string } };
+  const hashed: Hashed[] = items.some((i) => i.phash)
     ? await db.artisanPhoto.findMany({
         where: { phash: { not: null } }, orderBy: { createdAt: "desc" }, take: 20000,
         select: { id: true, artisanId: true, phash: true, thumbUrl: true, caption: true, moderationStatus: true, createdAt: true,
