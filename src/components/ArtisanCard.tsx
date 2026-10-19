@@ -4,6 +4,7 @@ import { Badge } from "./ui/Badge";
 import { StarRating } from "./ui/StarRating";
 import { Photo } from "./photos/Photo";
 import type { CardPhotos } from "@/lib/photos/display";
+import { stockPhotoFor } from "@/lib/photos/stock";
 
 type Props = { id: string; businessName: string; categories?: string[]; distanceKm?: number | null; avgRating: number; reviewCount: number;
   priceMinKobo?: number | null; priceMaxKobo?: number | null; availability: string; verifiedCount: number;
@@ -24,12 +25,20 @@ const COVER_SIZES = "(max-width: 700px) 100vw, 670px";
 export function ArtisanCard(p: Props) {
   const trade = p.categories?.[0] ?? null;
   const price = nairaRange(p.priceMinKobo, p.priceMaxKobo);
+  // No approved photo yet: show a labelled example photo of the trade (never passed off as their work).
+  const own = p.photos?.cover ?? null;
+  const cover = own ?? stockPhotoFor(trade);
   return (
     <Link href={`/artisan-profile/${p.id}`} className="group block rounded-card">
       <Card className={`overflow-hidden p-0 transition ${p.featured ? "border-highlight/60 bg-highlight-soft/40" : ""} group-hover:border-brand/30 group-hover:shadow-md group-active:scale-[0.99] motion-reduce:transition-none motion-reduce:group-active:scale-100`}>
         <div className="relative">
-          <Photo photo={p.photos?.cover} trade={trade} sizes={COVER_SIZES} priority={p.priority} className="aspect-[16/7] w-full" />
+          <Photo photo={cover} trade={trade} sizes={COVER_SIZES} priority={p.priority} className="aspect-[16/7] w-full" />
           {p.featured && <span className="absolute left-3 top-3"><Badge tone="warning">★ Featured</Badge></span>}
+          {!own && (
+            <span className="absolute bottom-2 right-2 rounded-full bg-ink/65 px-2 py-0.5 text-[11px] font-medium text-white">
+              Example photo
+            </span>
+          )}
         </div>
         <div className="flex gap-3 p-4 pt-0">
           <div className="-mt-7 shrink-0">
