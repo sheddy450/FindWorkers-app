@@ -7,6 +7,7 @@ import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
 import { Photo } from "@/components/photos/Photo";
 import { stockPhotoFor } from "@/lib/photos/stock";
 import { cardPhotosFor, recentWork } from "@/server/services/photo-display.service";
+import { guideForCategory } from "@/server/services/guides.service";
 import { EmptyState } from "@/components/ui/States";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -37,12 +38,12 @@ export const loadListing = cache(async (slug: string, stateParam?: string) => {
     db.artisan.groupBy({ by: ["state"], where: { ...base, state: { not: null } }, _count: { _all: true } }),
     db.serviceCategory.findMany({ where: { isActive: true, id: { not: category.id } }, orderBy: { name: "asc" }, select: { slug: true, name: true } }),
   ]);
-  const [photos, work] = await Promise.all([cardPhotosFor(artisans.map((a) => a.userId)), recentWork(category.id, state)]);
+  const [photos, work, guide] = await Promise.all([cardPhotosFor(artisans.map((a) => a.userId)), recentWork(category.id, state), guideForCategory(category.id)]);
   const states = byState
     .filter((s): s is typeof s & { state: string } => !!s.state)
     .map((s) => ({ state: s.state, count: s._count._all }))
     .sort((a, b) => b.count - a.count || a.state.localeCompare(b.state));
-  return { category, state, artisans, states, others, photos, work };
+  return { category, state, artisans, states, others, photos, work, guide };
 });
 
 type Listing = NonNullable<Awaited<ReturnType<typeof loadListing>>>;
@@ -71,7 +72,7 @@ export async function listingMetadata(slug: string, stateParam?: string): Promis
 const professionsOf = (a: { services: { category: { name: string } }[] }) => [...new Set(a.services.map((s) => s.category.name))];
 
 export function ListingPage({ l }: { l: Listing }) {
-  const { category, state, artisans, states, others, photos, work } = l;
+  const { category, state, artisans, states, others, photos, work, guide } = l;
   const heading = serviceHeading(category.name, state);
   const where = state ? stateLabel(state) : "Nigeria";
   const path = listingPath(category.slug, state);
@@ -129,6 +130,16 @@ export function ListingPage({ l }: { l: Listing }) {
           <Icon name="pin" size={16} />Find one near me
         </Link>
       </header>
+
+      {guide && (
+        <Link href={`/guides/${guide.slug}`} className="flex items-center gap-4 rounded-[20px] bg-brand-soft/70 p-4 ring-1 ring-brand/15 transition hover:ring-brand/40 motion-reduce:transition-none">
+          <span aria-hidden className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-xl text-brand shadow-sm">₦</span>
+          <span className="min-w-0">
+            <span className="block font-semibold text-ink">{guide.title}</span>
+            <span className="block text-sm text-muted">Prices, questions to ask and red flags. Read before you hire.</span>
+          </span>
+        </Link>
+      )}
 
       <section aria-label={`${heading} list`} className="space-y-3">
         {artisans.length === 0

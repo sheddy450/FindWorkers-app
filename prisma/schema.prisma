@@ -101,6 +101,7 @@ model ServiceCategory {
   photos   ArtisanPhoto[]
   requests ServiceRequest[]
   jobPosts JobPost[]
+  guides   Guide[]
 }
 
 model ArtisanService {
@@ -530,4 +531,41 @@ enum QuoteStatus {
   ACCEPTED
   DECLINED
   WITHDRAWN
+}
+
+/// Hiring guides and help articles, written and edited by admins (/admin/guides).
+model Guide {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  title       String
+  summary     String
+  /// The trade it's about (drives the photo, related artisans and service-page links).
+  categoryId  String?
+  audience    GuideAudience   @default(CUSTOMER)
+  /// Simple formatting: "## Heading", "- list item", blank line between paragraphs, **bold**.
+  body        String
+  /// Price table rows: [{ item, low, high, note? }] in naira. Always shown as estimates.
+  prices      Json?
+  /// e.g. "Estimates for Lagos and Abuja, October 2026"
+  pricesNote  String?
+  questions   String[]
+  redFlags    String[]
+  checklist   String[]
+  status      GuideStatus     @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  category    ServiceCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([status, audience, publishedAt])
+}
+
+enum GuideStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum GuideAudience {
+  CUSTOMER
+  ARTISAN
 }

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 /** Every public page worth finding on Google: home, services, service+state pages, artisan profiles. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const [categories, artisans, combos] = await Promise.all([
+  const [categories, artisans, combos, guides] = await Promise.all([
     db.serviceCategory.findMany({ where: { isActive: true }, select: { slug: true } }),
     db.artisan.findMany({
       where: { user: { status: "ACTIVE" }, services: { some: {} } },
@@ -23,12 +23,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       JOIN "ServiceCategory" c ON c.id = s."categoryId" AND c."isActive" = true
       JOIN "Artisan" a ON a."userId" = s."artisanId" AND a.state IS NOT NULL
       JOIN "User" u ON u.id = a."userId" AND u.status = 'ACTIVE'`,
+    db.guide.findMany({ where: { status: "PUBLISHED" }, select: { slug: true, updatedAt: true } }),
   ]);
 
   return [
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: absoluteUrl("/categories"), lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: absoluteUrl("/register"), changeFrequency: "monthly", priority: 0.4 },
+    { url: absoluteUrl("/guides"), lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
+    ...guides.map((g) => ({ url: absoluteUrl(`/guides/${g.slug}`), lastModified: g.updatedAt, changeFrequency: "monthly" as const, priority: 0.7 })),
     ...CITIES.map((c) => ({ url: absoluteUrl(`/browse?city=${c.slug}`), lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...categories.map((c) => ({ url: absoluteUrl(`/services/${c.slug}`), lastModified: now, changeFrequency: "daily" as const, priority: 0.9 })),
     ...combos.map((c) => ({ url: absoluteUrl(`/services/${c.slug}/${stateSlug(c.state)}`), lastModified: now, changeFrequency: "daily" as const, priority: 0.8 })),
