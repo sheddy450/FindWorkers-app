@@ -7,6 +7,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { currentUser } from "@/lib/auth/session";
 import { NavProgress } from "@/components/NavProgress";
+import { MetaPixel } from "@/components/meta/MetaPixel";
+import { ConsentBanner } from "@/components/meta/ConsentBanner";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/seo/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -17,6 +19,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: SITE_TITLE, description: SITE_DESCRIPTION },
   // Paste the code Google Search Console gives you into GOOGLE_SITE_VERIFICATION (Vercel env) to verify ownership.
   verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
+  // Meta Business Suite → Brand safety → Domains → "Meta-tag verification": paste the code into META_DOMAIN_VERIFICATION.
+  other: process.env.META_DOMAIN_VERIFICATION ? { "facebook-domain-verification": process.env.META_DOMAIN_VERIFICATION } : undefined,
   formatDetection: { telephone: false },
 };
 export const viewport = { themeColor: "#007A49" };
@@ -26,10 +30,12 @@ export default async function Root({ children }: { children: React.ReactNode }) 
     <html lang="en-NG"><body>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-ctl focus:bg-white focus:p-3">Skip to content</a>
       <Suspense fallback={null}><NavProgress /></Suspense>
+      <Suspense fallback={null}><MetaPixel /></Suspense>
       <ToastProvider><BackNavProvider role={me?.role}>
         <BackBar />
         <div id="main" className="pb-20">{children}<Footer /></div>
         <BottomNav role={me?.role} />
+        <ConsentBanner />
       </BackNavProvider></ToastProvider>
     </body></html>
   );

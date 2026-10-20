@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 import { requestSchema } from "@/lib/validation/request";
+import { eventIdHeader, newEventId, track } from "@/lib/meta/pixel";
 
 type Photo = { key: string; previewUrl: string; status: "uploading" | "done" | "error" };
 
@@ -46,9 +47,11 @@ export function RequestForm({ artisanId, categories }: { artisanId: string; cate
     }
     setErrors({}); setBusy(true);
     try {
-      const res = await fetch(`/api/requests?artisanId=${artisanId}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(p.data) });
+      const eventId = newEventId("book");
+      const res = await fetch(`/api/requests?artisanId=${artisanId}`, { method: "POST", headers: { "Content-Type": "application/json", ...eventIdHeader(eventId) }, body: JSON.stringify(p.data) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) return setErrors(data.errors ? Object.fromEntries(Object.entries(data.errors).map(([k, v]) => [k, (v as string[])[0]])) : { form: data.error ?? "Couldn't send your request." });
+      track("Schedule", { content_name: "booking_request", content_ids: [artisanId], content_category: categories.find((c) => c.id === p.data.categoryId)?.name }, eventId);
       router.push(`/requests/${data.id}?new=1`);
     } catch { setErrors({ form: "We couldn't reach the server. Check your connection and try again." }); }
     finally { setBusy(false); }

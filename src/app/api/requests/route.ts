@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { handle, HttpError } from "@/lib/http";
 import { requireRole } from "@/lib/auth/session";
 import { requestSchema } from "@/lib/validation/request";
+import { sendMetaEvent } from "@/server/services/meta-capi.service";
 
 export const POST = handle(async (req) => {
   const user = await requireRole("CUSTOMER");
@@ -25,5 +26,6 @@ export const POST = handle(async (req) => {
     await tx.notification.create({ data: { userId: artisanId, type: "request.new", payload: { requestId: r.id } } });
     return r;
   });
+  sendMetaEvent(req, { name: "Schedule", user: { id: user.id, phone: user.phoneE164 }, customData: { content_name: "booking_request", content_ids: [artisanId] } });
   return NextResponse.json({ id: created.id }, { status: 201 });
 });

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 import { TIMING_LABEL, parseJob, type JobTiming } from "@/lib/jobs/rules";
+import { eventIdHeader, newEventId, track } from "@/lib/meta/pixel";
 
 const sel = (err?: string) => `mt-1 w-full rounded-ctl border bg-white p-3 text-base focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15 ${err ? "border-danger" : "border-line"}`;
 const Err = ({ id, msg }: { id: string; msg?: string }) => (msg ? <p id={id} role="alert" className="mt-1 text-sm text-danger">{msg}</p> : null);
@@ -25,9 +26,11 @@ export function JobForm({ categories, states, initial }: { categories: { id: str
     if (!check.ok) { setErrors(check.errors); document.querySelector<HTMLElement>("[aria-invalid=true], [role=alert]")?.scrollIntoView({ block: "center" }); return; }
     setErrors({}); setBusy(true);
     try {
-      const res = await fetch("/api/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(raw) });
+      const eventId = newEventId("job");
+      const res = await fetch("/api/jobs", { method: "POST", headers: { "Content-Type": "application/json", ...eventIdHeader(eventId) }, body: JSON.stringify(raw) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) return setErrors(data.errors ?? { form: data.error ?? "Couldn't post your job. Try again." });
+      track("Lead", { content_name: "job_post", content_category: categories.find((c) => c.id === raw.categoryId)?.name, city: raw.state }, eventId);
       router.push(`/jobs/${data.id}?posted=${data.notified ?? 0}`);
     } catch { setErrors({ form: "We couldn't reach the server. Check your connection and try again." }); }
     finally { setBusy(false); }

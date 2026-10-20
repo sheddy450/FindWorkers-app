@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validation/auth";
 import { LIMITS, clientIp, minutesFrom } from "@/lib/security/rate-limit-rules";
 import { hitLimit } from "@/server/services/rate-limit.service";
+import { sendMetaEvent } from "@/server/services/meta-capi.service";
 
 export async function POST(req: Request) {
   const limited = await hitLimit(LIMITS.registerPerIp, clientIp((n) => req.headers.get(n)));
@@ -25,5 +26,8 @@ export async function POST(req: Request) {
     select: { id: true, role: true },
   });
   // Phone is NOT marked verified until an SMS provider confirms an OTP.
+  // Meta: only if the visitor accepted cookies; email/phone are hashed before they leave our server.
+  sendMetaEvent(req, { name: "CompleteRegistration", user: { id: user.id, email, phone },
+    customData: { content_name: role === "ARTISAN" ? "artisan" : "customer", status: true } });
   return NextResponse.json(user, { status: 201 });
 }
