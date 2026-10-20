@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArtisanCard, placeOf } from "@/components/ArtisanCard";
@@ -11,6 +11,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Icon } from "@/components/ui/Icon";
 import { useLocation } from "@/lib/geo/location";
 import { ArtisanMap } from "@/components/ArtisanMap";
+import { track } from "@/lib/meta/pixel";
 
 type Result = { userId: string; businessName: string; categories: string[]; distanceKm: number | null; avgRating: number; reviewCount: number;
   priceMinKobo: number | null; priceMaxKobo: number | null; availability: string; verifiedTypes: string[];
@@ -34,6 +35,8 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
   const [minRating, setMinRating] = useState("");
   const [availableNow, setAvailableNow] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  // Meta "Search": once per service + place combination, not on every filter tap.
+  const searched = useRef(new Set<string>());
 
   const hasLocation = !!loc || (!!manualState && !!manualLga);
 
@@ -51,7 +54,16 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
     const ctl = new AbortController();
     setRefreshing(true); setError("");
     fetch(`/api/search?${q}`, { signal: ctl.signal }).then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((d) => { setResults(d.results); setFeatured(d.featured ?? []); setRefreshing(false); })
+      .then((d) => {
+        setResults(d.results); setFeatured(d.featured ?? []); setRefreshing(false);
+        const service = categories.find((c) => c.slug === category)?.name ?? "All services";
+        const city = manualState || (loc ? "near me" : "");
+        const key = `${service}|${city}`;
+        if (!searched.current.has(key)) {
+          searched.current.add(key);
+          track("Search", { search_string: [service, city].filter(Boolean).join(" in "), content_category: service, city, results: d.results?.length ?? 0 });
+        }
+      })
       .catch((e) => { if (e?.name !== "AbortError") { setError("Couldn't load artisans."); setRefreshing(false); } });
     return () => ctl.abort();
   }, [category, loc, manualState, manualLga, radiusKm, minRating, availableNow, verifiedOnly]);

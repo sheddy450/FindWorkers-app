@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 import { Icon } from "@/components/ui/Icon";
+import { track } from "@/lib/meta/pixel";
 
 /** Numbers are fetched on click, only for signed-in users, and never sit in the page's initial HTML. */
 export function ContactButtons({ artisanId, businessName, loggedIn }: { artisanId: string; businessName: string; loggedIn: boolean }) {
@@ -43,8 +44,8 @@ export function ContactButtons({ artisanId, businessName, loggedIn }: { artisanI
           <Button variant="outline" loading={busy} onClick={reveal} className="col-span-1"><Icon name="phone" size={16} /></Button>
           <Button variant="accent" loading={busy} onClick={reveal} className="col-span-1"><Icon name="chat" size={16} /></Button>
         </> : <>
-          <a href={links.tel} className="col-span-1 flex min-h-11 items-center justify-center gap-1 rounded-ctl border border-line bg-white text-sm font-semibold"><Icon name="phone" size={16} />Call</a>
-          <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" className="col-span-1 flex min-h-11 items-center justify-center gap-1 rounded-ctl bg-verified text-sm font-semibold text-white"><Icon name="chat" size={16} />WhatsApp</a>
+          <a href={links.tel} onClick={() => track("Contact", { content_name: "call", content_ids: [artisanId] })} className="col-span-1 flex min-h-11 items-center justify-center gap-1 rounded-ctl border border-line bg-white text-sm font-semibold"><Icon name="phone" size={16} />Call</a>
+          <a href={links.whatsapp} onClick={() => track("Contact", { content_name: "whatsapp", content_ids: [artisanId] })} target="_blank" rel="noopener noreferrer" className="col-span-1 flex min-h-11 items-center justify-center gap-1 rounded-ctl bg-verified text-sm font-semibold text-white"><Icon name="chat" size={16} />WhatsApp</a>
         </>}
         <Link href={`/requests/new/${artisanId}`} className="col-span-1 flex min-h-11 items-center justify-center rounded-ctl bg-highlight text-sm font-semibold">Request</Link>
       </div>

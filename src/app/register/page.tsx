@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
 import { registerSchema } from "@/lib/validation/auth";
+import { eventIdHeader, flushPixel, newEventId, track } from "@/lib/meta/pixel";
 
 type Errors = Partial<Record<"name" | "phone" | "email" | "password" | "terms" | "form", string>>;
 const ROLES = [
@@ -40,15 +41,18 @@ export default function Register() {
 
     setBusy(true);
     try {
-      const res = await fetch("/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+      const eventId = newEventId("reg");
+      const res = await fetch("/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json", ...eventIdHeader(eventId) }, body: JSON.stringify(input) });
       const data = await res.json().catch(() => ({}));
       if (res.status === 422 && data.errors) {
         setErrors(Object.fromEntries(Object.entries(data.errors).map(([k, v]) => [k, (v as string[])[0]])));
       } else if (!res.ok) {
         setErrors({ form: data.error ?? "We couldn't create your account. Check your connection and try again." });
       } else {
+        track("CompleteRegistration", { content_name: role === "ARTISAN" ? "artisan" : "customer", status: true }, eventId);
         const login = await signIn("credentials", { identifier: String(f.get("phone")), password: String(f.get("password")), redirect: false });
         toast("success", "Account created");
+        await flushPixel(); // full page load next: let the Pixel finish sending
         window.location.href = login?.error ? "/login" : role === "ARTISAN" ? "/artisan/profile" : "/location";
       }
     } catch {
@@ -84,7 +88,7 @@ export default function Register() {
         <div>
           <label className="flex items-start gap-3 text-sm">
             <input type="checkbox" name="terms" aria-invalid={!!errors.terms} className="mt-1 h-5 w-5 accent-brand" />
-            <span>I agree to the Terms of Use and Privacy Policy. My details are used only to run my account and connect me with artisans or customers.</span>
+            <span>I agree to the Terms of Use and <Link href="/privacy" className="font-semibold text-brand underline">Privacy Policy</Link>. My details are used only to run my account and connect me with artisans or customers.</span>
           </label>
           {errors.terms && <p role="alert" className="mt-1 text-sm text-danger">{errors.terms}</p>}
         </div>

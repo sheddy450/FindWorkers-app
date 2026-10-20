@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { StarRating } from "@/components/ui/StarRating";
 import { VerificationBadges } from "@/components/VerificationBadges";
 import { ContactButtons } from "./ContactButtons";
+import { TrackViewContent } from "@/components/meta/TrackViewContent";
 import { ReviewsSection } from "./ReviewsSection";
 import { bumpStat } from "@/server/services/pro.service";
 import type { Metadata } from "next";
@@ -104,6 +105,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
       <p className="mt-3 flex items-center gap-2 font-semibold">{nairaRange(artisan.priceMinKobo, artisan.priceMaxKobo)}{artisan.priceMinKobo != null && <HelpTip topic="priceRange" />}</p>
       <p className="text-sm text-muted">{artisan.yearsExperience} years of experience</p>
 
+      <TrackViewContent id={artisan.userId} service={trades[0]} city={artisan.state ? stateLabel(artisan.state) : undefined} />
       <div className="mt-5"><ContactButtons artisanId={artisan.userId} businessName={artisan.businessName} loggedIn={!!user} /></div>
       {user && user.id !== artisan.userId && (
         <Link href={`/report?type=ARTISAN&id=${artisan.userId}`} className="mt-3 inline-block text-sm text-muted underline">Report this artisan</Link>

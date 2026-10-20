@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieChoicesLink } from "@/components/meta/ConsentBanner";
 
 export function Footer() {
   return (
@@ -9,6 +10,8 @@ export function Footer() {
         <Link href="/categories" className="hover:text-brand">All services</Link>
         <Link href="/jobs/new" className="hover:text-brand">Post a job</Link>
         <Link href="/register?role=ARTISAN" className="hover:text-brand">Join as an artisan</Link>
+        <Link href="/privacy" className="hover:text-brand">Privacy</Link>
+        <CookieChoicesLink />
       </nav>
       <p className="text-xs">© {new Date().getFullYear()} Shedrach Musa. All rights reserved.</p>
     </footer>
