@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { MAX_QUOTES_PER_JOB, budgetText, expiryFrom, hasPhoneNumber, hiredRequestDescription, jobView, parseJob, parseQuote, quoteBlocker } from "../src/lib/jobs/rules";
+import { DRAFT_MAX_AGE_MS, decodeDraft, encodeDraft, safeNext } from "../src/lib/jobs/draft";
 
 const STATES = ["Lagos", "FCT (Abuja)", "Plateau"];
 const NOW = new Date("2026-10-19T10:00:00Z");
@@ -74,5 +75,29 @@ describe("job lifecycle", () => {
   it("carries the job and agreed price into the request", () => {
     expect(hiredRequestDescription({ title: "Fix sink", description: "Leaks" }, { priceKobo: 1250000, canStart: "Tomorrow" }))
       .toBe("Fix sink\n\nLeaks\n\nAgreed quote: ₦12,500 · Can start: Tomorrow");
+  });
+});
+
+
+describe("job draft kept while a visitor signs up", () => {
+  it("round-trips the typed fields", () => {
+    const now = 1_760_000_000_000;
+    const raw = encodeDraft({ title: "Fix leaking sink", categoryId: "c1", timing: "THIS_WEEK" }, now);
+    expect(decodeDraft(raw, now + 60_000)).toEqual({ title: "Fix leaking sink", categoryId: "c1", timing: "THIS_WEEK" });
+  });
+  it("drops drafts older than a day, broken JSON and non-string values", () => {
+    const now = 1_760_000_000_000;
+    expect(decodeDraft(encodeDraft({ title: "x" }, now), now + DRAFT_MAX_AGE_MS + 1)).toBeNull();
+    expect(decodeDraft("{not json", now)).toBeNull();
+    expect(decodeDraft(JSON.stringify({ savedAt: now, fields: { a: 1, b: "ok" } }), now)).toEqual({ b: "ok" });
+    expect(decodeDraft(null, now)).toBeNull();
+  });
+  it("only allows same-site next paths", () => {
+    expect(safeNext("/jobs/new?resume=1")).toBe("/jobs/new?resume=1");
+    expect(safeNext("//evil.com")).toBeNull();
+    expect(safeNext("/\\evil.com")).toBeNull();
+    expect(safeNext("https://evil.com")).toBeNull();
+    expect(safeNext("/login")).toBeNull();
+    expect(safeNext(null)).toBeNull();
   });
 });
