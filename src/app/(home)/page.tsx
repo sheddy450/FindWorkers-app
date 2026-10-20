@@ -26,11 +26,12 @@ export const dynamic = "force-dynamic";
 export const metadata = { alternates: { canonical: "/" }, openGraph: og({ title: SITE_TITLE, description: SITE_DESCRIPTION, url: "/" }) };
 
 export default async function Home() {
-  // "/" is the customer search homepage. An artisan or admin account has nothing to do here,
-  // so send them straight to the screen that's actually theirs instead of a dead end.
+  // "/" is the customer search homepage. Admins have nothing to do here, so they go to /admin.
+  // Artisans may browse it (to see how customers find them); their start screen is still the
+  // dashboard (bottom nav), and the hero buttons below point them back to their own screens.
   const me = await currentUser();
-  if (me?.role === "ARTISAN") redirect("/artisan/dashboard");
   if (me?.role === "ADMIN") redirect("/admin");
+  const isArtisan = me?.role === "ARTISAN";
 
   const [tiles, topRated, recent, proPool, byState, allGuides] = await Promise.all([
     serviceTiles(),
@@ -64,7 +65,7 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 pb-6 pt-4 sm:px-6">
-      <OnboardingTour />
+      {!isArtisan && <OnboardingTour />}
       <JsonLd data={[
         { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: absoluteUrl("/apple-icon.png"), areaServed: { "@type": "Country", name: "Nigeria" } },
         { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
@@ -103,10 +104,17 @@ export default async function Home() {
               Plumbers, electricians, tailors, mechanics and more across Nigeria. See their work, read real reviews, compare prices in naira.
             </p>
             <div className="mt-6"><HeroSearch services={alphabetical.map(({ slug, name }) => ({ slug, name }))} /></div>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <Link href="/jobs/new" data-tour="post-job" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-highlight px-3 text-[14px] font-semibold sm:text-[15px] text-ink shadow-soft transition hover:brightness-105 motion-reduce:transition-none">Post a job — free</Link>
-              <Link href="/register?role=ARTISAN" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full border border-white/50 px-3 text-[14px] font-semibold sm:text-[15px] text-white transition hover:bg-white/10 motion-reduce:transition-none">Join as an artisan</Link>
-            </div>
+            {isArtisan ? (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Link href="/artisan/dashboard" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-highlight px-3 text-[14px] font-semibold sm:text-[15px] text-ink shadow-soft transition hover:brightness-105 motion-reduce:transition-none">Your dashboard</Link>
+                <Link href="/jobs" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full border border-white/50 px-3 text-[14px] font-semibold sm:text-[15px] text-white transition hover:bg-white/10 motion-reduce:transition-none">Jobs to quote</Link>
+              </div>
+            ) : (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Link href="/jobs/new" data-tour="post-job" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-highlight px-3 text-[14px] font-semibold sm:text-[15px] text-ink shadow-soft transition hover:brightness-105 motion-reduce:transition-none">Post a job — free</Link>
+                <Link href="/register?role=ARTISAN" className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full border border-white/50 px-3 text-[14px] font-semibold sm:text-[15px] text-white transition hover:bg-white/10 motion-reduce:transition-none">Join as an artisan</Link>
+              </div>
+            )}
           </div>
 
           {/* Photo stack: real trades, the thing customers are here for */}
