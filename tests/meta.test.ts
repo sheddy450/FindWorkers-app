@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, it as test, expect } from "vitest";
 import { createHash } from "node:crypto";
 import { buildServerEvent, cleanEventId, consentFrom, cookieValue, normalizeEmail, normalizePhoneNG } from "../src/lib/meta/rules";
 
