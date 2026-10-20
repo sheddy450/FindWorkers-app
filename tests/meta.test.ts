@@ -1,6 +1,6 @@
 import { describe, it as test, expect } from "vitest";
 import { createHash } from "node:crypto";
-import { buildServerEvent, cleanEventId, consentFrom, cookieValue, normalizeEmail, normalizePhoneNG } from "../src/lib/meta/rules";
+import { DEFAULT_GTM_ID, buildServerEvent, cleanEventId, consentFrom, cookieValue, gtmIdFrom, normalizeEmail, normalizePhoneNG } from "../src/lib/meta/rules";
 
 const sha = (s: string) => createHash("sha256").update(s).digest("hex");
 
@@ -60,5 +60,13 @@ describe("Meta tracking rules", () => {
     const e = buildServerEvent({ name: "Lead", eventId: "job.123456789", timeSec: 1, ip: "unknown" }, sha);
     expect("client_ip_address" in e.user_data).toBe(false);
     expect("custom_data" in e).toBe(false);
+  });
+
+  test("GTM container: default when unset, env overrides, anything else turns it off", () => {
+    expect(gtmIdFrom(undefined)).toBe(DEFAULT_GTM_ID);
+    expect(gtmIdFrom(" gtm-abc1234 ")).toBe("GTM-ABC1234");
+    expect(gtmIdFrom("off")).toBeNull();
+    expect(gtmIdFrom("")).toBeNull();
+    expect(gtmIdFrom("GTM-X');alert(1);//")).toBeNull();
   });
 });

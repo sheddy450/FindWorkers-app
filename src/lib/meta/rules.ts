@@ -15,6 +15,15 @@ export const EVENT_ID_HEADER = "x-fw-event-id";
 /** Events we send. Standard Meta event names, so they can be used as campaign optimisation goals. */
 export type MetaEventName = "PageView" | "Lead" | "CompleteRegistration" | "Contact" | "Schedule" | "Search" | "ViewContent";
 
+/** FindWorkers' Google Tag Manager container. NEXT_PUBLIC_GTM_ID overrides it; set it to "off" to turn GTM off. */
+export const DEFAULT_GTM_ID = "GTM-T8GL892W";
+
+/** Picks the GTM container id: the env value if set, else the default. Anything malformed means "off". */
+export function gtmIdFrom(env: string | null | undefined): string | null {
+  const v = (env ?? DEFAULT_GTM_ID).trim().toUpperCase();
+  return /^GTM-[A-Z0-9]{4,12}$/.test(v) ? v : null;
+}
+
 /** Reads one cookie from a Cookie header (server) or document.cookie (browser). */
 export function cookieValue(header: string | null | undefined, name: string): string | null {
   if (!header) return null;
