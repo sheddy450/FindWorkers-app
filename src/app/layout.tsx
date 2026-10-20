@@ -9,6 +9,7 @@ import { currentUser } from "@/lib/auth/session";
 import { NavProgress } from "@/components/NavProgress";
 import { MetaPixel } from "@/components/meta/MetaPixel";
 import { ConsentBanner } from "@/components/meta/ConsentBanner";
+import { GoogleTagManager } from "@/components/meta/GoogleTagManager";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/seo/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -31,6 +32,7 @@ export default async function Root({ children }: { children: React.ReactNode }) 
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-ctl focus:bg-white focus:p-3">Skip to content</a>
       <Suspense fallback={null}><NavProgress /></Suspense>
       <Suspense fallback={null}><MetaPixel /></Suspense>
+      <GoogleTagManager />
       <ToastProvider><BackNavProvider role={me?.role}>
         <BackBar />
         <div id="main" className="pb-20">{children}<Footer /></div>

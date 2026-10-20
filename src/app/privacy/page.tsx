@@ -48,10 +48,11 @@ export default function Privacy() {
         <li><strong>Our team:</strong> to review verifications, photos and reports.</li>
         <li><strong>Service providers</strong> who run parts of the site for us: hosting (Vercel), database (Neon), file storage, email and payments. They may only use your data to provide that service.</li>
         <li><strong>Meta (Facebook and Instagram):</strong> only if you accept cookies. See the next section.</li>
+        <li><strong>Google (Tag Manager):</strong> only if you accept cookies. See the next section.</li>
         <li>We do not sell your personal information.</li>
       </ul>
 
-      <H id="cookies">Cookies and Meta</H>
+      <H id="cookies">Cookies, Meta and Google</H>
       <p className="mt-2">
         We always use one essential cookie to keep you logged in, and one to remember your cookie choice.
       </p>
@@ -62,7 +63,12 @@ export default function Privacy() {
         your email and phone number only in a scrambled (hashed) form. Meta handles this data under its own privacy policy.
       </p>
       <p className="mt-2">
-        If you tap <strong>No thanks</strong>, none of this happens and the site works exactly the same. You can change your
+        Accepting also loads Google Tag Manager, which we use to run measurement tools from Google. We set it up to see which pages you
+        visit and the same actions listed above, not your password, messages or uploaded documents. Google handles
+        this data under its own privacy policy.
+      </p>
+      <p className="mt-2">
+        If you tap <strong>No thanks</strong>, neither Meta nor Google tools load and the site works exactly the same. You can change your
         mind any time with <strong>Cookie choices</strong> at the bottom of every page.
       </p>
 
