@@ -25,7 +25,8 @@ export function JobForm({ categories, states, initial, loggedIn }: { categories:
     const d = loadDraft();
     if (!d) return;
     setDraft(d);
-    if (isTiming(d.timing)) setTiming(d.timing);
+    const t: unknown = d.timing;
+    if (isTiming(t)) setTiming(t);
   }, []);
   const dv = (name: string, fallback = "") => draft?.[name] ?? fallback;
   const loginNext = `/login?next=${encodeURIComponent(JOB_RESUME_PATH)}`;
