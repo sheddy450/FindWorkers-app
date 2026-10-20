@@ -22,13 +22,13 @@ export default function Register() {
   const [role, setRole] = useState<"CUSTOMER" | "ARTISAN">("CUSTOMER");
   // "Join as an artisan" links here with ?role=ARTISAN so the right option is already picked.
   // ?next= brings a customer back where they were (e.g. their half-posted job) after signing up.
-  const [next, setNext] = useState<string | null>(null);
+  const [returnTo, setReturnTo] = useState<string | null>(null);
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
     if (q.get("role") === "ARTISAN") setRole("ARTISAN");
-    setNext(safeNext(q.get("next")));
+    setReturnTo(safeNext(q.get("next")));
   }, []);
-  const forJob = next === JOB_RESUME_PATH;
+  const forJob = returnTo === JOB_RESUME_PATH;
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
 
@@ -61,8 +61,8 @@ export default function Register() {
         const login = await signIn("credentials", { identifier: String(f.get("phone")), password: String(f.get("password")), redirect: false });
         toast("success", "Account created");
         await flushPixel(); // full page load next: let the Pixel finish sending
-        window.location.href = login?.error ? `/login${next ? `?next=${encodeURIComponent(next)}` : ""}`
-          : role === "ARTISAN" ? "/artisan/profile" : next ?? "/location";
+        window.location.href = login?.error ? `/login${returnTo ? `?next=${encodeURIComponent(returnTo)}` : ""}`
+          : role === "ARTISAN" ? "/artisan/profile" : returnTo ?? "/location";
       }
     } catch {
       setErrors({ form: "We couldn't reach the server. Check your connection and try again." });
@@ -73,7 +73,7 @@ export default function Register() {
     <main className="mx-auto max-w-md p-6">
       <h1 className="text-3xl font-bold text-brand">{forJob ? "One last step: your free account" : "Create your account"}</h1>
       {forJob && <p className="mt-1 text-muted">Your job is saved. Create an account so artisans can send you their prices, then you&apos;ll post it.</p>}
-      <p className="mt-1 text-muted">Already registered? <Link href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"} className="font-semibold text-brand underline">Log in</Link></p>
+      <p className="mt-1 text-muted">Already registered? <Link href={returnTo ? `/login?next=${encodeURIComponent(returnTo)}` : "/login"} className="font-semibold text-brand underline">Log in</Link></p>
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-5">
         <fieldset>
