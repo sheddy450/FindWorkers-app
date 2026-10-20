@@ -1,6 +1,6 @@
 "use client";
 import { signIn, getSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input, PasswordInput } from "@/components/ui/Input";
@@ -8,6 +8,12 @@ import { Alert } from "@/components/ui/Alert";
 
 export default function Login() {
   const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  // "Create an account" keeps ?next=, so someone who arrived from a half-posted job gets back to it.
+  const [registerHref, setRegisterHref] = useState("/register");
+  useEffect(() => {
+    const next = new URLSearchParams(window.location.search).get("next");
+    if (next && next.startsWith("/") && !next.startsWith("//")) setRegisterHref(`/register?next=${encodeURIComponent(next)}`);
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); setBusy(true); setError("");
@@ -57,7 +63,7 @@ export default function Login() {
         {error && <Alert variant="error" title={error} />}
         <Button loading={busy} className="w-full">Log in</Button>
       </form>
-      <p className="mt-6 text-center text-sm text-muted">New here? <Link href="/register" className="inline-flex min-h-11 items-center font-semibold text-brand underline">Create an account</Link></p>
+      <p className="mt-6 text-center text-sm text-muted">New here? <Link href={registerHref} className="inline-flex min-h-11 items-center font-semibold text-brand underline">Create an account</Link></p>
     </main>
   );
 }

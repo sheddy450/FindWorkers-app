@@ -9,6 +9,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
 import { registerSchema } from "@/lib/validation/auth";
 import { eventIdHeader, flushPixel, newEventId, track } from "@/lib/meta/pixel";
+import { JOB_RESUME_PATH, safeNext } from "@/lib/jobs/draft";
 
 type Errors = Partial<Record<"name" | "phone" | "email" | "password" | "terms" | "form", string>>;
 const ROLES = [
@@ -20,7 +21,14 @@ export default function Register() {
   const toast = useToast();
   const [role, setRole] = useState<"CUSTOMER" | "ARTISAN">("CUSTOMER");
   // "Join as an artisan" links here with ?role=ARTISAN so the right option is already picked.
-  useEffect(() => { if (new URLSearchParams(window.location.search).get("role") === "ARTISAN") setRole("ARTISAN"); }, []);
+  // ?next= brings a customer back where they were (e.g. their half-posted job) after signing up.
+  const [next, setNext] = useState<string | null>(null);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get("role") === "ARTISAN") setRole("ARTISAN");
+    setNext(safeNext(q.get("next")));
+  }, []);
+  const forJob = next === JOB_RESUME_PATH;
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
 
@@ -53,7 +61,8 @@ export default function Register() {
         const login = await signIn("credentials", { identifier: String(f.get("phone")), password: String(f.get("password")), redirect: false });
         toast("success", "Account created");
         await flushPixel(); // full page load next: let the Pixel finish sending
-        window.location.href = login?.error ? "/login" : role === "ARTISAN" ? "/artisan/profile" : "/location";
+        window.location.href = login?.error ? `/login${next ? `?next=${encodeURIComponent(next)}` : ""}`
+          : role === "ARTISAN" ? "/artisan/profile" : next ?? "/location";
       }
     } catch {
       setErrors({ form: "We couldn't reach the server. Check your connection and try again." });
@@ -62,8 +71,9 @@ export default function Register() {
 
   return (
     <main className="mx-auto max-w-md p-6">
-      <h1 className="text-3xl font-bold text-brand">Create your account</h1>
-      <p className="mt-1 text-muted">Already registered? <Link href="/login" className="font-semibold text-brand underline">Log in</Link></p>
+      <h1 className="text-3xl font-bold text-brand">{forJob ? "One last step: your free account" : "Create your account"}</h1>
+      {forJob && <p className="mt-1 text-muted">Your job is saved. Create an account so artisans can send you their prices, then you&apos;ll post it.</p>}
+      <p className="mt-1 text-muted">Already registered? <Link href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"} className="font-semibold text-brand underline">Log in</Link></p>
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-5">
         <fieldset>
