@@ -13,8 +13,9 @@ export const POST = handle(async (req, { params }: { params: { id: string } }) =
   const p = body.safeParse(await req.json().catch(() => null));
   if (!p.success) throw new HttpError(422, "Invalid status.");
   if (params.id === admin.id) throw new HttpError(400, "You can't change your own account status here.");
-  const target = await db.user.findUnique({ where: { id: params.id }, select: { id: true, role: true } });
+  const target = await db.user.findUnique({ where: { id: params.id }, select: { id: true, role: true, deletedAt: true } });
   if (!target) throw new HttpError(404, "User not found.");
+  if (target.deletedAt) throw new HttpError(409, "This person deleted their account; it can't be changed.");
   if (target.role === "ADMIN") throw new HttpError(403, "Admin accounts can't be suspended from this screen.");
 
   await db.$transaction(async (tx) => {

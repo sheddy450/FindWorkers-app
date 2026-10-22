@@ -1,9 +1,11 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import path from "path";
 
 export interface StorageProvider {
   put(key: string, data: Buffer): Promise<void>;
   get(key: string): Promise<Buffer | null>;
+  /** Removes a file; a missing file is not an error. */
+  delete(key: string): Promise<void>;
 }
 export class NotConfiguredError extends Error {}
 
@@ -17,6 +19,7 @@ class LocalStorage implements StorageProvider {
   }
   async put(key: string, data: Buffer) { const p = this.safe(key); await mkdir(path.dirname(p), { recursive: true }); await writeFile(p, data); }
   async get(key: string) { try { return await readFile(this.safe(key)); } catch { return null; } }
+  async delete(key: string) { await rm(this.safe(key), { force: true }); }
 }
 
 export function getStorage(): StorageProvider {

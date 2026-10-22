@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { AccountForm } from "./AccountForm";
 import { PasswordForm } from "./PasswordForm";
 import { SignOutButton } from "./SignOutButton";
+import { DeleteAccount } from "./DeleteAccount";
 
 export default async function Profile() {
   const user = await requirePageRole("CUSTOMER", "ARTISAN", "ADMIN");
@@ -49,6 +50,7 @@ export default async function Profile() {
 
       <Card><h2 className="mb-3 text-lg font-semibold">Account details</h2><AccountForm name={full.name} email={full.email} phone={full.phoneE164} /></Card>
       <Card><h2 className="mb-3 text-lg font-semibold">Password</h2><PasswordForm /></Card>
+      {full.role !== "ADMIN" && <Card className="border border-danger/20"><DeleteAccount role={full.role} /></Card>}
     </main>
   );
 }

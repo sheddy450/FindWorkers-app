@@ -49,12 +49,13 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
   const [user, artisan, photos] = await Promise.all([
     currentUser(),
     db.artisan.findUnique({ where: { userId: id }, include: {
-      verifications: true, services: { include: { category: true } },
+      verifications: true, services: { include: { category: true } }, user: { select: { status: true } },
       reviews: { where: { hidden: false }, orderBy: { createdAt: "desc" }, take: 20, include: { customer: { select: { name: true } } } },
     } }),
     profilePhotos(id),
   ]);
-  if (!artisan) notFound();
+  // Suspended or deleted accounts have no public page.
+  if (!artisan || artisan.user.status !== "ACTIVE") notFound();
   // Count real customer interest only: not the artisan looking at their own page, not admins.
   if (user?.id !== artisan.userId && user?.role !== "ADMIN") await bumpStat(artisan.userId, "profileViews");
 

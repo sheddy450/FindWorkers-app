@@ -32,9 +32,11 @@ export default async function AdminUserDetail({ params }: { params: Promise<{ id
           <div><p className="text-xl font-semibold">{user.name}</p>
             <p className="text-sm text-muted">{user.email ?? "No email"} · {user.phoneE164 ?? "No phone"} · {user.role}</p>
             <p className="text-sm text-muted">Joined {user.createdAt.toLocaleDateString("en-NG")}</p></div>
-          <Badge tone={STATUS_TONE[user.status]}>{user.status}</Badge>
+          {user.deletedAt ? <Badge tone="danger">DELETED BY USER</Badge> : <Badge tone={STATUS_TONE[user.status]}>{user.status}</Badge>}
         </div>
-        {user.role !== "ADMIN" && <div className="mt-4"><StatusControls userId={user.id} status={user.status} /></div>}
+        {user.deletedAt
+          ? <p className="mt-4 text-sm text-muted">This person deleted their account on {user.deletedAt.toLocaleDateString("en-NG")}. Their personal details were removed; it can&apos;t be reactivated.</p>
+          : user.role !== "ADMIN" && <div className="mt-4"><StatusControls userId={user.id} status={user.status} /></div>}
       </Card>
 
       {user.artisan && (

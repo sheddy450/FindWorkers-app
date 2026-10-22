@@ -68,13 +68,15 @@ export default function Privacy() {
 
       <H>How long we keep it</H>
       <p className="mt-2">
-        While your account is open. If you ask us to delete your account, we delete or anonymise your data, except records we
-        must keep by law or to settle a dispute (for example, payment records).
+        While your account is open. When you delete your account, your name, contact details, password, profile, photos and
+        ID documents are removed straight away. Reviews you wrote stay as &ldquo;Former customer&rdquo;, and messages and
+        payment records are kept without your details, in case of a dispute or a legal duty.
       </p>
 
       <H>Your rights</H>
       <p className="mt-2">
-        You can ask to see the data we hold about you, correct it, delete it, or withdraw consent you gave. Email{" "}
+        You can delete your account yourself at any time: <strong>Profile → Delete my account</strong>. You can also ask to
+        see the data we hold about you, correct it, or withdraw consent you gave. Email{" "}
         <a href={`mailto:${CONTACT}`} className="font-semibold text-brand underline">{CONTACT}</a>. We reply within 30 days.
         If you&apos;re not happy with our answer, you can complain to the Nigeria Data Protection Commission (NDPC).
       </p>
