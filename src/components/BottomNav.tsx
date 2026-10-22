@@ -17,7 +17,7 @@ const ARTISAN_ITEMS: { href: string; label: string; icon: IconName }[] = [
   { href: "/messages", label: "Messages", icon: "chat" }, { href: "/profile", label: "Profile", icon: "user" },
 ];
 const ADMIN_ITEMS: { href: string; label: string; icon: IconName }[] = [
-  { href: "/admin", label: "Admin", icon: "home" }, { href: "/profile", label: "Profile", icon: "user" },
+  { href: "/admin", label: "Admin", icon: "home" }, { href: "/", label: "Website", icon: "search" }, { href: "/profile", label: "Profile", icon: "user" },
 ];
 const HIDDEN = ["/login", "/register", "/design", "/location"];
 
