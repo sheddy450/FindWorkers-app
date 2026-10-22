@@ -16,7 +16,7 @@ export default async function AdminUsers({ searchParams }: { searchParams: { q?:
   const users = await db.user.findMany({
     where: { ...(role ? { role } : {}), ...(q ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }, { phoneE164: { contains: q } }] } : {}) },
     orderBy: { createdAt: "desc" }, take: 50,
-    select: { id: true, name: true, email: true, phoneE164: true, role: true, status: true, createdAt: true },
+    select: { id: true, name: true, email: true, phoneE164: true, role: true, status: true, createdAt: true, deletedAt: true },
   });
 
   return (
@@ -35,8 +35,8 @@ export default async function AdminUsers({ searchParams }: { searchParams: { q?:
         {users.map((u) => (
           <Link key={u.id} href={`/admin/users/${u.id}`}>
             <Card className="flex items-center justify-between gap-2">
-              <div><p className="font-semibold">{u.name}</p><p className="text-sm text-muted">{u.email ?? u.phoneE164} · {u.role}</p></div>
-              <Badge tone={STATUS_TONE[u.status]}>{u.status}</Badge>
+              <div><p className="font-semibold">{u.name}</p><p className="text-sm text-muted">{u.email ?? u.phoneE164 ?? "No contact details"} · {u.role}</p></div>
+              {u.deletedAt ? <Badge tone="danger">DELETED</Badge> : <Badge tone={STATUS_TONE[u.status]}>{u.status}</Badge>}
             </Card>
           </Link>
         ))}

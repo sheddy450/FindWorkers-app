@@ -36,6 +36,8 @@ model User {
   phoneVerifiedAt DateTime?
   /// Set when the password changes; sessions issued before this are rejected (signs out other devices).
   passwordChangedAt DateTime?
+  /// Set when the user deleted their own account: personal details are wiped, the row stays for history.
+  deletedAt       DateTime?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   artisan         Artisan?

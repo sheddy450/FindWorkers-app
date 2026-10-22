@@ -34,11 +34,12 @@ export const GET = handle(async (req) => {
                ST_Distance(a.geog, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography) / 1000 AS "distanceKm"
         FROM "Artisan" a
         WHERE a.geog IS NOT NULL
+          AND EXISTS (SELECT 1 FROM "User" u WHERE u.id = a."userId" AND u.status = 'ACTIVE')
           AND ST_DWithin(a.geog, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography, ${radiusKm * 1000})
           ${category ? db.$queryRaw`AND EXISTS (SELECT 1 FROM "ArtisanService" s JOIN "ServiceCategory" c ON c.id = s."categoryId" WHERE s."artisanId" = a."userId" AND c.slug = ${category})` : db.$queryRaw``}
         LIMIT 60`
     : await db.artisan.findMany({
-        where: { ...(state ? { state } : {}), ...(lga ? { lga: { contains: lga, mode: "insensitive" } } : {}),
+        where: { user: { status: "ACTIVE" }, ...(state ? { state } : {}), ...(lga ? { lga: { contains: lga, mode: "insensitive" } } : {}),
           ...(category ? { services: { some: { category: { slug: category } } } } : {}) },
         select: { userId: true, businessName: true, photoKey: true, avgRating: true, reviewCount: true, availability: true, state: true, lga: true, priceMinKobo: true, priceMaxKobo: true, proUntil: true },
         take: 60,
