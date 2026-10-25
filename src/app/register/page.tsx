@@ -27,7 +27,8 @@ const ROLES = [
  */
 const PITCH: Record<Role, { title: (city: string) => string; sub: string; points: string[] }> = {
   ARTISAN: {
-    title: (city) => `Get more jobs${city ? ` in ${city}` : " near you"}, free`,
+    // Same heading for every artisan ad, whatever city the link names.
+    title: () => "Get jobs for free in Nigeria",
     sub: "Create your free FindWorkers account in about a minute.",
     points: ["Job requests from customers near you, and jobs you can quote for", "Free to join and free to quote: no hidden fees", "Show your work photos and build your name with reviews"],
   },
