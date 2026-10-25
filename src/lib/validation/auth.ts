@@ -1,4 +1,11 @@
 import { z } from "zod";
+import { PASSWORD_MAX, passwordProblem } from "./password";
+
+/** Same rule wherever a password is set (sign-up, change, reset). */
+export const passwordField = z.string().max(PASSWORD_MAX).superRefine((v, ctx) => {
+  const problem = passwordProblem(v);
+  if (problem) ctx.addIssue({ code: "custom", message: problem });
+});
 
 /** Normalise Nigerian numbers (0803..., 803..., +234803...) to E.164. */
 export function toE164NG(raw: string): string | null {
@@ -8,16 +15,20 @@ export function toE164NG(raw: string): string | null {
 }
 
 export const registerSchema = z.object({
-  name: z.string().trim().min(2).max(80),
+  name: z.string().trim().min(2, "Enter your name").max(80),
   email: z.string().trim().toLowerCase().email().optional(),
   phone: z.string().transform((v, ctx) => {
     const p = toE164NG(v);
     if (!p) ctx.addIssue({ code: "custom", message: "Enter a valid Nigerian phone number" });
     return p as string;
   }),
-  password: z.string().min(10, "Use at least 10 characters").max(128),
+  password: passwordField,
   // Admin can never be self-registered.
   role: z.enum(["CUSTOMER", "ARTISAN"]),
+}).superRefine((v, ctx) => {
+  // Also refuse the person's own phone number as their password.
+  const problem = v.phone ? passwordProblem(v.password, v.phone) : null;
+  if (problem) ctx.addIssue({ code: "custom", path: ["password"], message: problem });
 });
 export const loginSchema = z.object({ identifier: z.string().min(3), password: z.string().min(1) });
 export type RegisterInput = z.infer<typeof registerSchema>;

@@ -10,22 +10,48 @@ import { useToast } from "@/components/ui/Toast";
 import { registerSchema } from "@/lib/validation/auth";
 import { eventIdHeader, flushPixel, newEventId, track } from "@/lib/meta/pixel";
 import { JOB_RESUME_PATH, safeNext } from "@/lib/jobs/draft";
+import { PASSWORD_HINT } from "@/lib/validation/password";
+import { CITIES } from "@/lib/places/cities";
 
-type Errors = Partial<Record<"name" | "phone" | "email" | "password" | "terms" | "form", string>>;
+type Errors = Partial<Record<"name" | "phone" | "email" | "password" | "form", string>>;
+type Role = "CUSTOMER" | "ARTISAN";
 const ROLES = [
   { value: "CUSTOMER", title: "I need a service", body: "Find and contact artisans near you", icon: "search" },
   { value: "ARTISAN", title: "I offer a service", body: "Get found by customers and manage requests", icon: "wrench" },
 ] as const;
 
+/**
+ * What a visitor who arrived with ?role= (from an ad, or a "Join as an artisan" button) sees above the
+ * form: one clear promise and three short reasons, instead of a role picker. Kept to claims the
+ * product actually delivers.
+ */
+const PITCH: Record<Role, { title: (city: string) => string; sub: string; points: string[] }> = {
+  ARTISAN: {
+    title: (city) => `Get more jobs${city ? ` in ${city}` : " near you"}, free`,
+    sub: "Create your free FindWorkers account in about a minute.",
+    points: ["Job requests from customers near you, and jobs you can quote for", "Free to join and free to quote: no hidden fees", "Show your work photos and build your name with reviews"],
+  },
+  CUSTOMER: {
+    title: (city) => `Find trusted artisans${city ? ` in ${city}` : " near you"}`,
+    sub: "Create your free account in about a minute.",
+    points: ["Verified badges and reviews from real, booked jobs", "Compare prices in naira before anyone comes", "Post your job free and let artisans send their price"],
+  },
+};
+
 export default function Register() {
   const toast = useToast();
-  const [role, setRole] = useState<"CUSTOMER" | "ARTISAN">("CUSTOMER");
-  // "Join as an artisan" links here with ?role=ARTISAN so the right option is already picked.
-  // ?next= brings a customer back where they were (e.g. their half-posted job) after signing up.
+  const [role, setRole] = useState<Role>("CUSTOMER");
+  // ?role= comes from ads and "Join as an artisan" buttons: the role is already known, so skip the picker.
+  // ?city= (e.g. "abuja") personalises the heading. ?next= brings a customer back where they were.
+  const [focused, setFocused] = useState(false);
+  const [city, setCity] = useState("");
   const [returnTo, setReturnTo] = useState<string | null>(null);
+  const [showEmail, setShowEmail] = useState(false);
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
-    if (q.get("role") === "ARTISAN") setRole("ARTISAN");
+    const r = (q.get("role") ?? "").toUpperCase();
+    if (r === "ARTISAN" || r === "CUSTOMER") { setRole(r); setFocused(true); }
+    setCity(CITIES.find((c) => c.slug === (q.get("city") ?? "").toLowerCase())?.name ?? "");
     setReturnTo(safeNext(q.get("next")));
   }, []);
   const forJob = returnTo === JOB_RESUME_PATH;
@@ -42,11 +68,10 @@ export default function Register() {
     if (!parsed.success) {
       const fe = parsed.error.flatten().fieldErrors;
       for (const k of ["name", "phone", "email", "password"] as const) if (fe[k]?.[0]) next[k] = fe[k]![0];
+      if (next.email) setShowEmail(true);
     }
-    if (!f.get("terms")) next.terms = "Please accept the terms to continue.";
     setErrors(next);
     if (Object.keys(next).length || !parsed.success) return;
-
     setBusy(true);
     try {
       const eventId = newEventId("reg");
@@ -69,43 +94,70 @@ export default function Register() {
     } finally { setBusy(false); }
   }
 
+  const pitch = focused && !forJob ? PITCH[role] : null;
+  const loginHref = returnTo ? `/login?next=${encodeURIComponent(returnTo)}` : "/login";
   return (
-    <main className="mx-auto max-w-md p-6">
-      <h1 className="text-3xl font-bold text-brand">{forJob ? "One last step: your free account" : "Create your account"}</h1>
-      {forJob && <p className="mt-1 text-muted">Your job is saved. Create an account so artisans can send you their prices, then you&apos;ll post it.</p>}
-      <p className="mt-1 text-muted">Already registered? <Link href={returnTo ? `/login?next=${encodeURIComponent(returnTo)}` : "/login"} className="font-semibold text-brand underline">Log in</Link></p>
-
-      <form onSubmit={onSubmit} noValidate className="mt-6 space-y-5">
-        <fieldset>
-          <legend className="text-sm font-medium">What brings you here?</legend>
-          <div className="mt-2 grid gap-3">
-            {ROLES.map((r) => (
-              <label key={r.value} className={`flex cursor-pointer items-start gap-3 rounded-card border-2 bg-white p-4 has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-brand-700 ${role === r.value ? "border-brand" : "border-line"}`}>
-                <input type="radio" name="role" value={r.value} checked={role === r.value} onChange={() => setRole(r.value)} className="sr-only" />
-                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${role === r.value ? "bg-brand text-white" : "bg-brand-soft text-brand"}`}><Icon name={r.icon} /></span>
-                <span><span className="block font-semibold">{r.title}</span><span className="text-sm text-muted">{r.body}</span></span>
-              </label>
-            ))}
+    <main className={`mx-auto max-w-md ${pitch ? "px-4 pb-6 pt-3" : "p-6"}`}>
+      {pitch ? (
+        <section aria-labelledby="reg-title" className="relative overflow-hidden rounded-[22px] bg-brand-700 px-5 py-5 text-white">
+          <span aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_100%_0%,rgba(52,199,89,0.35),transparent_55%)]" />
+          <div className="relative">
+            <h1 id="reg-title" className="text-[1.65rem] font-extrabold leading-tight tracking-tight">{pitch.title(city)}</h1>
+            <p className="mt-1 text-sm text-white/85">{pitch.sub}</p>
+            <ul className="mt-3 space-y-1.5 text-sm leading-snug">
+              {pitch.points.map((p) => (
+                <li key={p} className="flex gap-2"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-highlight text-ink"><Icon name="check" size={14} /></span>{p}</li>
+              ))}
+            </ul>
           </div>
-        </fieldset>
+        </section>
+      ) : (
+        <>
+          <h1 className="text-3xl font-bold text-brand">{forJob ? "One last step: your free account" : "Create your account"}</h1>
+          {forJob && <p className="mt-1 text-muted">Your job is saved. Create an account so artisans can send you their prices, then you&apos;ll post it.</p>}
+        </>
+      )}
 
-        <Input label="Full name" name="name" autoComplete="name" error={errors.name} />
+      <form onSubmit={onSubmit} noValidate className={`${pitch ? "mt-4" : "mt-6"} space-y-4`}>
+        {!focused && !forJob && (
+          <fieldset>
+            <legend className="text-sm font-medium">What brings you here?</legend>
+            <div className="mt-2 grid gap-3">
+              {ROLES.map((r) => (
+                <label key={r.value} className={`flex cursor-pointer items-start gap-3 rounded-card border-2 bg-white p-4 has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-brand-700 ${role === r.value ? "border-brand" : "border-line"}`}>
+                  <input type="radio" name="role" value={r.value} checked={role === r.value} onChange={() => setRole(r.value)} className="sr-only" />
+                  <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${role === r.value ? "bg-brand text-white" : "bg-brand-soft text-brand"}`}><Icon name={r.icon} /></span>
+                  <span><span className="block font-semibold">{r.title}</span><span className="text-sm text-muted">{r.body}</span></span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+
+        <Input label={role === "ARTISAN" ? "Your name or business name" : "Your name"} name="name" autoComplete="name" error={errors.name} />
         <Input label="Phone number" name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="0803 123 4567"
-          hint="Nigerian mobile number. Used to log in." error={errors.phone} />
-        <Input label="Email (optional)" name="email" type="email" autoComplete="email" error={errors.email} />
-        <PasswordInput label="Password" name="password" autoComplete="new-password" hint="At least 10 characters." error={errors.password} />
-
-        <div>
-          <label className="flex items-start gap-3 text-sm">
-            <input type="checkbox" name="terms" aria-invalid={!!errors.terms} className="mt-1 h-5 w-5 accent-brand" />
-            <span>I agree to the Terms of Use and <Link href="/privacy" className="font-semibold text-brand underline">Privacy Policy</Link>. My details are used only to run my account and connect me with artisans or customers.</span>
-          </label>
-          {errors.terms && <p role="alert" className="mt-1 text-sm text-danger">{errors.terms}</p>}
-        </div>
+          hint="You'll use it to log in." error={errors.phone} />
+        <PasswordInput label="Create a password" name="password" autoComplete="new-password" hint={PASSWORD_HINT} error={errors.password} />
+        {showEmail ? (
+          <Input label="Email (optional)" name="email" type="email" autoComplete="email" hint="For receipts and resetting your password." error={errors.email} />
+        ) : (
+          <button type="button" onClick={() => setShowEmail(true)} className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">+ Add email (optional)</button>
+        )}
 
         {errors.form && <Alert variant="error" title={errors.form} />}
-        <Button loading={busy} className="w-full">Create account</Button>
-        <p className="text-center text-sm text-muted">We won't ask for your location until you choose to share it.</p>
+        <Button loading={busy} className="w-full">{forJob ? "Create account and continue" : "Create free account"}</Button>
+        <p className="text-center text-xs text-muted">
+          By creating an account you agree to our Terms of Use and <Link href="/privacy" className="font-semibold text-brand underline">Privacy Policy</Link>.
+        </p>
+        <p className="text-center text-sm text-muted">Already registered? <Link href={loginHref} className="font-semibold text-brand underline">Log in</Link></p>
+        {focused && !forJob && (
+          <p className="text-center text-sm text-muted">
+            {role === "ARTISAN" ? "Looking to hire someone instead?" : "Are you an artisan?"}{" "}
+            <button type="button" onClick={() => setRole(role === "ARTISAN" ? "CUSTOMER" : "ARTISAN")} className="font-semibold text-brand underline">
+              {role === "ARTISAN" ? "Sign up to hire" : "Join as an artisan"}
+            </button>
+          </p>
+        )}
       </form>
     </main>
   );

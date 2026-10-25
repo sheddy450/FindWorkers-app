@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { PasswordInput } from "@/components/ui/Input";
 import { Alert } from "@/components/ui/Alert";
 import { Icon } from "@/components/ui/Icon";
+import { PASSWORD_HINT, passwordProblem } from "@/lib/validation/password";
 
 export function ResetForm({ token }: { token: string }) {
   const [errors, setErrors] = useState<{ password?: string; confirm?: string; form?: string }>({});
@@ -15,7 +16,8 @@ export function ResetForm({ token }: { token: string }) {
     const f = new FormData(e.currentTarget);
     const password = String(f.get("password") ?? ""), confirm = String(f.get("confirm") ?? "");
     const next: typeof errors = {};
-    if (password.length < 10) next.password = "Use at least 10 characters.";
+    const problem = passwordProblem(password);
+    if (problem) next.password = problem;
     if (confirm !== password) next.confirm = "The passwords don't match.";
     setErrors(next);
     if (Object.keys(next).length) return;
@@ -40,7 +42,7 @@ export function ResetForm({ token }: { token: string }) {
   );
   return (
     <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4 rounded-card border border-line bg-white p-5 shadow-soft">
-      <PasswordInput label="New password" name="password" autoComplete="new-password" hint="At least 10 characters." error={errors.password} />
+      <PasswordInput label="New password" name="password" autoComplete="new-password" hint={PASSWORD_HINT} error={errors.password} />
       <PasswordInput label="Confirm new password" name="confirm" autoComplete="new-password" error={errors.confirm} />
       {errors.form && <Alert variant="error" title={errors.form} />}
       <Button loading={busy} className="w-full">Change password</Button>

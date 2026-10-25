@@ -1,4 +1,5 @@
 "use client";
+import { PASSWORD_HINT } from "@/lib/validation/password";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { PasswordInput } from "@/components/ui/Input";
@@ -32,7 +33,7 @@ export function PasswordForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
       <PasswordInput label="Current password" name="currentPassword" autoComplete="current-password" error={errors.currentPassword} />
-      <PasswordInput label="New password" name="newPassword" autoComplete="new-password" hint="At least 10 characters." error={errors.newPassword} />
+      <PasswordInput label="New password" name="newPassword" autoComplete="new-password" hint={PASSWORD_HINT} error={errors.newPassword} />
       {errors.form && <Alert variant="error" title={errors.form} />}
       <Button loading={busy} variant="outline">Change password</Button>
     </form>

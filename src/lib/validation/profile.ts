@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { passwordField } from "./auth";
 
 export const accountSchema = z.object({
   name: z.string().trim().min(2, "Enter your name").max(80),
@@ -6,5 +7,5 @@ export const accountSchema = z.object({
 });
 export const passwordChangeSchema = z.object({
   currentPassword: z.string().min(1, "Enter your current password"),
-  newPassword: z.string().min(10, "Use at least 10 characters").max(128),
+  newPassword: passwordField,
 });
