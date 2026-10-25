@@ -137,12 +137,15 @@ export default function Register() {
         <Input label={role === "ARTISAN" ? "Your name or business name" : "Your name"} name="name" autoComplete="name" error={errors.name} />
         <Input label="Phone number" name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="0803 123 4567"
           hint="You'll use it to log in." error={errors.phone} />
-        <PasswordInput label="Create a password" name="password" autoComplete="new-password" hint={PASSWORD_HINT} error={errors.password} />
-        {showEmail ? (
+        {role === "ARTISAN" ? (
+          <Input label="Email" name="email" type="email" inputMode="email" autoComplete="email" required
+            hint="To reset your password if you forget it, and for Pro plan receipts." error={errors.email} />
+        ) : showEmail ? (
           <Input label="Email (optional)" name="email" type="email" autoComplete="email" hint="For receipts and resetting your password." error={errors.email} />
         ) : (
           <button type="button" onClick={() => setShowEmail(true)} className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">+ Add email (optional)</button>
         )}
+        <PasswordInput label="Create a password" name="password" autoComplete="new-password" hint={PASSWORD_HINT} error={errors.password} />
 
         {errors.form && <Alert variant="error" title={errors.form} />}
         <Button loading={busy} className="w-full">{forJob ? "Create account and continue" : "Create free account"}</Button>
