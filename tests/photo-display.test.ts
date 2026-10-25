@@ -81,7 +81,8 @@ describe("copied-photo detection", () => {
 import { isStock, stockPhotoFor } from "../src/lib/photos/stock";
 describe("trade example photos", () => {
   it("every seeded trade has its own photo", () => {
-    const slugs = ["plumber", "electrician", "generator-repair", "ac-fridge", "carpenter", "painter", "tiler", "mechanic", "cleaner", "tailor", "phone-laptop-repair", "appliance-repair"];
+    const slugs = ["plumber", "electrician", "generator-repair", "ac-fridge", "carpenter", "painter", "tiler", "mechanic", "cleaner", "tailor", "phone-laptop-repair", "appliance-repair",
+      "welder", "bricklayer", "furniture-maker", "upholsterer", "shoemaker", "embroiderer", "aso-oke-weaver", "jeweller", "watch-repairer", "baker"];
     const ids = slugs.map((s) => stockPhotoFor(s).id);
     expect(new Set(ids).size).toBe(slugs.length);
   });
