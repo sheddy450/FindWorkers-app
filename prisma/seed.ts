@@ -6,6 +6,10 @@ const categories = [
   ["ac-fridge","AC & fridge technician"],["carpenter","Carpenter"],["painter","Painter"],
   ["tiler","Tiler"],["mechanic","Mechanic"],["cleaner","Cleaner"],["tailor","Tailor"],
   ["phone-laptop-repair","Phone & laptop repair"],["appliance-repair","Appliance repair"],
+  ["welder","Welder & fabricator"],["bricklayer","Bricklayer & mason"],["furniture-maker","Furniture maker"],
+  ["upholsterer","Upholsterer"],["shoemaker","Shoemaker & leatherworker"],["embroiderer","Embroiderer"],
+  ["aso-oke-weaver","Aso-oke weaver"],["jeweller","Jeweller (gold & silver)"],["watch-repairer","Watch repairer"],
+  ["baker","Baker & cake maker"],
 ];
 async function main() {
   for (const [slug, name] of categories)
