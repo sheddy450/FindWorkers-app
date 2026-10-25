@@ -21,14 +21,14 @@ export function ConsentBanner() {
   const choose = (v: "granted" | "denied") => { writeConsent(v); setOpen(false); };
   return (
     <section role="region" aria-label="Cookie choices"
-      className="fixed inset-x-3 bottom-[5.5rem] z-[70] mx-auto max-w-lg rounded-[20px] bg-white p-4 text-ink shadow-[0_20px_50px_-20px_rgba(0,0,0,0.45)] ring-1 ring-line sm:bottom-6">
-      <p className="text-[15px] leading-relaxed">
-        Can we use cookies from Meta (Facebook and Instagram) to measure our ads and show FindWorkers to people who need it?
-        The site works the same either way. <Link href="/privacy#cookies" className="font-semibold text-brand underline underline-offset-2">Learn more</Link>
+      className="fixed inset-x-3 bottom-[5.5rem] z-[70] mx-auto max-w-lg rounded-[18px] bg-white p-3.5 text-ink shadow-[0_20px_50px_-20px_rgba(0,0,0,0.45)] ring-1 ring-line sm:bottom-6">
+      <p className="text-sm leading-snug">
+        Can we use Meta (Facebook) cookies to measure our ads? The site works the same either way.{" "}
+        <Link href="/privacy#cookies" className="font-semibold text-brand underline underline-offset-2">Learn more</Link>
       </p>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <button type="button" onClick={() => choose("denied")} className="min-h-11 rounded-full border border-line bg-white px-4 font-semibold hover:bg-paper">No thanks</button>
-        <button type="button" onClick={() => choose("granted")} className="min-h-11 rounded-full bg-brand px-4 font-semibold text-white hover:bg-brand-700">Accept</button>
+      <div className="mt-2.5 grid grid-cols-2 gap-2">
+        <button type="button" onClick={() => choose("denied")} className="min-h-11 rounded-full border border-line bg-white px-4 text-sm font-semibold hover:bg-paper">No thanks</button>
+        <button type="button" onClick={() => choose("granted")} className="min-h-11 rounded-full bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-700">Accept</button>
       </div>
     </section>
   );
