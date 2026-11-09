@@ -12,7 +12,7 @@ export default async function ArtisanProfile() {
   return (
     <main className="mx-auto max-w-md p-6">
       <h1 className="text-3xl font-bold text-brand">{a ? "Your profile" : "Set up your profile"}</h1>
-      <p className="mt-1 text-muted">Customers see this before they contact you.{a && <> Photos are managed on <Link href="/artisan/photos" className="font-semibold text-brand underline">your photos page</Link>.</>}</p>
+      <p className="mt-1 text-muted">Customers see this before they contact you.{a && <> Photos are managed on <Link href="/artisan/photos" className="font-semibold text-brand fw-link hover:text-brand-700">your photos page</Link>.</>}</p>
       <ProfileForm isNew={!a} categories={categories} initial={{
         businessName: a?.businessName ?? user.name, bio: a?.bio ?? "", yearsExperience: a?.yearsExperience ?? 0,
         categoryIds: a?.services.map((s) => s.categoryId) ?? [], state: a?.state ?? "", lga: a?.lga ?? "", serviceRadiusKm: a?.serviceRadiusKm ?? 10,

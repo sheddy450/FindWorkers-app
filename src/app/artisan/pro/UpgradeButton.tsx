@@ -21,7 +21,7 @@ export function UpgradeButton({ label, needsEmail }: { label: string; needsEmail
 
   if (needsEmail) return (
     <Alert variant="info" title="Add your email to upgrade">
-      Paystack sends your receipt by email. <Link href="/profile" className="font-semibold underline">Add it in your Profile</Link>, then come back here.
+      Paystack sends your receipt by email. <Link href="/profile" className="font-semibold fw-link">Add it in your Profile</Link>, then come back here.
     </Alert>
   );
   return (

@@ -46,14 +46,14 @@ export default async function AdminUserDetail({ params }: { params: Promise<{ id
           <div className="mt-2 flex flex-wrap gap-2">
             {user.artisan.verifications.map((v) => <Badge key={v.id} tone={v.status === "APPROVED" ? "verified" : v.status === "PENDING" ? "warning" : "neutral"}>{v.type}: {v.status}</Badge>)}
           </div>
-          <Link href={`/artisan-profile/${user.id}`} className="mt-2 inline-block text-sm font-semibold text-brand underline">View public profile</Link>
+          <Link href={`/artisan-profile/${user.id}`} className="mt-2 inline-block text-sm font-semibold text-brand fw-link hover:text-brand-700">View public profile</Link>
         </Card>
       )}
 
       <Card>
         <p className="font-semibold">Recent service requests</p>
         {user.requests.length === 0 && <p className="mt-1 text-sm text-muted">None yet.</p>}
-        {user.requests.map((r) => <Link key={r.id} href={`/requests/${r.id}`} className="block py-1 text-sm text-brand underline">{r.category.name} — {r.status}</Link>)}
+        {user.requests.map((r) => <Link key={r.id} href={`/requests/${r.id}`} className="block py-1 text-sm text-brand fw-link hover:text-brand-700">{r.category.name} — {r.status}</Link>)}
       </Card>
 
       <Card>

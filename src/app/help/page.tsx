@@ -49,7 +49,7 @@ export default function Help() {
           <ul className="mt-3 space-y-2 text-[15px] leading-relaxed text-muted">
             <li><strong className="text-ink">A problem with a job:</strong> open the request and message the artisan first. Most issues are sorted out in the chat.</li>
             <li><strong className="text-ink">Someone behaved badly or cheated you:</strong> use <em>Report this artisan</em> on their profile, or report a review. Our team reviews every report.</li>
-            <li><strong className="text-ink">Can&apos;t log in:</strong> use <Link href="/forgot-password" className="font-semibold text-brand underline">Forgot password</Link> to set a new one.</li>
+            <li><strong className="text-ink">Can&apos;t log in:</strong> use <Link href="/forgot-password" className="font-semibold text-brand fw-link hover:text-brand-700">Forgot password</Link> to set a new one.</li>
           </ul>
         </div>
       </section>

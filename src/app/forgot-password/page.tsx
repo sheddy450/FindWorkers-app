@@ -44,7 +44,7 @@ export default function ForgotPassword() {
           <p className="mt-4 text-sm text-muted">Signed up with only a phone number? Email reset isn&apos;t available for your account yet. Contact us and we&apos;ll help you get back in.</p>
         </>
       )}
-      <p className="mt-6 text-center text-sm text-muted">Remembered it? <Link href="/login" className="inline-flex min-h-11 items-center font-semibold text-brand underline">Back to log in</Link></p>
+      <p className="mt-6 text-center text-sm text-muted">Remembered it? <Link href="/login" className="inline-flex min-h-11 items-center font-semibold text-brand fw-link hover:text-brand-700">Back to log in</Link></p>
     </main>
   );
 }

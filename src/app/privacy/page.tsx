@@ -77,12 +77,12 @@ export default function Privacy() {
       <p className="mt-2">
         You can delete your account yourself at any time: <strong>Profile → Delete my account</strong>. You can also ask to
         see the data we hold about you, correct it, or withdraw consent you gave. Email{" "}
-        <a href={`mailto:${CONTACT}`} className="font-semibold text-brand underline">{CONTACT}</a>. We reply within 30 days.
+        <a href={`mailto:${CONTACT}`} className="font-semibold text-brand fw-link hover:text-brand-700">{CONTACT}</a>. We reply within 30 days.
         If you&apos;re not happy with our answer, you can complain to the Nigeria Data Protection Commission (NDPC).
       </p>
 
       <p className="mt-8 text-sm text-muted">
-        Questions about using FindWorkers? Visit the <Link href="/help" className="font-semibold text-brand underline">Help centre</Link>.
+        Questions about using FindWorkers? Visit the <Link href="/help" className="font-semibold text-brand fw-link hover:text-brand-700">Help centre</Link>.
       </p>
     </main>
   );

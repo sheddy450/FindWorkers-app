@@ -47,7 +47,7 @@ export function CloseJobButton({ jobId, hasQuotes }: { jobId: string; hasQuotes:
     if (!r.ok) return toast("error", r.data.error ?? "Couldn't close the job.");
     toast("success", "Job closed."); router.refresh();
   }
-  if (!confirm) return <button type="button" onClick={() => setConfirm(true)} className="text-sm font-medium text-muted underline">I don&apos;t need this any more</button>;
+  if (!confirm) return <button type="button" onClick={() => setConfirm(true)} className="text-sm font-medium text-muted fw-link hover:text-ink">I don&apos;t need this any more</button>;
   return (
     <div className="space-y-2 text-sm">
       <p>Close this job?{hasQuotes ? " Artisans who quoted will be told." : ""}</p>
@@ -94,7 +94,7 @@ export function WithdrawQuoteButton({ jobId }: { jobId: string }) {
   const router = useRouter(); const toast = useToast();
   const [busy, setBusy] = useState(false);
   return (
-    <button type="button" disabled={busy} className="text-sm font-medium text-muted underline"
+    <button type="button" disabled={busy} className="text-sm font-medium text-muted fw-link hover:text-ink"
       onClick={async () => {
         setBusy(true);
         const r = await post(`/api/jobs/${jobId}/quotes`, "DELETE").catch(() => ({ ok: false, data: { error: "Couldn't reach the server." } }));

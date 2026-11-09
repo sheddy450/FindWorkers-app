@@ -28,7 +28,7 @@ export default async function Guides({ searchParams }: { searchParams: Promise<{
 
   return (
     <main className="mx-auto max-w-5xl p-4 sm:p-6">
-      <nav aria-label="Breadcrumb" className="text-sm text-muted"><Link href="/" className="underline-offset-4 hover:underline">Home</Link><span aria-hidden> / </span><span>Guides</span></nav>
+      <nav aria-label="Breadcrumb" className="text-sm text-muted"><Link href="/" className="fw-link">Home</Link><span aria-hidden> / </span><span>Guides</span></nav>
       <header className="mt-2 max-w-2xl">
         <h1 className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Hire with confidence</h1>
         <p className="mt-2 text-[17px] leading-relaxed text-muted">What jobs should cost, the questions to ask, and the warning signs to watch for. Written for homes and shops in Nigeria.</p>

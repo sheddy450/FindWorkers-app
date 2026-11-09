@@ -22,8 +22,8 @@ export default async function Thread({ params }: { params: Promise<{ requestId: 
       <div className="flex items-center justify-between gap-2">
         <div><h1 className="text-xl font-bold text-brand">{otherName}</h1><p className="text-sm text-muted">{r.category.name}</p></div>
         <div className="flex flex-col items-end gap-1 text-sm">
-          <Link href={`/requests/${r.id}`} className="font-semibold text-brand underline">View request</Link>
-          <Link href={`/report?type=USER&id=${otherId}`} className="text-muted underline">Report</Link>
+          <Link href={`/requests/${r.id}`} className="font-semibold text-brand fw-link hover:text-brand-700">View request</Link>
+          <Link href={`/report?type=USER&id=${otherId}`} className="text-muted fw-link hover:text-ink">Report</Link>
         </div>
       </div>
       <ThreadClient requestId={r.id} selfId={user.id} otherId={otherId} otherName={otherName} initiallyBlocked={blocked} />

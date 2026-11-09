@@ -111,7 +111,7 @@ export function OnboardingTour() {
           {STEPS.map((_, i) => <span key={i} className={`h-1.5 rounded-full transition-all motion-reduce:transition-none ${i === step ? "w-6 bg-brand" : "w-1.5 bg-line"}`} />)}
         </div>
         <div className="mt-4 flex items-center gap-2">
-          <button type="button" onClick={end} className="mr-auto min-h-11 px-1 text-sm font-medium text-muted underline">Skip tour</button>
+          <button type="button" onClick={end} className="mr-auto min-h-11 px-1 text-sm font-medium text-muted fw-link hover:text-ink">Skip tour</button>
           {step > 0 && <button type="button" onClick={() => setStep(step - 1)} className="min-h-11 rounded-full border border-line px-4 font-semibold hover:bg-paper">Back</button>}
           <button type="button" onClick={() => (last ? end() : setStep(step + 1))} className="min-h-11 rounded-full bg-brand px-5 font-semibold text-white hover:bg-brand-700">
             {last ? "Got it" : "Next"}

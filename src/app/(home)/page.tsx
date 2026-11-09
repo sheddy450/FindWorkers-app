@@ -171,7 +171,7 @@ export default async function Home() {
       <section aria-labelledby="popular" className="mt-10">
         <div className="flex items-end justify-between gap-3">
           <h2 id="popular" className="text-2xl font-bold tracking-tight text-ink">Popular services</h2>
-          <Link href="/categories" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">All services</Link>
+          <Link href="/categories" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand fw-link hover:text-brand-700">All services</Link>
         </div>
         <ul data-tour="services" className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {popular.map((t, i) => (
@@ -220,7 +220,7 @@ export default async function Home() {
 
       {topRated.length > 0 && (
         <section aria-labelledby="top" className="mt-10">
-          <div className="flex items-end justify-between"><h2 id="top" className="text-2xl font-bold tracking-tight text-ink">Top-rated artisans</h2><Link href="/search" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">See all</Link></div>
+          <div className="flex items-end justify-between"><h2 id="top" className="text-2xl font-bold tracking-tight text-ink">Top-rated artisans</h2><Link href="/search" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand fw-link hover:text-brand-700">See all</Link></div>
           <div data-tour="profile" className="mt-4 grid gap-4 sm:grid-cols-2">{topRated.map((a) => card(a))}</div>
         </section>
       )}
@@ -276,7 +276,7 @@ export default async function Home() {
       <section aria-labelledby="tips" className="mt-10">
         <div className="flex items-end justify-between gap-3">
           <h2 id="tips" className="text-2xl font-bold tracking-tight text-ink">{guides.length ? "Hiring guides" : "Hire with confidence"}</h2>
-          {guides.length > 0 && <Link href="/guides" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">All guides</Link>}
+          {guides.length > 0 && <Link href="/guides" className="inline-flex min-h-11 items-center text-sm font-semibold text-brand fw-link hover:text-brand-700">All guides</Link>}
         </div>
         {guides.length > 0 ? (
           <ul className="mt-4 grid gap-4 sm:grid-cols-3">{guides.map((g) => <li key={g.id}><GuideCard g={g} /></li>)}</ul>
@@ -300,7 +300,7 @@ export default async function Home() {
       <section aria-labelledby="faq-title" className="mt-10">
         <h2 id="faq-title" className="text-2xl font-bold tracking-tight text-ink">Questions people ask</h2>
         <div className="mt-4"><Faq items={FAQS.filter((f) => f.home)} /></div>
-        <p className="mt-3 text-sm text-muted">More answers in the <Link href="/help" className="font-semibold text-brand underline">help centre</Link>.</p>
+        <p className="mt-3 text-sm text-muted">More answers in the <Link href="/help" className="font-semibold text-brand fw-link hover:text-brand-700">help centre</Link>.</p>
       </section>
 
       {/* ── For artisans ─────────────────────────────────────────────────────── */}

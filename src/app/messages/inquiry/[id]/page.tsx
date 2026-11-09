@@ -74,14 +74,14 @@ export default async function InquiryThread({
           {side === "CUSTOMER" && (
             <Link
               href={`/artisan-profile/${c.artisanId}`}
-              className="font-semibold text-brand underline"
+              className="font-semibold text-brand fw-link hover:text-brand-700"
             >
               View profile
             </Link>
           )}
           <Link
             href={`/report?type=USER&id=${otherId}`}
-            className="text-muted underline"
+            className="text-muted fw-link hover:text-ink"
           >
             Report
           </Link>

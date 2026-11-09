@@ -96,9 +96,9 @@ export function ListingPage({ l }: { l: Listing }) {
     <main className="mx-auto max-w-2xl space-y-6 p-4 sm:p-6">
       <JsonLd data={ld} />
       <nav aria-label="Breadcrumb" className="text-sm text-muted">
-        <Link href="/categories" className="underline-offset-4 hover:underline">Services</Link>
+        <Link href="/categories" className="fw-link">Services</Link>
         <span aria-hidden> / </span>
-        {state ? <Link href={listingPath(category.slug)} className="underline-offset-4 hover:underline">{category.name}</Link> : <span>{category.name}</span>}
+        {state ? <Link href={listingPath(category.slug)} className="fw-link">{category.name}</Link> : <span>{category.name}</span>}
         {state && <><span aria-hidden> / </span><span>{stateLabel(state)}</span></>}
       </nav>
 
@@ -111,8 +111,8 @@ export function ListingPage({ l }: { l: Listing }) {
               sizes="(max-width: 700px) 100vw, 670px" className="aspect-[21/9] w-full rounded-card" />
             {stock && (
               <figcaption className="absolute bottom-2 right-2 rounded-full bg-ink/65 px-2 py-0.5 text-[11px] text-white">
-                Example photo by <a href={stock.stock.page} target="_blank" rel="noopener noreferrer" className="underline">{stock.stock.by}</a> on{" "}
-                <a href="https://unsplash.com/?utm_source=findworkers&utm_medium=referral" target="_blank" rel="noopener noreferrer" className="underline">Unsplash</a>
+                Example photo by <a href={stock.stock.page} target="_blank" rel="noopener noreferrer" className="fw-link">{stock.stock.by}</a> on{" "}
+                <a href="https://unsplash.com/?utm_source=findworkers&utm_medium=referral" target="_blank" rel="noopener noreferrer" className="fw-link">Unsplash</a>
               </figcaption>
             )}
           </figure>
@@ -148,7 +148,7 @@ export function ListingPage({ l }: { l: Listing }) {
               <EmptyState icon="search" title={`No ${category.name.toLowerCase()} in ${where} yet`}
                 body={`Post your job and we'll alert ${category.name.toLowerCase()} artisans${state ? ` in ${stateLabel(state)}` : ""} as soon as they join. Or try a nearby state below.`}
                 action={{ label: "Post a job — free", href: `/jobs/new?service=${category.slug}${state ? `&state=${encodeURIComponent(state)}` : ""}` }} />
-              <p className="text-center text-sm"><Link href={`/search?category=${category.slug}`} className="font-semibold text-brand underline">Search near my location</Link></p>
+              <p className="text-center text-sm"><Link href={`/search?category=${category.slug}`} className="font-semibold text-brand fw-link hover:text-brand-700">Search near my location</Link></p>
             </div>
           )
           : artisans.map((a) => (
@@ -167,7 +167,7 @@ export function ListingPage({ l }: { l: Listing }) {
                 <Link href={`/artisan-profile/${w.artisanId}`} className="group block">
                   <Photo photo={w} trade={category.name} sizes="224px" className="aspect-[4/3] w-full rounded-card" />
                   <p className="mt-1.5 line-clamp-2 text-sm text-ink">{w.alt}</p>
-                  <p className="text-xs font-medium text-brand group-hover:underline">{w.businessName}</p>
+                  <p className="text-xs font-medium text-brand fw-link-g">{w.businessName}</p>
                 </Link>
               </li>
             ))}
