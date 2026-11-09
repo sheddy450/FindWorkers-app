@@ -96,6 +96,14 @@ export default async function Home() {
           <p className="flex items-center gap-2 font-display text-base font-bold">
             <span aria-hidden className="grid h-7 w-7 place-items-center rounded-lg bg-white text-sm text-brand">F</span><span className="max-[340px]:sr-only">FindWorkers</span>
           </p>
+          {me && isArtisan && (
+            <Link href="/artisan/dashboard" className="group inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/10 py-1.5 pl-4 pr-1.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/35 transition-colors hover:bg-white hover:text-brand-700 motion-reduce:transition-none">
+              My dashboard
+              <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-highlight text-ink transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </span>
+            </Link>
+          )}
           {!me && (
             <nav aria-label="Account" className="flex shrink-0 items-center gap-0.5 whitespace-nowrap">
               <Link href="/login" className="inline-flex min-h-11 items-center rounded-full px-2.5 text-sm font-semibold text-white/85 transition-colors hover:text-white motion-reduce:transition-none">Log in</Link>
