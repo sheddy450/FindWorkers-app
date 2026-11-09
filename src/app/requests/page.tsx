@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeButton } from "@/components/HomeButton";
 import { db } from "@/lib/db";
 import { requirePageRole } from "@/lib/auth/session";
 import { Card } from "@/components/ui/Card";
@@ -18,6 +19,7 @@ export default async function Requests() {
   });
   return (
     <main className="mx-auto max-w-md p-6">
+      <HomeButton className="mb-4" />
       <h1 className="text-2xl font-bold text-brand">Requests</h1>
       <RequestsTabs current="requests" role={user.role === "ARTISAN" ? "ARTISAN" : "CUSTOMER"} />
       {user.role === "CUSTOMER" && (

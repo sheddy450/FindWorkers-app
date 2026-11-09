@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeButton } from "@/components/HomeButton";
 import { db } from "@/lib/db";
 import { requirePageRole } from "@/lib/auth/session";
 import { Card } from "@/components/ui/Card";
@@ -18,6 +19,7 @@ export default async function Profile() {
 
   return (
     <main className="mx-auto max-w-md space-y-4 p-6">
+      <HomeButton />
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-brand">Profile</h1>
         <SignOutButton />
