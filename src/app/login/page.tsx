@@ -30,8 +30,8 @@ export default function Login() {
           : res?.error === "RateLimited" ? "Too many login attempts. For your security, wait 15 minutes and try again."
           : "We couldn't sign you in right now. Please try again in a moment.");
       }
-      // Route by role rather than always to "/" — that page is the customer search homepage and
-      // has nothing useful for an artisan or admin account to land on. Read `next` from the URL
+      // Admins go to /admin. Artisans and customers land on the home page; artisans get a
+      // "Dashboard" pill at the top of it and a "Your dashboard" button under the search. Read `next` from the URL
       // directly (not useSearchParams) so this page doesn't need a Suspense boundary.
       const next = new URLSearchParams(window.location.search).get("next");
       const session = await getSession();
@@ -42,7 +42,7 @@ export default function Login() {
         setBusy(false);
         return setError("You were signed in, but your browser didn't keep the session. Check that cookies are allowed for this site and try again.");
       }
-      const home = role === "ADMIN" ? "/admin" : role === "ARTISAN" ? "/artisan/dashboard" : "/";
+      const home = role === "ADMIN" ? "/admin" : "/";
       // Only same-site paths: "//evil.com" also starts with "/" but leaves the site.
       const safeNext = next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/login") ? next : null;
       window.location.assign(safeNext ?? home);
