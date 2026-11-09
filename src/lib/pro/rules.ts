@@ -3,7 +3,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 /** Rules for the artisan Pro plan. Pure functions (no DB, no network) so they're unit-tested. */
 
 export const PRO_DAYS = 30;
-export const DEFAULT_PRO_PRICE_KOBO = 300_000; // ₦3,000
+export const DEFAULT_PRO_PRICE_KOBO = 150_000; // ₦1,500. Only used when no price is saved in Admin → Pro.
 export const MIN_PRO_PRICE_KOBO = 10_000; // ₦100: guards against a typo making Pro free
 export const MAX_PRO_PRICE_KOBO = 10_000_000; // ₦100,000
 const DAY_MS = 24 * 60 * 60 * 1000;

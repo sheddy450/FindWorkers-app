@@ -8,6 +8,7 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { paystackConfigured } from "@/lib/providers/paystack";
 import { formatNaira, isPro, PRO_DAYS, proDaysLeft } from "@/lib/pro/rules";
 import { getProPriceKobo } from "@/server/services/pro.service";
+import { PREVIOUS_PRICE_KOBO, newPriceActive } from "@/lib/pro/nudge-shared";
 import { UpgradeButton } from "./UpgradeButton";
 
 const BENEFITS: { icon: IconName; title: string; body: string }[] = [
@@ -40,7 +41,11 @@ export default async function ProPage() {
         : artisan.proUntil && <Alert variant="warning" title="Your Pro plan has ended">Renew to get back into the Featured slot.</Alert>}
 
       <Card className="space-y-4">
-        <p><span className="font-display text-4xl font-bold text-ink">{formatNaira(priceKobo)}</span> <span className="text-muted">for {PRO_DAYS} days</span></p>
+        {newPriceActive(priceKobo) && <Badge tone="brand">New lower price</Badge>}
+        <p>
+          {newPriceActive(priceKobo) && <><s className="text-xl text-muted" aria-label={`was ${formatNaira(PREVIOUS_PRICE_KOBO)}`}>{formatNaira(PREVIOUS_PRICE_KOBO)}</s>{" "}</>}
+          <span className="font-display text-4xl font-bold text-ink">{formatNaira(priceKobo)}</span> <span className="text-muted">for {PRO_DAYS} days</span>
+        </p>
         <ul className="space-y-3">
           {BENEFITS.map((b) => (
             <li key={b.title} className="flex gap-3">

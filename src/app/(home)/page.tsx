@@ -17,7 +17,7 @@ import { HelpTip } from "@/components/help/HelpTip";
 import { listGuides } from "@/server/services/guides.service";
 import { LocationSelector } from "@/components/LocationSelector";
 import { PRO_DAYS, formatNaira, pickRandom } from "@/lib/pro/rules";
-import { nudgeFor } from "@/lib/pro/nudge";
+import { PREVIOUS_PRICE_KOBO, newPriceActive, nudgeFor } from "@/lib/pro/nudge";
 import { paystackConfigured } from "@/lib/providers/paystack";
 import { getProPriceKobo } from "@/server/services/pro.service";
 import { ProNudge } from "@/components/pro/ProNudge";
@@ -37,11 +37,14 @@ export default async function Home() {
   const isAdmin = me?.role === "ADMIN";
   // "Go Pro" pop-up: only artisans who aren't Pro (or whose Pro ends within 3 days), with a filled-in
   // profile, and only when payments are switched on. How often it shows is decided in the browser.
-  const nudge = isArtisan && me && paystackConfigured()
-    ? await db.artisan.findUnique({ where: { userId: me.id }, select: { proUntil: true, _count: { select: { services: true } } } })
-        .then((a) => a ? nudgeFor({ role: "ARTISAN", proUntil: a.proUntil, serviceCount: a._count.services, paymentsConfigured: true }) : null)
+  const proPriceKobo = isArtisan && me && paystackConfigured() ? await getProPriceKobo() : 0;
+  const nudge = proPriceKobo
+    ? await db.artisan.findUnique({ where: { userId: me!.id }, select: { proUntil: true, _count: { select: { services: true } } } })
+        .then((a) => a ? nudgeFor({ role: "ARTISAN", proUntil: a.proUntil, serviceCount: a._count.services, paymentsConfigured: true, priceKobo: proPriceKobo }) : null)
     : null;
-  const proPrice = nudge ? formatNaira(await getProPriceKobo()) : "";
+  const proPrice = nudge ? formatNaira(proPriceKobo) : "";
+  // While the lower price is new, the old one is shown struck out next to it.
+  const proWasPrice = nudge && newPriceActive(proPriceKobo) ? formatNaira(PREVIOUS_PRICE_KOBO) : undefined;
 
   const [tiles, topRated, recent, proPool, byState, allGuides] = await Promise.all([
     serviceTiles(),
@@ -76,7 +79,7 @@ export default async function Home() {
   return (
     <main className="mx-auto max-w-5xl px-4 pb-6 pt-4 sm:px-6">
       {!isArtisan && !isAdmin && <OnboardingTour />}
-      {nudge && <ProNudge nudge={nudge} price={proPrice} days={PRO_DAYS} />}
+      {nudge && <ProNudge nudge={nudge} price={proPrice} wasPrice={proWasPrice} days={PRO_DAYS} />}
       <JsonLd data={[
         { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: absoluteUrl("/apple-icon.png"), areaServed: { "@type": "Country", name: "Nigeria" } },
         { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url: SITE_URL },

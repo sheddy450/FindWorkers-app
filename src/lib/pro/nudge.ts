@@ -5,16 +5,18 @@ import { isPro, proDaysLeft } from "./rules";
  * Copy rule: Pro gives a chance at a labelled Featured spot above search results and on the home page
  * (2 spots, rotated at random among matching Pro artisans). Never promise "top of the list" or "#1".
  */
-import { RENEW_WITHIN_DAYS, dismissedRecently, type Nudge } from "./nudge-shared";
+import { RENEW_WITHIN_DAYS, dismissedRecently, newPriceActive, type Nudge } from "./nudge-shared";
 export * from "./nudge-shared";
 
 /** Server side: is this account eligible at all? (Role, plan, a filled-in profile, payments switched on.) */
 export function nudgeFor(a: {
-  role: string; proUntil: Date | null | undefined; serviceCount: number; paymentsConfigured: boolean; now?: Date;
+  role: string; proUntil: Date | null | undefined; serviceCount: number; paymentsConfigured: boolean;
+  /** The live Pro price (admin setting). Below the old price, during the launch window, non-Pro artisans get the "new price" version. */
+  priceKobo: number; now?: Date;
 }): Nudge | null {
   const now = a.now ?? new Date();
   if (a.role !== "ARTISAN" || !a.paymentsConfigured || a.serviceCount < 1) return null;
-  if (!isPro(a.proUntil, now)) return { kind: "upgrade" };
+  if (!isPro(a.proUntil, now)) return newPriceActive(a.priceKobo, now) ? { kind: "new_price" } : { kind: "upgrade" };
   const daysLeft = proDaysLeft(a.proUntil, now);
   return daysLeft <= RENEW_WITHIN_DAYS ? { kind: "renew", daysLeft } : null;
 }
