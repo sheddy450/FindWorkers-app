@@ -9,7 +9,7 @@ import { CONSENT_EVENT, PIXEL_ID, readConsent, track } from "@/lib/meta/pixel";
  * src/lib/pro/nudge.ts); this decides timing: at most once a week, ~2 s after the page settles,
  * never while the cookie banner is open. A bottom sheet on phones, a small card on larger screens.
  */
-export function ProNudge({ nudge, price, days }: { nudge: Nudge; price: string; days: number }) {
+export function ProNudge({ nudge, price, wasPrice, days }: { nudge: Nudge; price: string; wasPrice?: string; days: number }) {
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -58,10 +58,15 @@ export function ProNudge({ nudge, price, days }: { nudge: Nudge; price: string; 
 
   if (!open) return null;
   const renew = nudge.kind === "renew";
-  const title = renew ? `Your Pro plan ends in ${nudge.daysLeft} day${nudge.daysLeft === 1 ? "" : "s"}` : "Get seen first by customers";
+  const fresh = nudge.kind === "new_price";
+  const title = renew ? `Your Pro plan ends in ${nudge.daysLeft} day${nudge.daysLeft === 1 ? "" : "s"}`
+    : fresh ? `Pro is now ${price}` : "Get seen first by customers";
   const body = renew
     ? "Renew now to stay in the Featured spot above search results and on the home page. Paying early adds days, so you lose nothing."
+    : fresh ? "Check out the new Pro plan, packed with features to help customers find you first."
     : "Go Pro and appear in the Featured spot above search results and on the home page, where customers look first.";
+  // Only what Pro really does (see BENEFITS on /artisan/pro).
+  const perks = ["Featured above search results and on the home page", "See your profile views and phone/WhatsApp taps", "Faster verification"];
 
   return (
     <div className="fixed inset-0 z-[75] flex items-end justify-center px-3 pb-[5.5rem] sm:items-center sm:pb-0">
@@ -72,15 +77,25 @@ export function ProNudge({ nudge, price, days }: { nudge: Nudge; price: string; 
           className="absolute right-3 top-3 grid h-11 w-11 place-items-center rounded-full text-muted hover:bg-paper hover:text-ink">
           <svg aria-hidden viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
         </button>
-        <span className="inline-flex items-center gap-1 rounded-full bg-highlight px-2.5 py-1 text-xs font-bold text-ink shadow-sm">★ Featured</span>
+        <span className="inline-flex items-center gap-1 rounded-full bg-highlight px-2.5 py-1 text-xs font-bold text-ink shadow-sm"><span className="text-star" aria-hidden>★</span> {fresh ? "New price" : "Featured"}</span>
         <h2 ref={heading} id="pro-nudge-title" tabIndex={-1} className="mt-3 pr-10 text-2xl font-bold tracking-tight outline-none">{title}</h2>
         <p id="pro-nudge-body" className="mt-2 text-[15px] leading-relaxed text-muted">{body}</p>
-        <p className="mt-3 text-sm"><span className="text-lg font-bold text-ink">{price}</span> <span className="text-muted">for {days} days</span></p>
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <button type="button" onClick={close} className="min-h-12 rounded-full border border-line bg-white px-4 font-semibold hover:bg-paper">Not now</button>
+        {fresh && (
+          <ul className="mt-3 space-y-1.5 text-[15px]">
+            {perks.map((p) => (
+              <li key={p} className="flex gap-2"><span aria-hidden className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-brand-soft text-xs font-bold text-brand">✓</span>{p}</li>
+            ))}
+          </ul>
+        )}
+        <p className="mt-3 text-sm">
+          {wasPrice && <><s className="text-muted" aria-label={`was ${wasPrice}`}>{wasPrice}</s>{" "}</>}
+          <span className="text-lg font-bold text-ink">{price}</span> <span className="text-muted">for {days} days</span>
+        </p>
+        <div className="mt-4 grid grid-cols-[auto_1fr] gap-2">
+          <button type="button" onClick={close} className="min-h-12 rounded-full border border-line bg-white px-5 font-semibold hover:bg-paper">Not now</button>
           <Link href="/artisan/pro" onClick={() => { try { localStorage.setItem(NUDGE_STORAGE_KEY, String(Date.now())); } catch { /* ignore */ } }}
-            className="flex min-h-12 items-center justify-center rounded-full bg-highlight px-4 font-semibold text-ink shadow-soft hover:brightness-105">
-            {renew ? "Renew Pro" : "Go Pro"}
+            className="flex min-h-12 items-center justify-center whitespace-nowrap rounded-full bg-highlight px-4 text-center font-semibold text-ink shadow-soft hover:brightness-105">
+            {renew ? "Renew Pro" : fresh ? "See the new plan" : "Go Pro"}
           </Link>
         </div>
         <p className="mt-3 text-center text-xs text-muted">Featured spots are shared fairly among Pro artisans who match a customer&apos;s search.</p>
