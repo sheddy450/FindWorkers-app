@@ -83,7 +83,7 @@ export default async function RequestDetail({
         {side !== "ADMIN" && (
           <Link
             href={`/messages/${r.id}`}
-            className="text-sm font-semibold text-brand underline"
+            className="text-sm font-semibold text-brand fw-link hover:text-brand-700"
           >
             Message
           </Link>

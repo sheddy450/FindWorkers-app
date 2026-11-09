@@ -52,7 +52,7 @@ export default async function Dashboard() {
         <Card className="space-y-3">
           <div className="flex items-center justify-between gap-2">
             <p className="font-semibold">Pro · last 30 days</p>
-            <Link href="/artisan/pro" className="text-sm font-semibold text-brand underline">Pro plan</Link>
+            <Link href="/artisan/pro" className="text-sm font-semibold text-brand fw-link hover:text-brand-700">Pro plan</Link>
           </div>
           <dl className="grid grid-cols-3 gap-2 text-center">
             {([["Profile views", stats?._sum.profileViews], ["Number reveals", stats?._sum.contactReveals], ["New chats", stats?._sum.messagesStarted]] as const).map(([label, n]) => (
@@ -60,7 +60,7 @@ export default async function Dashboard() {
             ))}
           </dl>
           {daysLeft <= 5 && (
-            <p className="rounded-ctl bg-highlight-soft p-3 text-sm">Your Pro plan ends in {daysLeft} day{daysLeft === 1 ? "" : "s"}. <Link href="/artisan/pro" className="font-semibold underline">Renew now</Link> to stay featured. Unused days carry over.</p>
+            <p className="rounded-ctl bg-highlight-soft p-3 text-sm">Your Pro plan ends in {daysLeft} day{daysLeft === 1 ? "" : "s"}. <Link href="/artisan/pro" className="font-semibold fw-link">Renew now</Link> to stay featured. Unused days carry over.</p>
           )}
         </Card>
       ) : (
@@ -89,12 +89,12 @@ export default async function Dashboard() {
       )}
       {submitted === 0 && <Card><p className="font-semibold">Get your first badge</p><p className="text-sm text-muted">Verified artisans get more trust from customers.</p>
         <Link href="/artisan/verification" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-highlight px-4 font-semibold">Start verification</Link></Card>}
-      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-brand underline"><Link href="/artisan/profile">Edit profile</Link><Link href="/artisan/photos">Photos</Link><Link href="/artisan/verification">Verification</Link><Link href="/artisan/pro">Pro plan</Link><Link href="/guides/how-to-get-more-jobs">How to get more jobs</Link><Link href="/help">Help</Link><Link href="/">Browse FindWorkers</Link></div>
+      <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-brand fw-links"><Link href="/artisan/profile">Edit profile</Link><Link href="/artisan/photos">Photos</Link><Link href="/artisan/verification">Verification</Link><Link href="/artisan/pro">Pro plan</Link><Link href="/guides/how-to-get-more-jobs">How to get more jobs</Link><Link href="/help">Help</Link><Link href="/">Browse FindWorkers</Link></div>
 
       <section>
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Active requests</h2>
-          <Link href="/requests" className="text-sm font-semibold text-brand underline">See all</Link>
+          <Link href="/requests" className="text-sm font-semibold text-brand fw-link hover:text-brand-700">See all</Link>
         </div>
         {requests.length === 0 ? (
           <EmptyState icon="requests" title="No active requests" body="When a customer requests you from search or your profile, it'll show up here." />

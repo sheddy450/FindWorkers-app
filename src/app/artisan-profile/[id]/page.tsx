@@ -109,7 +109,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
       <TrackViewContent id={artisan.userId} service={trades[0]} city={artisan.state ? stateLabel(artisan.state) : undefined} />
       <div className="mt-5"><ContactButtons artisanId={artisan.userId} businessName={artisan.businessName} loggedIn={!!user} /></div>
       {user && user.id !== artisan.userId && (
-        <Link href={`/report?type=ARTISAN&id=${artisan.userId}`} className="mt-3 inline-block text-sm text-muted underline">Report this artisan</Link>
+        <Link href={`/report?type=ARTISAN&id=${artisan.userId}`} className="mt-3 inline-block text-sm text-muted fw-link hover:text-ink">Report this artisan</Link>
       )}
 
       {(photos.items.length > 0 || isOwner) && (
@@ -120,7 +120,7 @@ export default async function ArtisanProfilePage({ params }: { params: Promise<{
             <p className="mt-3 rounded-ctl bg-brand-soft p-3 text-sm text-brand">
               {photos.items.length === 0 ? "Customers can't see any photos of your work yet. " : ""}
               {waiting > 0 ? `${waiting} photo${waiting === 1 ? " is" : "s are"} waiting for review and will appear here once approved. ` : ""}
-              <Link href="/artisan/photos" className="font-semibold underline">Manage your photos</Link>
+              <Link href="/artisan/photos" className="font-semibold fw-link">Manage your photos</Link>
             </p>
           )}
         </section>

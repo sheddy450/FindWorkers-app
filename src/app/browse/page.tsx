@@ -50,8 +50,8 @@ export default async function Browse({ searchParams }: { searchParams: SP }) {
   return (
     <main className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6">
       <nav aria-label="Breadcrumb" className="text-sm text-muted">
-        <Link href="/" className="underline-offset-4 hover:underline">Home</Link><span aria-hidden> / </span>
-        <Link href="/categories" className="underline-offset-4 hover:underline">Services</Link><span aria-hidden> / </span>
+        <Link href="/" className="fw-link">Home</Link><span aria-hidden> / </span>
+        <Link href="/categories" className="fw-link">Services</Link><span aria-hidden> / </span>
         <span>{place.label}</span>
       </nav>
       <header className="space-y-2">

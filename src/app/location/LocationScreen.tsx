@@ -27,7 +27,7 @@ export function LocationScreen() {
         <div className="mt-6 w-full space-y-3">
           <Button className="w-full" onClick={request}>Enable location</Button>
           <Button variant="outline" className="w-full" onClick={() => setManual(true)}>Enter my area manually</Button>
-          <button type="button" onClick={() => router.push("/search")} className="text-sm text-muted underline">Skip for now</button>
+          <button type="button" onClick={() => router.push("/search")} className="text-sm text-muted fw-link hover:text-ink">Skip for now</button>
           {status === "denied" && <div className="text-left"><Alert variant="warning" title="Location wasn't shared">You can still browse by entering your state and area.</Alert></div>}
           {status === "ok" && <div className="text-left"><Alert variant="success" title="Location enabled">Taking you to search…</Alert></div>}
         </div>

@@ -121,7 +121,7 @@ export function JobForm({ categories, states, initial, loggedIn }: { categories:
       {!loggedIn && (
         <p className="text-center text-sm text-muted">
           Next you&apos;ll create a free account so artisans can reply to you. It takes a minute and your job is kept.{" "}
-          Already have an account? <Link href={loginNext} onClick={(e) => keepTyped(e.currentTarget.closest("form"))} className="font-semibold text-brand underline">Log in</Link>
+          Already have an account? <Link href={loginNext} onClick={(e) => keepTyped(e.currentTarget.closest("form"))} className="font-semibold text-brand fw-link hover:text-brand-700">Log in</Link>
         </p>
       )}
       <p className="text-center text-xs text-muted">Artisans who offer this service in your state will be notified. Your job stays open for 14 days.</p>

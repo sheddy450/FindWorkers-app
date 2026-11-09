@@ -89,7 +89,7 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
         </Alert></div>
       )}
       {status === "denied" && <div className="mt-2"><Alert variant="warning" title="Location was not shared">You can still browse by category, or enter your area manually.</Alert></div>}
-      {!loc && manualState && <p className="mt-2 text-sm text-muted">Showing artisans in {manualLga ? `${manualLga}, ` : ""}{manualState}. <Link href="/location" className="underline">Change</Link></p>}
+      {!loc && manualState && <p className="mt-2 text-sm text-muted">Showing artisans in {manualLga ? `${manualLga}, ` : ""}{manualState}. <Link href="/location" className="fw-link">Change</Link></p>}
 
       <div className="mt-4 -mx-6 overflow-x-auto px-6"><div className="flex gap-2 pb-1">
         <button onClick={() => setCategory("")} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-150 motion-reduce:transition-none ${!category ? "border-brand bg-brand text-white" : "border-line bg-white"}`}>All</button>

@@ -81,7 +81,7 @@ export function ThreadClient({ requestId, kind = "request", selfId, otherId, oth
             <input name="body" placeholder="Type a message" autoComplete="off" className="min-h-11 flex-1 rounded-ctl border border-line bg-white px-3" />
             <Button loading={busy}>Send</Button>
           </form>
-          <button type="button" onClick={toggleBlock} disabled={blockBusy} className="mt-2 text-center text-xs text-muted underline">Block {otherName}</button>
+          <button type="button" onClick={toggleBlock} disabled={blockBusy} className="mt-2 text-center text-xs text-muted fw-link hover:text-ink">Block {otherName}</button>
         </>
       )}
       {sendError && <div className="mt-2"><Alert variant="error" title={sendError} /></div>}

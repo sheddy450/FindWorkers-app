@@ -58,12 +58,12 @@ export function ReviewsSection({ reviews, loggedIn, myVotedIds }: { reviews: Rev
             {r.body && <p className="mt-1 text-sm">{r.body}</p>}
             <div className="mt-2 flex items-center justify-between">
               <button onClick={() => toggleHelpful(r.id)} disabled={busyId === r.id}
-                className={`text-xs font-medium underline ${voted.has(r.id) ? "text-brand" : "text-muted"}`}>
+                className={`fw-link text-xs font-medium ${voted.has(r.id) ? "text-brand hover:text-brand-700" : "text-muted hover:text-ink"}`}>
                 Helpful{(counts[r.id] ?? 0) > 0 ? ` (${counts[r.id]})` : ""}
               </button>
               <div className="flex items-center gap-3">
                 <p className="text-xs text-muted">{new Date(r.createdAt).toLocaleDateString("en-NG")}</p>
-                {loggedIn && <Link href={`/report?type=REVIEW&id=${r.id}`} className="text-xs text-muted underline">Report</Link>}
+                {loggedIn && <Link href={`/report?type=REVIEW&id=${r.id}`} className="text-xs text-muted fw-link hover:text-ink">Report</Link>}
               </div>
             </div>
           </Card>

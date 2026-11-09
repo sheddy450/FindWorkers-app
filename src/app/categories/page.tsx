@@ -17,7 +17,7 @@ export default async function Categories() {
   const tiles = [...(await serviceTiles())].sort((a, b) => a.name.localeCompare(b.name));
   return (
     <main className="mx-auto max-w-5xl p-4 sm:p-6">
-      <nav aria-label="Breadcrumb" className="text-sm text-muted"><Link href="/" className="underline-offset-4 hover:underline">Home</Link><span aria-hidden> / </span><span>Services</span></nav>
+      <nav aria-label="Breadcrumb" className="text-sm text-muted"><Link href="/" className="fw-link">Home</Link><span aria-hidden> / </span><span>Services</span></nav>
       <h1 className="mt-2 text-3xl font-bold text-brand sm:text-4xl">All services</h1>
       <p className="mt-1 max-w-prose text-muted">Pick a service to see verified artisans across Nigeria, then narrow it down to your state.</p>
       <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -34,7 +34,7 @@ export default async function Categories() {
           </li>
         ))}
       </ul>
-      <p className="mt-6 text-sm text-muted">Can&apos;t find your service? <Link href="/jobs/new" className="font-semibold text-brand underline">Post a job</Link> and describe what you need.</p>
+      <p className="mt-6 text-sm text-muted">Can&apos;t find your service? <Link href="/jobs/new" className="font-semibold text-brand fw-link hover:text-brand-700">Post a job</Link> and describe what you need.</p>
     </main>
   );
 }

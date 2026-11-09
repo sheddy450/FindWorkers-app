@@ -58,7 +58,7 @@ export default async function ArtisanPhotosPage() {
               <li key={s.key} className="flex items-center gap-2">
                 <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
                 {s.key === "work" || s.key === "profile" ? s.label
-                  : <Link href={s.key === "id" ? "/artisan/verification" : "/artisan/profile"} className="font-medium text-brand underline-offset-4 hover:underline">{s.label}</Link>}
+                  : <Link href={s.key === "id" ? "/artisan/verification" : "/artisan/profile"} className="font-medium text-brand fw-link hover:text-brand-700">{s.label}</Link>}
               </li>
             ))}
           </ul>

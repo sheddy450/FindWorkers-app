@@ -144,20 +144,20 @@ export default function Register() {
         ) : showEmail ? (
           <Input label="Email (optional)" name="email" type="email" autoComplete="email" hint="For receipts and resetting your password." error={errors.email} />
         ) : (
-          <button type="button" onClick={() => setShowEmail(true)} className="inline-flex min-h-11 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">+ Add email (optional)</button>
+          <button type="button" onClick={() => setShowEmail(true)} className="inline-flex min-h-11 items-center text-sm font-semibold text-brand fw-link hover:text-brand-700">+ Add email (optional)</button>
         )}
         <PasswordInput label="Create a password" name="password" autoComplete="new-password" hint={PASSWORD_HINT} error={errors.password} />
 
         {errors.form && <Alert variant="error" title={errors.form} />}
         <Button loading={busy} className="w-full">{forJob ? "Create account and continue" : "Create free account"}</Button>
         <p className="text-center text-xs text-muted">
-          By creating an account you agree to our Terms of Use and <Link href="/privacy" className="font-semibold text-brand underline">Privacy Policy</Link>.
+          By creating an account you agree to our Terms of Use and <Link href="/privacy" className="font-semibold text-brand fw-link hover:text-brand-700">Privacy Policy</Link>.
         </p>
-        <p className="text-center text-sm text-muted">Already registered? <Link href={loginHref} className="font-semibold text-brand underline">Log in</Link></p>
+        <p className="text-center text-sm text-muted">Already registered? <Link href={loginHref} className="font-semibold text-brand fw-link hover:text-brand-700">Log in</Link></p>
         {focused && !forJob && (
           <p className="text-center text-sm text-muted">
             {role === "ARTISAN" ? "Looking to hire someone instead?" : "Are you an artisan?"}{" "}
-            <button type="button" onClick={() => setRole(role === "ARTISAN" ? "CUSTOMER" : "ARTISAN")} className="font-semibold text-brand underline">
+            <button type="button" onClick={() => setRole(role === "ARTISAN" ? "CUSTOMER" : "ARTISAN")} className="font-semibold text-brand fw-link hover:text-brand-700">
               {role === "ARTISAN" ? "Sign up to hire" : "Join as an artisan"}
             </button>
           </p>

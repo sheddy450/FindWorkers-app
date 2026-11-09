@@ -79,10 +79,10 @@ export function GuideEditor({ id, categories, initial }: { id: string | null; ca
       <div className="sticky bottom-20 z-10 flex flex-wrap gap-2 rounded-[18px] bg-white/95 p-3 shadow-soft ring-1 ring-line backdrop-blur md:bottom-4">
         <Button type="submit" name="action" value="publish" loading={busy}>{initial.published ? "Save (live)" : "Publish"}</Button>
         <Button type="submit" name="action" value="draft" variant="outline" disabled={busy}>{initial.published ? "Unpublish (draft)" : "Save draft"}</Button>
-        {id && initial.slug && <a href={`/guides/${initial.slug}?preview=1`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-ctl px-3 font-semibold text-brand underline">Preview</a>}
+        {id && initial.slug && <a href={`/guides/${initial.slug}?preview=1`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-ctl px-3 font-semibold text-brand fw-link hover:text-brand-700">Preview</a>}
         {id && (confirmDelete
           ? <span className="ml-auto flex gap-2"><Button type="button" variant="danger" onClick={remove} disabled={busy}>Delete for good</Button><Button type="button" variant="outline" onClick={() => setConfirmDelete(false)}>Keep</Button></span>
-          : <button type="button" onClick={() => setConfirmDelete(true)} className="ml-auto text-sm font-medium text-danger underline">Delete</button>)}
+          : <button type="button" onClick={() => setConfirmDelete(true)} className="ml-auto text-sm font-medium text-danger fw-link">Delete</button>)}
       </div>
     </form>
   );

@@ -24,7 +24,7 @@ export function ConsentBanner() {
       className="fixed inset-x-3 bottom-[5.5rem] z-[70] mx-auto max-w-lg rounded-[18px] bg-white p-3.5 text-ink shadow-[0_20px_50px_-20px_rgba(0,0,0,0.45)] ring-1 ring-line sm:bottom-6">
       <p className="text-sm leading-snug">
         Can we use Meta (Facebook) cookies to measure our ads? The site works the same either way.{" "}
-        <Link href="/privacy#cookies" className="font-semibold text-brand underline underline-offset-2">Learn more</Link>
+        <Link href="/privacy#cookies" className="font-semibold text-brand fw-link hover:text-brand-700">Learn more</Link>
       </p>
       <div className="mt-2.5 grid grid-cols-2 gap-2">
         <button type="button" onClick={() => choose("denied")} className="min-h-11 rounded-full border border-line bg-white px-4 text-sm font-semibold hover:bg-paper">No thanks</button>

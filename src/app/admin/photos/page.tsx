@@ -29,7 +29,7 @@ export default async function AdminPhotos() {
         <Card key={p.id} className="space-y-3">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <Link href={`/admin/users/${p.artisan.userId}`} className="font-semibold text-ink underline-offset-4 hover:underline">{p.artisan.businessName}</Link>
+              <Link href={`/admin/users/${p.artisan.userId}`} className="font-semibold text-ink fw-link">{p.artisan.businessName}</Link>
               <p className="truncate text-sm text-muted">{p.artisan.user.name}{p.artisan.lga || p.artisan.state ? ` · ${[p.artisan.lga, p.artisan.state].filter(Boolean).join(", ")}` : ""} · {p.artisan._count.photos} photo{p.artisan._count.photos === 1 ? "" : "s"}</p>
             </div>
             <div className="flex shrink-0 flex-wrap justify-end gap-1">
@@ -66,9 +66,9 @@ export default async function AdminPhotos() {
 
           <p className="text-sm">
             <span className="text-muted">Stock or stolen? Search the web for this photo: </span>
-            <a href={`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(p.url)}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-brand underline">Google Lens</a>
+            <a href={`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(p.url)}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-brand fw-link hover:text-brand-700">Google Lens</a>
             {" · "}
-            <a href={`https://tineye.com/search?url=${encodeURIComponent(p.url)}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-brand underline">TinEye</a>
+            <a href={`https://tineye.com/search?url=${encodeURIComponent(p.url)}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-brand fw-link hover:text-brand-700">TinEye</a>
           </p>
           <PhotoDecision id={p.id} suggestStolen={p.lookalikes.some((l) => l.earlier)} />
         </Card>

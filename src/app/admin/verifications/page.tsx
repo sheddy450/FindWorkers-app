@@ -31,7 +31,7 @@ export default async function AdminVerifications() {
             <Badge tone="warning">{INFO[r.type]?.label}</Badge>
           </div>
           <p className="mt-2 text-sm text-muted">Submitted {r.updatedAt.toLocaleString("en-NG")}</p>
-          <a href={`/api/admin/verifications/${r.id}/document`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-semibold text-brand underline">Open document (opens in a new tab)</a>
+          <a href={`/api/admin/verifications/${r.id}/document`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-semibold text-brand fw-link hover:text-brand-700">Open document (opens in a new tab)</a>
           <DecisionForm id={r.id} />
         </Card>
       ))}

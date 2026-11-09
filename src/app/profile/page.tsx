@@ -32,12 +32,12 @@ export default async function Profile() {
       </Card>
 
       {full.role === "ARTISAN" && (
-        <Card className="flex flex-wrap gap-3 text-sm font-semibold text-brand underline">
+        <Card className="flex flex-wrap gap-3 text-sm font-semibold text-brand fw-links">
           <Link href="/artisan/dashboard">Dashboard</Link><Link href="/artisan/profile">Edit business profile</Link><Link href="/artisan/verification">Verification</Link>
         </Card>
       )}
       {full.role === "ADMIN" && (
-        <Card><Link href="/admin" className="text-sm font-semibold text-brand underline">Go to admin dashboard</Link></Card>
+        <Card><Link href="/admin" className="text-sm font-semibold text-brand fw-link hover:text-brand-700">Go to admin dashboard</Link></Card>
       )}
 
       <Card className="flex flex-wrap items-center justify-between gap-3">

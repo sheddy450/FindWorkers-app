@@ -75,11 +75,11 @@ export default async function GuidePage({ params, searchParams }: Props) {
     <main className="mx-auto max-w-5xl p-4 pb-28 sm:p-6">
       {g.status === "PUBLISHED" && <JsonLd data={ld} />}
       {preview && g.status !== "PUBLISHED" && (
-        <p className="mb-4 rounded-ctl bg-highlight-soft p-3 text-sm font-medium">Draft preview: only admins can see this. <Link href={`/admin/guides/${g.id}`} className="underline">Back to the editor</Link></p>
+        <p className="mb-4 rounded-ctl bg-highlight-soft p-3 text-sm font-medium">Draft preview: only admins can see this. <Link href={`/admin/guides/${g.id}`} className="fw-link">Back to the editor</Link></p>
       )}
       <nav aria-label="Breadcrumb" className="text-sm text-muted">
-        <Link href="/guides" className="underline-offset-4 hover:underline">Guides</Link>
-        {g.category && <><span aria-hidden> / </span><Link href={`/guides?service=${g.category.slug}`} className="underline-offset-4 hover:underline">{g.category.name}</Link></>}
+        <Link href="/guides" className="fw-link">Guides</Link>
+        {g.category && <><span aria-hidden> / </span><Link href={`/guides?service=${g.category.slug}`} className="fw-link">{g.category.name}</Link></>}
       </nav>
 
       <header className="relative mt-3 overflow-hidden rounded-[28px] bg-brand-700 text-white">
@@ -166,7 +166,7 @@ export default async function GuidePage({ params, searchParams }: Props) {
                   </label></li>
                 ))}
               </ul>
-              <a href="/downloads/first-time-hiring-checklist.pdf" download className="mt-3 inline-flex text-sm font-semibold text-brand underline">Download the first-time hiring checklist (PDF)</a>
+              <a href="/downloads/first-time-hiring-checklist.pdf" download className="mt-3 inline-flex text-sm font-semibold text-brand fw-link hover:text-brand-700">Download the first-time hiring checklist (PDF)</a>
             </section>
           )}
 
@@ -174,7 +174,7 @@ export default async function GuidePage({ params, searchParams }: Props) {
             <section aria-labelledby="hire" className="mt-12">
               <div className="flex items-end justify-between gap-3">
                 <h2 id="hire" className="text-2xl font-bold tracking-tight text-ink">Artisans who do this work</h2>
-                <Link href={`/services/${g.category.slug}`} className="inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-brand underline-offset-4 hover:underline">See all</Link>
+                <Link href={`/services/${g.category.slug}`} className="inline-flex min-h-11 shrink-0 items-center text-sm font-semibold text-brand fw-link hover:text-brand-700">See all</Link>
               </div>
               {artisans.length === 0 && <p className="mt-3 text-muted">No one is listed for this service yet. Post your job and we&apos;ll alert artisans as they join.</p>}
               <div className="mt-4 space-y-4">

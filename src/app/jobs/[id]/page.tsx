@@ -72,13 +72,13 @@ function OwnerQuotes({ data }: { data: Extract<Data, { role: "owner" }> }) {
       </div>
       {view === "HIRED" && job.hiredRequestId && (
         <Alert variant="success" title="You hired someone for this job">
-          Agree the exact address and time in the chat. <Link href={`/requests/${job.hiredRequestId}`} className="font-semibold underline">Open the request</Link>
+          Agree the exact address and time in the chat. <Link href={`/requests/${job.hiredRequestId}`} className="font-semibold fw-link">Open the request</Link>
         </Alert>
       )}
       {quotes.length === 0 && (
         <Card className="text-center text-sm text-muted">
           {view === "OPEN" ? "No quotes yet. Most jobs get their first quote within a day. We'll notify you." : "This job didn't get any quotes."}
-          {view !== "OPEN" && <Link href={`/jobs/new?service=${job.category.slug}`} className="mt-2 block font-semibold text-brand underline">Post it again</Link>}
+          {view !== "OPEN" && <Link href={`/jobs/new?service=${job.category.slug}`} className="mt-2 block font-semibold text-brand fw-link hover:text-brand-700">Post it again</Link>}
         </Card>
       )}
       <ul className="space-y-3">
@@ -89,7 +89,7 @@ function OwnerQuotes({ data }: { data: Extract<Data, { role: "owner" }> }) {
               <Card className={`space-y-3 ${q.status === "ACCEPTED" ? "border-verified ring-2 ring-verified/30" : ""}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <Link href={`/artisan-profile/${a.userId}`} className="font-semibold text-ink underline-offset-4 hover:underline">{a.businessName}</Link>
+                    <Link href={`/artisan-profile/${a.userId}`} className="font-semibold text-ink fw-link">{a.businessName}</Link>
                     <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
                       <StarRating value={Number(a.avgRating)} count={a.reviewCount} />
                       {a.completedJobs > 0 && <span>· {a.completedJobs} jobs done</span>}
@@ -136,7 +136,7 @@ function ArtisanSide({ data }: { data: Extract<Data, { role: "artisan" }> }) {
       <p className="text-sm text-muted">{quoteCount} artisan{quoteCount === 1 ? " has" : "s have"} quoted so far. The customer sees your profile, rating and photos next to your price.</p>
       {myQuote && myQuote.status !== "SENT" && (
         <Alert variant={myQuote.status === "ACCEPTED" ? "success" : "info"} title={QUOTE_LABEL[myQuote.status]}>
-          {myQuote.status === "ACCEPTED" ? <>You got the job. <Link href={`/requests/${job.hiredRequestId ?? ""}`} className="font-semibold underline">Open the request</Link> to agree the address and time.</>
+          {myQuote.status === "ACCEPTED" ? <>You got the job. <Link href={`/requests/${job.hiredRequestId ?? ""}`} className="font-semibold fw-link">Open the request</Link> to agree the address and time.</>
             : myQuote.status === "DECLINED" ? "The customer chose someone else or closed the job. Keep quoting: good photos and quick replies win jobs." : "You withdrew your quote."}
         </Alert>
       )}

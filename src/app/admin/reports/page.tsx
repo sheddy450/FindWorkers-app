@@ -38,7 +38,7 @@ export default async function AdminReports({ searchParams }: { searchParams: { f
           <Card key={r.id}>
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="font-semibold">{r.targetType}: {r.subject.href ? <Link href={r.subject.href} className="text-brand underline">{r.subject.label}</Link> : r.subject.label}</p>
+                <p className="font-semibold">{r.targetType}: {r.subject.href ? <Link href={r.subject.href} className="text-brand fw-link hover:text-brand-700">{r.subject.label}</Link> : r.subject.label}</p>
                 <p className="text-sm text-muted">Reported by {r.reporter.name} · {r.createdAt.toLocaleString("en-NG")}</p>
               </div>
               <Badge tone={r.status === "OPEN" ? "warning" : r.status === "RESOLVED" ? "verified" : "neutral"}>{r.status}</Badge>
