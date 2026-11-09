@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeButton } from "@/components/HomeButton";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { requirePageRole } from "@/lib/auth/session";
@@ -42,6 +43,7 @@ export default async function Dashboard() {
 
   return (
     <main className="mx-auto max-w-md space-y-4 p-6">
+      <HomeButton />
       <h1 className="text-3xl font-bold text-brand">{a.businessName}</h1>
       <Card className="space-y-3">
         <StarRating value={Number(a.avgRating)} count={a.reviewCount} />
