@@ -44,3 +44,11 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   .fw-link:hover, .fw-links a:hover, .group:hover .fw-link-g { background-size: 100% 0.5em; }
 }
 .fw-links a:hover { color: #006B40; }
+
+/* ── Pro ad pop-up ─────────────────────────────────────────────────────────────────────────── */
+/* As wide as the screen allows, but short enough that the image (4:5) plus the buttons fit on one
+   screen with no scrolling: 7.25rem covers the page margin, the card padding and the button row. */
+.fw-pro-popup { width: min(100%, 440px, calc((100vh - 7.25rem) * 0.8)); }
+@supports (height: 100dvh) {
+  .fw-pro-popup { width: min(100%, 440px, calc((100dvh - 7.25rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 0.8)); }
+}

@@ -76,6 +76,9 @@ model Artisan {
   completedJobs   Int                       @default(0)
   /// Pro plan is active while this is in the future. Extended 30 days per successful payment.
   proUntil        DateTime?
+  /// Last time this artisan closed the Pro ad pop-up (or tapped Go Pro), and which ad it was. Hidden for 7 days after.
+  proPopupClosedAt DateTime?
+  proPopupCampaign String?
   createdAt       DateTime                  @default(now())
   updatedAt       DateTime                  @updatedAt
   user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
