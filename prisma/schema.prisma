@@ -483,6 +483,8 @@ model JobPost {
   status         JobStatus       @default(OPEN)
   /// Open jobs stop taking quotes after this (14 days after posting).
   expiresAt      DateTime
+  /// Free artisans can see and quote from this time; Pro artisans see the job at once. Null = everyone at once.
+  openToAllAt    DateTime?
   /// The request created when the customer hired someone.
   hiredRequestId String?         @unique
   createdAt      DateTime        @default(now())

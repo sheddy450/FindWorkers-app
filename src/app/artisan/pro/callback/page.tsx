@@ -26,7 +26,7 @@ export default async function ProCallback({ searchParams }: { searchParams: Prom
       {result.state === "paid" && (
         <Alert variant="success" title="Payment received">
           {result.proUntil ? `Your Pro plan is active until ${result.proUntil.toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" })}.` : "Your Pro plan is active."}
-          {" "}You'll now appear in the Featured slot and can see your profile stats.
+          {" "}You'll now be shown first in search, get new jobs before other artisans, and can see your profile stats.
         </Alert>
       )}
       {result.state === "pending" && (

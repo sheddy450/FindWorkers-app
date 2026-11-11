@@ -63,7 +63,8 @@ export default async function Notifications() {
     readAt: Date | null;
     createdAt: Date;
   }> = await db.notification.findMany({
-    where: { userId: user.id },
+    // A free artisan's new-job alert is stored with the time the Pro head start ends; it shows from then.
+    where: { userId: user.id, createdAt: { lte: new Date() } },
     orderBy: { createdAt: "desc" },
     take: 50,
   });

@@ -13,7 +13,7 @@ export default async function Profile() {
   const user = await requirePageRole("CUSTOMER", "ARTISAN", "ADMIN");
   const [full, unreadCount] = await Promise.all([
     db.user.findUnique({ where: { id: user.id }, select: { name: true, email: true, phoneE164: true, role: true, createdAt: true } }),
-    db.notification.count({ where: { userId: user.id, readAt: null } }),
+    db.notification.count({ where: { userId: user.id, readAt: null, createdAt: { lte: new Date() } } }),
   ]);
   if (!full) return null;
 

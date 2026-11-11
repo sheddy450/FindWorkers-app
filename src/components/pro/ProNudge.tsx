@@ -62,11 +62,11 @@ export function ProNudge({ nudge, price, wasPrice, days }: { nudge: Nudge; price
   const title = renew ? `Your Pro plan ends in ${nudge.daysLeft} day${nudge.daysLeft === 1 ? "" : "s"}`
     : fresh ? `Pro is now ${price}` : "Get seen first by customers";
   const body = renew
-    ? "Renew now to stay in the Featured spot above search results and on the home page. Paying early adds days, so you lose nothing."
+    ? "Renew now to stay first in search results and keep your head start on new jobs. Paying early adds days, so you lose nothing."
     : fresh ? "Check out the new Pro plan, packed with features to help customers find you first."
-    : "Go Pro and appear in the Featured spot above search results and on the home page, where customers look first.";
+    : "Go Pro to be shown first when customers search for your trade, and get new jobs before other artisans.";
   // Only what Pro really does (see BENEFITS on /artisan/pro).
-  const perks = ["Featured above search results and on the home page", "See your profile views and phone/WhatsApp taps", "Faster verification"];
+  const perks = ["Shown first in search results for your trade", "New jobs 30 minutes before other artisans", "See your profile views and phone/WhatsApp taps"];
 
   return (
     <div className="fixed inset-0 z-[75] flex items-end justify-center px-3 pb-[5.5rem] sm:items-center sm:pb-0">
@@ -98,7 +98,7 @@ export function ProNudge({ nudge, price, wasPrice, days }: { nudge: Nudge; price
             {renew ? "Renew Pro" : fresh ? "See the new plan" : "Go Pro"}
           </Link>
         </div>
-        <p className="mt-3 text-center text-xs text-muted">Featured spots are shared fairly among Pro artisans who match a customer&apos;s search.</p>
+        <p className="mt-3 text-center text-xs text-muted">Pro artisans who match a customer&apos;s search are shown first, in a labelled Featured section.</p>
       </div>
     </div>
   );

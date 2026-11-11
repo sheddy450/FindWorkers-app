@@ -8,11 +8,13 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { paystackConfigured } from "@/lib/providers/paystack";
 import { formatNaira, isPro, PRO_DAYS, proDaysLeft } from "@/lib/pro/rules";
 import { getProPriceKobo } from "@/server/services/pro.service";
+import { PRO_HEAD_START_MIN } from "@/lib/pro/priority";
 import { PREVIOUS_PRICE_KOBO, newPriceActive } from "@/lib/pro/nudge-shared";
 import { UpgradeButton } from "./UpgradeButton";
 
 const BENEFITS: { icon: IconName; title: string; body: string }[] = [
-  { icon: "star", title: "Featured placement", body: "Appear in the Featured slot at the top of search and on the home page, clearly labelled for customers." },
+  { icon: "star", title: "Shown first in search", body: "When customers search for your trade in your area, Pro artisans appear first, in a labelled Featured section. You can also be featured on the home page." },
+  { icon: "bell", title: "First look at new jobs", body: `Get new job alerts and send your quote ${PRO_HEAD_START_MIN} minutes before free artisans, so you can be the first to reach the customer.` },
   { icon: "eye", title: "See who's finding you", body: "Daily profile views, phone/WhatsApp reveals and new messages on your dashboard." },
   { icon: "shield", title: "Faster verification", body: "Your verification documents go to the front of our review queue." },
 ];
@@ -38,7 +40,7 @@ export default async function ProPage() {
 
       {active
         ? <Alert variant="success" title={`Pro until ${until}`}>{daysLeft} day{daysLeft === 1 ? "" : "s"} left. Paying again now adds {PRO_DAYS} days to that date, so you don't lose any.</Alert>
-        : artisan.proUntil && <Alert variant="warning" title="Your Pro plan has ended">Renew to get back into the Featured slot.</Alert>}
+        : artisan.proUntil && <Alert variant="warning" title="Your Pro plan has ended">Renew to be shown first in search again and get new jobs first.</Alert>}
 
       <Card className="space-y-4">
         {newPriceActive(priceKobo) && <Badge tone="brand">New lower price</Badge>}
@@ -59,7 +61,7 @@ export default async function ProPage() {
           : <Alert variant="info" title="Payments aren't set up yet">Pro will be available soon.</Alert>}
       </Card>
 
-      <p className="text-sm text-muted">No automatic renewals: you pay for {PRO_DAYS} days at a time; your dashboard reminds you a few days before it ends. Featured placement never changes your star rating or your position in normal search results.</p>
+      <p className="text-sm text-muted">No automatic renewals: you pay for {PRO_DAYS} days at a time; your dashboard reminds you a few days before it ends. Pro never changes your star rating or reviews.</p>
     </main>
   );
 }

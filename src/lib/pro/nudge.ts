@@ -2,8 +2,9 @@ import { isPro, proDaysLeft } from "./rules";
 
 /**
  * "Go Pro" pop-up for artisans on the home page: who sees it and how often. Pure, so it's unit-tested.
- * Copy rule: Pro gives a chance at a labelled Featured spot above search results and on the home page
- * (2 spots, rotated at random among matching Pro artisans). Never promise "top of the list" or "#1".
+ * Copy rule: every Pro artisan matching a search is shown first, in the labelled Featured section, and
+ * gets new jobs PRO_HEAD_START_MIN minutes early (src/lib/pro/priority.ts). Among several Pro artisans
+ * the best match comes first, so never promise "#1" or "guaranteed".
  */
 import { RENEW_WITHIN_DAYS, dismissedRecently, newPriceActive, type Nudge } from "./nudge-shared";
 export * from "./nudge-shared";

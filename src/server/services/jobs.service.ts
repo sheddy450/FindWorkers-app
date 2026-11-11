@@ -1,3 +1,5 @@
+import { isPro } from "@/lib/pro/rules";
+import { canSeeJob, openToAllAt, proFirst } from "@/lib/pro/priority";
 import { db } from "@/lib/db";
 import { HttpError } from "@/lib/http";
 import { NIGERIA_STATES } from "@/lib/validation/artisan";
@@ -25,18 +27,27 @@ export async function createJob(customerId: string, raw: Record<string, unknown>
   if (!category) throw new FieldErrors({ categoryId: "Choose one of the services in the list." });
   await limited(LIMITS.jobPostPerUser, customerId, "posted jobs");
 
+  // Who to alert. Pro artisans get the alert (and can quote) at once; free artisans PRO_HEAD_START_MIN
+  // minutes later. Their notifications are stored with that later time and only show from then.
+  const artisans = await db.artisan.findMany({
+    where: { state: v.state, userId: { not: customerId }, services: { some: { categoryId: v.categoryId } }, user: { status: "ACTIVE" } },
+    select: { userId: true, proUntil: true }, take: 300,
+  });
+  const now = new Date();
+  const { pro, rest } = proFirst(artisans, (a) => isPro(a.proUntil, now));
+  const openAt = openToAllAt(pro.length, now);
+
   const job = await db.jobPost.create({ data: {
-    customerId, categoryId: v.categoryId, title: v.title, description: v.description, state: v.state, lga: v.lga,
+    customerId, openToAllAt: openAt, categoryId: v.categoryId, title: v.title, description: v.description, state: v.state, lga: v.lga,
     budgetMinKobo: v.budgetMinNaira != null ? v.budgetMinNaira * 100 : null, budgetMaxKobo: v.budgetMaxNaira != null ? v.budgetMaxNaira * 100 : null,
     timing: v.timing, preferredDate: v.preferredDate ? new Date(`${v.preferredDate}T12:00:00Z`) : null, expiresAt: expiryFrom(),
   } });
 
-  const artisans = await db.artisan.findMany({
-    where: { state: v.state, userId: { not: customerId }, services: { some: { categoryId: v.categoryId } }, user: { status: "ACTIVE" } },
-    select: { userId: true }, take: 300,
-  });
   if (artisans.length) {
-    await db.notification.createMany({ data: artisans.map((a) => ({ userId: a.userId, type: "job.new", payload: { jobId: job.id } })) });
+    await db.notification.createMany({ data: [
+      ...pro.map((a) => ({ userId: a.userId, type: "job.new", payload: { jobId: job.id, proFirst: !!openAt } })),
+      ...rest.map((a) => ({ userId: a.userId, type: "job.new", payload: { jobId: job.id }, createdAt: openAt ?? now })),
+    ] });
   }
   return { id: job.id, notified: artisans.length };
 }
@@ -52,10 +63,13 @@ export async function myJobs(customerId: string) {
 
 /** Open jobs an artisan can quote: their services, their state. Same LGA first, then newest. */
 export async function jobBoard(artisanId: string) {
-  const a = await db.artisan.findUnique({ where: { userId: artisanId }, select: { state: true, lga: true, services: { select: { categoryId: true } } } });
+  const a = await db.artisan.findUnique({ where: { userId: artisanId }, select: { state: true, lga: true, proUntil: true, services: { select: { categoryId: true } } } });
   if (!a?.state || a.services.length === 0) return { ready: false as const, jobs: [] };
+  const now = new Date();
   const jobs = await db.jobPost.findMany({
-    where: { status: "OPEN", expiresAt: { gt: new Date() }, state: a.state, categoryId: { in: a.services.map((s) => s.categoryId) }, customerId: { not: artisanId } },
+    where: { status: "OPEN", expiresAt: { gt: now }, state: a.state, categoryId: { in: a.services.map((s) => s.categoryId) }, customerId: { not: artisanId },
+      // Free artisans see a new job once the Pro head start is over.
+      ...(isPro(a.proUntil, now) ? {} : { OR: [{ openToAllAt: null }, { openToAllAt: { lte: now } }] }) },
     orderBy: { createdAt: "desc" }, take: 60,
     include: {
       category: { select: { name: true, slug: true } },
@@ -91,7 +105,7 @@ export async function jobForViewer(jobId: string, viewer: { id: string; role: "C
   }
   if (viewer.role !== "ARTISAN") return null; // other customers can't browse people's jobs
   const [artisan, myQuote, quoteCount] = await Promise.all([
-    db.artisan.findUnique({ where: { userId: viewer.id }, select: { state: true, services: { select: { categoryId: true } } } }),
+    db.artisan.findUnique({ where: { userId: viewer.id }, select: { state: true, proUntil: true, services: { select: { categoryId: true } } } }),
     db.jobQuote.findUnique({ where: { jobId_artisanId: { jobId, artisanId: viewer.id } } }),
     db.jobQuote.count({ where: activeQuotes }),
   ]);
@@ -99,9 +113,10 @@ export async function jobForViewer(jobId: string, viewer: { id: string; role: "C
   const sameState = artisan?.state === job.state;
   // Artisans only see jobs they could quote, plus ones they already quoted.
   if (!myQuote && (!offersService || !sameState)) return null;
+  const proOnlyUntil = !myQuote && !canSeeJob({ isPro: isPro(artisan?.proUntil), openToAllAt: job.openToAllAt }) ? job.openToAllAt : null;
   const blocker = quoteBlocker({ view, isOwnJob: false, offersService, sameState, quoteCount,
-    alreadyQuoted: !!myQuote && myQuote.status === "SENT" });
-  return { job, view, role: "artisan" as const, myQuote, quoteCount, blocker };
+    alreadyQuoted: !!myQuote && myQuote.status === "SENT", proOnlyUntil });
+  return { job, view, role: "artisan" as const, myQuote, quoteCount, blocker, proOnly: !!proOnlyUntil };
 }
 
 /** Send a quote, or update one already sent. The customer is notified the first time. */
