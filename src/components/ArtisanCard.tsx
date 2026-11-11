@@ -11,7 +11,7 @@ type Props = { id: string; businessName: string; categories?: string[]; distance
   photos?: CardPhotos | null;
   /** e.g. "Ikeja, Lagos" */
   place?: string | null;
-  /** Shown only in the labelled Featured slot, never in organic results. */
+  /** Pro artisans, shown first in the labelled Featured section of search results. */
   featured?: boolean;
   /** First card on the page: load its photo straight away instead of lazily. */
   priority?: boolean };

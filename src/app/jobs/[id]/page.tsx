@@ -127,7 +127,7 @@ function OwnerQuotes({ data }: { data: Extract<Data, { role: "owner" }> }) {
 }
 
 function ArtisanSide({ data }: { data: Extract<Data, { role: "artisan" }> }) {
-  const { job, myQuote, quoteCount, blocker } = data;
+  const { job, myQuote, quoteCount, blocker, proOnly } = data;
   const active = myQuote?.status === "SENT";
   const initial = myQuote && myQuote.status === "SENT" ? { priceNaira: String(myQuote.priceKobo / 100), message: myQuote.message, canStart: myQuote.canStart ?? "" } : null;
   return (
@@ -141,7 +141,9 @@ function ArtisanSide({ data }: { data: Extract<Data, { role: "artisan" }> }) {
         </Alert>
       )}
       {blocker && !active ? (
-        myQuote?.status === "ACCEPTED" || myQuote?.status === "DECLINED" ? null : <Alert variant="info" title={blocker} />
+        myQuote?.status === "ACCEPTED" || myQuote?.status === "DECLINED" ? null
+          : proOnly ? <Alert variant="info" title={blocker}><Link href="/artisan/pro" className="font-semibold text-brand fw-link hover:text-brand-700">Go Pro</Link> to see and quote for new jobs as soon as they&apos;re posted.</Alert>
+          : <Alert variant="info" title={blocker} />
       ) : (
         <Card>
           <QuoteForm jobId={job.id} initial={initial} />

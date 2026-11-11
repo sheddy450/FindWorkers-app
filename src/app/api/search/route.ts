@@ -3,11 +3,10 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { handle } from "@/lib/http";
 import { WEIGHTS, availabilityScore, bayesianRating, verificationScore } from "@/lib/search/rank";
-import { isPro, pickRandom } from "@/lib/pro/rules";
+import { isPro } from "@/lib/pro/rules";
+import { proFirst } from "@/lib/pro/priority";
 import { approxCoord } from "@/lib/geo/approx";
 import { cardPhotosFor } from "@/server/services/photo-display.service";
-
-const FEATURED_SLOTS = 2;
 
 const q = z.object({
   category: z.string().optional(), lat: z.coerce.number().min(3.5).max(14.5).optional(),
@@ -37,11 +36,14 @@ export const GET = handle(async (req) => {
           AND EXISTS (SELECT 1 FROM "User" u WHERE u.id = a."userId" AND u.status = 'ACTIVE')
           AND ST_DWithin(a.geog, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography, ${radiusKm * 1000})
           ${category ? db.$queryRaw`AND EXISTS (SELECT 1 FROM "ArtisanService" s JOIN "ServiceCategory" c ON c.id = s."categoryId" WHERE s."artisanId" = a."userId" AND c.slug = ${category})` : db.$queryRaw``}
+        -- Pro artisans first, then nearest, so a Pro artisan is never cut off by the limit.
+        ORDER BY (a."proUntil" > NOW()) IS TRUE DESC, "distanceKm" ASC
         LIMIT 60`
     : await db.artisan.findMany({
         where: { user: { status: "ACTIVE" }, ...(state ? { state } : {}), ...(lga ? { lga: { contains: lga, mode: "insensitive" } } : {}),
           ...(category ? { services: { some: { category: { slug: category } } } } : {}) },
         select: { userId: true, businessName: true, photoKey: true, avgRating: true, reviewCount: true, availability: true, state: true, lga: true, priceMinKobo: true, priceMaxKobo: true, proUntil: true },
+        orderBy: [{ proUntil: { sort: "desc", nulls: "last" } }, { avgRating: "desc" }],
         take: 60,
       }).then((r) => r.map((a) => ({ ...a, distanceKm: null })));
 
@@ -87,10 +89,11 @@ export const GET = handle(async (req) => {
     .filter((r) => (!availableNow || r.availability === "AVAILABLE_NOW"))
     .filter((r) => (!verifiedOnly || r.verifiedTypes.length > 0));
 
-  // Featured is a separate, labelled slot (see rank.ts): Pro artisans who match the same filters,
-  // picked at random so each gets a fair share. The organic results and their order are unchanged.
+  // Pro artisans who match the same search and filters are shown first, in the labelled Featured
+  // section, best match first (see src/lib/pro/priority.ts). Everyone else keeps their usual order.
+  // `results` still holds everyone (the map uses it); the list leaves out the ones already featured.
   const now = new Date();
-  const featured = pickRandom(filtered.filter((r) => isPro(r.proUntil ? new Date(r.proUntil) : null, now)), FEATURED_SLOTS);
+  const { pro, rest } = proFirst(filtered, (r) => isPro(r.proUntil ? new Date(r.proUntil) : null, now));
   const publicFields = ({ proUntil: _proUntil, ...r }: (typeof filtered)[number]) => r;
-  return NextResponse.json({ results: filtered.map(publicFields), featured: featured.map(publicFields) });
+  return NextResponse.json({ results: [...pro, ...rest].map(publicFields), featured: pro.map(publicFields) });
 });

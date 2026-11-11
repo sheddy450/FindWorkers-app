@@ -16,7 +16,7 @@ export const FAQS: Faq[] = [
   { for: "customers", topic: "Trust and safety", q: "What does \"Example photo\" mean on a card?",
     a: "That artisan hasn't added photos of their own work yet, so we show a general photo of the trade. Open their profile to see their own photos once they're approved." },
   { for: "customers", topic: "Trust and safety", q: "What does \"Featured\" mean?",
-    a: "Featured artisans pay for a Pro plan to appear in the labelled Featured spot. It doesn't change the order of the normal results, which are based on distance, ratings, verification and reviews." },
+    a: "Featured artisans pay for a Pro plan and are shown first, in a labelled Featured section. Everyone else is listed below in the usual order, based on distance, ratings, verification and reviews." },
   { for: "customers", topic: "Prices and payment", home: true, q: "How do I pay the artisan?",
     a: "You pay the artisan directly, the way you both agree. Agree the full price before work starts, ask for receipts when you pay for materials, and avoid paying everything up front: pay part at the start and the rest when the job is done." },
   { for: "customers", topic: "Prices and payment", q: "Are the prices on profiles and guides fixed?",
@@ -36,7 +36,7 @@ export const FAQS: Faq[] = [
 
   // ── Artisans ───────────────────────────────────────────────────────────────
   { for: "artisans", topic: "Getting started", home: true, q: "Does it cost anything to join as an artisan?",
-    a: "Joining, getting verified, receiving requests and sending quotes are free. There's an optional Pro plan that puts you in the Featured spot and shows how many people viewed your profile." },
+    a: "Joining, getting verified, receiving requests and sending quotes are free. There's an optional Pro plan that shows you first in search, gives you new jobs before other artisans, and shows how many people viewed your profile." },
   { for: "artisans", topic: "Getting jobs", home: true, q: "How do I get more jobs on FindWorkers?",
     a: "Complete your profile, add clear photos of your best work, get verified, and reply to customers quickly. Check the job board often: customers post jobs and choose from the quotes they receive. Read our guide \"How to get more jobs on FindWorkers\" for more." },
   { for: "artisans", topic: "Getting jobs", q: "Why don't I see any jobs on the job board?",
@@ -50,5 +50,5 @@ export const FAQS: Faq[] = [
   { for: "artisans", topic: "Verification", q: "How do I get the verified badge?",
     a: "Go to Verification from your dashboard and submit your details, such as your ID. Our team reviews them and you'll get a notification when it's done." },
   { for: "artisans", topic: "Pro plan", q: "What does the Pro plan give me?",
-    a: "Pro artisans appear in the labelled Featured spot in search and on the home page, can see how many people viewed their profile, and get faster verification reviews. It's optional, and your normal ranking doesn't change." },
+    a: "Pro artisans are shown first when customers search for their trade, get new job alerts 30 minutes before free artisans, can see how many people viewed their profile, and get faster verification reviews. It's optional, and it never changes your rating or reviews." },
 ];

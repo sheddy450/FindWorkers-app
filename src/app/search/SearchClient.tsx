@@ -132,10 +132,10 @@ export function SearchClient({ categories }: { categories: { slug: string; name:
                 reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length}
                 photos={r.photos} place={placeOf(r)} />
             ))}
-            <p className="pt-1 text-sm font-semibold text-ink">All results</p>
+            {results.length > featured.length && <p className="pt-1 text-sm font-semibold text-ink">More artisans</p>}
           </section>
         )}
-        {!error && results && results.length > 0 && view === "list" && results.map((r, i) => (
+        {!error && results && results.length > 0 && view === "list" && results.filter((r) => !featured.some((f) => f.userId === r.userId)).map((r, i) => (
           <ArtisanCard key={r.userId} id={r.userId} businessName={r.businessName} categories={r.categories} distanceKm={r.distanceKm} avgRating={r.avgRating}
             reviewCount={r.reviewCount} priceMinKobo={r.priceMinKobo} priceMaxKobo={r.priceMaxKobo} availability={r.availability} verifiedCount={r.verifiedTypes.length}
             photos={r.photos} place={placeOf(r)} priority={i === 0 && featured.length === 0} />

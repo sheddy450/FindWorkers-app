@@ -68,7 +68,7 @@ export default async function Dashboard() {
       ) : (
         <Card className="border-highlight/60 bg-highlight-soft/40">
           <p className="font-semibold">{a.proUntil ? "Your Pro plan has ended" : "Get featured with Pro"}</p>
-          <p className="text-sm text-muted">Appear in the Featured slot, see your profile views and get faster verification. {priceKobo != null && `${formatNaira(priceKobo)} for ${PRO_DAYS} days.`}</p>
+          <p className="text-sm text-muted">Be shown first in search, get new jobs 30 minutes early, and see your profile views. {priceKobo != null && `${formatNaira(priceKobo)} for ${PRO_DAYS} days.`}</p>
           <Link href="/artisan/pro" className="mt-3 inline-flex min-h-11 items-center rounded-ctl bg-highlight px-4 font-semibold">{a.proUntil ? "Renew Pro" : "See Pro"}</Link>
         </Card>
       )}

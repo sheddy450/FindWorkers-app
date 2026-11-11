@@ -1,3 +1,4 @@
+import { proFirstLookMessage } from "@/lib/pro/priority";
 /** Job posts and quotes: rules and validation. Pure functions (no database) so they're unit-tested. */
 
 export const JOB_DAYS_OPEN = 14;
@@ -109,6 +110,8 @@ export function parseQuote(raw: Record<string, unknown>): { ok: true; value: Quo
 /** Can this artisan quote this job? Returns a reason when they can't (shown on the job page). */
 export function quoteBlocker(args: {
   view: JobView; isOwnJob: boolean; offersService: boolean; sameState: boolean; quoteCount: number; alreadyQuoted: boolean;
+  /** Set while a free artisan is still inside the Pro head start on a new job. */
+  proOnlyUntil?: Date | null;
 }): string | null {
   if (args.view === "HIRED") return "The customer has already hired someone for this job.";
   if (args.view !== "OPEN") return "This job is no longer taking quotes.";
@@ -116,6 +119,7 @@ export function quoteBlocker(args: {
   if (!args.offersService) return "Add this service to your profile to quote for this job.";
   if (!args.sameState) return "This job is outside the state on your profile.";
   if (!args.alreadyQuoted && args.quoteCount >= MAX_QUOTES_PER_JOB) return "This job already has the most quotes allowed.";
+  if (args.proOnlyUntil) return proFirstLookMessage(args.proOnlyUntil);
   return null;
 }
 
