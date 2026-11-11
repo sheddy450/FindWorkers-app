@@ -4,7 +4,7 @@ export * from "./nudge-shared";
 
 /**
  * Who sees the Pro ad pop-up (src/components/pro/ProPopup.tsx), and when. Pure, so it's unit-tested.
- * Shown only on the artisan dashboard, so it never appears on customer or public pages.
+ * Shown on the home page, only to signed-in artisans: customers and visitors never get it.
  *
  * - Artisans only, and only while they don't have an active Pro plan.
  * - Only when payments are switched on (otherwise "Go Pro" leads nowhere useful).

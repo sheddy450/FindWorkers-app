@@ -17,6 +17,9 @@ import { HelpTip } from "@/components/help/HelpTip";
 import { listGuides } from "@/server/services/guides.service";
 import { LocationSelector } from "@/components/LocationSelector";
 import { pickRandom } from "@/lib/pro/rules";
+import { ProPopup } from "@/components/pro/ProPopup";
+import { showProPopup } from "@/lib/pro/nudge";
+import { paystackConfigured } from "@/lib/providers/paystack";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL, absoluteUrl, og } from "@/lib/seo/site";
 
@@ -31,6 +34,13 @@ export default async function Home() {
   const me = await currentUser();
   const isArtisan = me?.role === "ARTISAN";
   const isAdmin = me?.role === "ADMIN";
+  // The Pro ad pop-up (where artisans land after login): signed-in artisans without Pro only, at most
+  // once a week per account (src/lib/pro/nudge.ts). Customers and visitors never get it.
+  const popupFor = isArtisan && me && paystackConfigured()
+    ? await db.artisan.findUnique({ where: { userId: me.id }, select: { proUntil: true, proPopupClosedAt: true, proPopupCampaign: true } })
+    : null;
+  const popup = !!popupFor && showProPopup({ role: "ARTISAN", proUntil: popupFor.proUntil, paymentsConfigured: true,
+    closedAt: popupFor.proPopupClosedAt, closedCampaign: popupFor.proPopupCampaign });
   const [tiles, topRated, recent, proPool, byState, allGuides] = await Promise.all([
     serviceTiles(),
     db.artisan.findMany({ where: { reviewCount: { gt: 0 }, user: { status: "ACTIVE" } }, orderBy: { avgRating: "desc" }, take: 4,
@@ -64,6 +74,7 @@ export default async function Home() {
   return (
     <main className="mx-auto max-w-5xl px-4 pb-6 pt-4 sm:px-6">
       {!isArtisan && !isAdmin && <OnboardingTour />}
+      {popup && <ProPopup />}
       <JsonLd data={[
         { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: absoluteUrl("/apple-icon.png"), areaServed: { "@type": "Country", name: "Nigeria" } },
         { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url: SITE_URL },

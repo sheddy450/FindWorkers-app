@@ -1,8 +1,5 @@
 import Link from "next/link";
 import { HomeButton } from "@/components/HomeButton";
-import { ProPopup } from "@/components/pro/ProPopup";
-import { showProPopup } from "@/lib/pro/nudge";
-import { paystackConfigured } from "@/lib/providers/paystack";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { requirePageRole } from "@/lib/auth/session";
@@ -26,9 +23,6 @@ export default async function Dashboard() {
   if (!a) redirect("/artisan/profile");
   const submitted = a.verifications.filter((v) => v.status !== "NONE").length;
   const pro = isPro(a.proUntil);
-  // The Pro ad pop-up: artisans without Pro, at most once a week per account (src/lib/pro/nudge.ts).
-  const popup = showProPopup({ role: user.role, proUntil: a.proUntil, paymentsConfigured: paystackConfigured(),
-    closedAt: a.proPopupClosedAt, closedCampaign: a.proPopupCampaign });
   const daysLeft = proDaysLeft(a.proUntil);
   const [stats, priceKobo] = await Promise.all([
     pro ? db.artisanDailyStat.aggregate({
@@ -50,7 +44,6 @@ export default async function Dashboard() {
   return (
     <main className="mx-auto max-w-md space-y-4 p-6">
       <HomeButton />
-      {popup && <ProPopup />}
       <h1 className="text-3xl font-bold text-brand">{a.businessName}</h1>
       <Card className="space-y-3">
         <StarRating value={Number(a.avgRating)} count={a.reviewCount} />

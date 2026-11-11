@@ -1,5 +1,5 @@
 /**
- * The Pro ad pop-up on the artisan dashboard. Everything you might change lives here.
+ * The Pro ad pop-up artisans see on the home page after login. Everything you might change lives here.
  *
  * - Turn it off: set `enabled: false`.
  * - Swap the ad: put the new image in /public/promo/, then change `src`, `width`, `height` and `alt`.

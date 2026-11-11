@@ -7,7 +7,7 @@ import { POPUP_STORAGE_KEY } from "@/lib/pro/nudge-shared";
 import { CONSENT_EVENT, PIXEL_ID, readConsent, track } from "@/lib/meta/pixel";
 
 /**
- * The Pro ad, as a pop-up on the artisan dashboard. The server decides who gets it (src/lib/pro/nudge.ts:
+ * The Pro ad, as a pop-up on the home page for signed-in artisans (where they land after login). The server decides who gets it (src/lib/pro/nudge.ts:
  * artisans without Pro, at most once a week per account). This handles the pop-up itself: it waits for
  * the cookie banner, closes with ×, "Not now", Escape or a tap outside, and records the close on the
  * account so it holds on every device. Image, alt text and on/off switch: src/lib/pro/popup-config.ts.
