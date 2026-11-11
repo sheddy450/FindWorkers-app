@@ -78,6 +78,7 @@ export async function deleteOwnAccount(userId: string, password: string): Promis
     // 5. Personal leftovers.
     await tx.notification.deleteMany({ where: { userId } });
     await tx.passwordResetToken.deleteMany({ where: { userId } });
+    await tx.phoneOtp.deleteMany({ where: { userId } });
     await tx.block.deleteMany({ where: { OR: [{ blockerId: userId }, { blockedId: userId }] } });
 
     // 6. The account itself: no name, no contact details, no way to log in. passwordChangedAt ends
